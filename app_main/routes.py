@@ -254,13 +254,13 @@ def feedback(id):
 
         # функция отправки письма
         if current_user.role == 'buyer':
-            msg = Message ('New comment in request{}'.format(str(req.id)), sender='rosexport.200@gmail.com',
+            msg = Message ('New comment in request{}'.format(str(req.id)), sender='redmessageinfo@gmail.com',
                            recipients=[sale_email])
             msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
             mail.send(msg)
 
         else:
-            msg = Message('New comment in request{}'.format(str(req.id)), sender='rosexport.200@gmail.com',
+            msg = Message('New comment in request{}'.format(str(req.id)), sender='redmessageinfo@gmail.com',
                           recipients=[buyer_email])
             print(buyer_email)
             msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
@@ -522,3 +522,14 @@ def my_agreements_subc():
     base = Supplier.query.filter(Supplier.user_id==current_user.id).all()
     return render_template('my_agreements_subc.html', base=base)
         #send_from_directory(app_main.config['AGG_FOLDER'], filename=filename, base=base)
+
+#статус запроса
+@app.route('/status_for_request/<int:id>', methods=['POST', 'GET'])
+def status_for_request(id):
+    request = Request.query.get(id)
+    form = StatusForm()
+    if form.validate_on_submit():
+        request.request_status = form.name.data
+        db.session.commit()
+        return redirect(url_for('index'))
+    return render_template('status_request.html', request = request, form=form)

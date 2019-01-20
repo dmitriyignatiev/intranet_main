@@ -278,7 +278,7 @@ class CustomerForm(FlaskForm):
         ('ОБЩАЯ', 'ОБЩАЯ'),
         ('КАЗАНЬ', 'КАЗАНЬ'),
         ('НИЖНИЙ НОВГОРОД', 'НИЖНИЙ НОВГОРОД'),
-        ('МОСКВА', 'МОСКВА')])
+        ('МОСКВА', 'МОСКВА')], validators=DataRequired())
 
     submit = SubmitField('записать')
 ########
@@ -291,6 +291,13 @@ class Customer_name(FlaskForm):
     email = StringField ('электронная почта, пример: info@rosexport.su')
 
 
-
+class StatusForm(FlaskForm):
+    name = SelectField('Статус запроса', choices=[
+                                    ('ИНДИКАТИВ', 'ИНДИКАТИВ'),
+                                    ('СРОЧНЫЙ ЗАПРОС', 'СРОЧНЫЙ ЗАПРОС'),
+                                    ('ТЕНДЕР', 'ТЕНДЕР'),
+                                    ('ЕДЕМ', 'ЕДЕМ'), ],
+                                    validators = [DataRequired()])
+    submit = SubmitField('записать')
 
 

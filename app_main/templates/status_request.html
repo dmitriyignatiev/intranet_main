@@ -1,0 +1,49 @@
+{%extends "base.html"%}
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{%block content%}
+<div class="container">
+    <h1>Скорректировать запрос #{{request.id}}</h1>
+<form action="" method="post" novalidate>
+
+     {{form.hidden_tag()}}
+    <dl>
+              Был статус:  {{request.request_status}}
+            {{wtf.form_field(form.name)}}
+
+           {{form.submit()}}
+    </dl>
+
+
+    <h7>Информация по данному запросу</h7>
+        <p> {{request.org}}</p>
+
+        <p> {{request.dest}}</p>
+
+        <p>{{request.type_of_truck}}</p>
+
+    <p>{{request.weigth_cargo}}</p>
+
+    <p> {{request.type_of_loading}}</p>
+
+    <p>  {{request.cargo_value}}</p>
+
+    <p> {{request.cargo_value}}</p>
+
+    <p> {{request.cargo_desciption}}</p>
+
+    <p>{{request.quantity}}</p>
+
+    <p>{{request_comments}}</p>
+
+
+
+
+
+</form>
+</div>
+</body>
+{%endblock%}
