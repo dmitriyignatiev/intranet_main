@@ -13,7 +13,10 @@
     <dl>
 
             {{wtf.form_field(form.customer)}}
-                 {{request.direction}}
+                 {{request.request_status}}
+            {{wtf.form_field(form.request_status)}}
+
+                {{request.direction}}
             {{wtf.form_field(form.direction)}}
                 {{request.org}}
             {{wtf.form_field(form.org)}}

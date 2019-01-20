@@ -20,7 +20,7 @@ def choice_direction():
     return buyer
 
 def choice_customer():
-    customer = Customer.query
+    customer = Customer.query.filter(Customer.user_id==current_user.id)
     return customer
 
 def choice_truck():
@@ -78,6 +78,13 @@ class NewRequestForm(FlaskForm):
 
     pick_up_date = DateField('Дата загрузки', format = '%Y-%m-%d')
 
+    request_status = SelectField('Статус запроса', choices=[
+        ('ИНДИКАТИВ', 'ИНДИКАТИВ'),
+        ('СРОЧНЫЙ ЗАПРОС', 'СРОЧНЫЙ ЗАПРОС'),
+        ('ТЕНДЕР', 'ТЕНДЕР'),
+         ],
+                                 validators=[DataRequired()])
+
     submit = SubmitField('Отправить на расчет')
 
 ######################
@@ -114,8 +121,14 @@ class EditForm(FlaskForm):
                                 ('Негабарит', 'Негабарит'),
                             ], validators=[DataRequired()])
 
-    weigth_cargo = IntegerField ('Вес груза', validators=[DataRequired ()])
+    weigth_cargo = IntegerField ('Вес груза', validators=[DataRequired()])
     request_comments = TextAreaField ('Комментарии')
+    request_status = SelectField('Статус запроса', choices=[
+                                    ('ИНДИКАТИВ', 'ИНДИКАТИВ'),
+                                    ('СРОЧНЫЙ ЗАПРОС', 'СРОЧНЫЙ ЗАПРОС'),
+                                    ('ТЕНДЕР', 'ТЕНДЕР'),
+                                    ('ЕДЕМ', 'ЕДЕМ'), ],
+                                    validators = [DataRequired()])
 
     submit = SubmitField ('Отправить на расчет')
 

@@ -70,12 +70,14 @@ def new_request():
                       customer_name = choose_customer.name,
                       customer_id = choose_customer.id,
                       payment_day = choose_customer.payment_day,
-                      cargo_type = form.cargo_type.name,
+                      cargo_type = form.cargo_type.data,
                       quantity = quantity_all.quantity,
                       type_of_loading=form.type_of_loading.data,
                       type_of_truck = form.type_of_truck.data,
                       weigth_cargo = form.weigth_cargo.data,
-                      request_comments = form.request_comments.data)
+                      request_comments = form.request_comments.data,
+                      request_status = form.request_status.data
+                      )
         db.session.add(new)
         db.session.commit()
         print('da')
@@ -149,11 +151,19 @@ def edit(id):
         update_request.weigth_cargo = weigth_cargo
         update_request.request_comments = request_comments
         update_request.created = datetime.utcnow()
+        update_request.request_status  = form.request_status.data
 
         db.session.add(update_request)
         db.session.commit()
         return redirect(url_for('index'))
     return render_template('edit.html', form=form, id=id, request=update_request)
+
+#маршрут, чтобы смотреть кто поехал
+@app.route('/orders')
+def orders():
+    requests = Request.query.filter(Request.request_status=='ЕДЕМ').all()
+    return render_template('request_confirmed.html', requests = requests)
+
 
 #форма для заявки
 @app.route('/form-for-dogovor')
