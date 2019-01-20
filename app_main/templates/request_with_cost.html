@@ -1,0 +1,62 @@
+{%extends "base.html"%}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{%block main%}
+{%endblock main%}
+
+
+{%block content%}
+<div class="container">
+<h1>Запросы с ценой</h1>
+
+<p>
+        <table class="table table-sm">
+  <thead>
+    <tr>
+        <th scope="col">Возможные действие</th>
+        <th scope="col">Номер запроса</th>
+        <th scope="col">Откуда</th>
+        <th scope="col">Стоимость</th>
+        <th scope="col">Продавец</th>
+        <th scope="col">Время запроса</th>
+        <th scope="col">Кто перенаправил</th>
+
+
+
+
+    </tr>
+
+  </thead>
+    {% for req in current_user.requests %}
+
+    <tbody>
+    <tr>
+
+      <th scope="row">
+
+          <a href="{{url_for('feedback', id=req.id)}}"><button type="button" class="btn btn-warning btn-sm">Подробнее</button></a>
+      </th>
+        <th scope="row"> {{req.id}}</th>
+        <td>{{req.org}}</td>
+        <td>{{req.cost}}</td>
+        <td>{{req.user.name}} </td>
+        <td>{{moment(req.created).fromNow()}} </td>
+        {%if req.redirect_comment%}
+        <td>{{req.redirect_comment}}</td>
+        {%endif%}
+    </tr>
+    {% endfor %}
+
+
+
+</tbody>
+</table>
+</div>
+</body>
+
+{%endblock%}
+

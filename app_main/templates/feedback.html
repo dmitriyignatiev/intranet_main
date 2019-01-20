@@ -1,0 +1,117 @@
+{%extends 'base.html'%}
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+{%block content%}
+<div class="container-full">
+
+
+
+    <table class="table table-sm">
+  <thead>
+    <tr>
+       <th scope="col">Возможные действие</th>
+        <th scope="col">#</th>
+        <th scope="col">Клиент</th>
+        <th scope="col">Срок оплаты</th>
+        <th scope="col">Продавец</th>
+        <th scope="col">Откуда</th>
+        <th scope="col">Куда</th>
+        <th scope="col">Грузоподъемность</th>
+        <th scope="col">Вид загрузки</th>
+        <th scope="col">Вес груза</th>
+        <th scope="col">Характер Груза</th>
+        <th scope="col">Стоимость груза</th>
+        <th scope="col">Кост с НДС</th>
+        <th scope="col">Направление</th>
+        <th scope="col">Тип перевозки</th>
+        <th scope="col">Комментарии</th>
+        <th scope="col">Время запроса</th>
+        <th scope="col">Дата ставки</th>
+        <th scope="col">Кто перенаправил</th>
+
+    </tr>
+  </thead>
+        <tbody>
+    <tr>
+
+      <th scope="row">
+      <a href="{{url_for('edit', id=req.id)}}"><button type="button" class="btn btn-info btn-sm">Cкорректировать</button></a>
+    <!--<a href="{{url_for('delete_req', id=req.id)}}"><button type="button" class="btn btn-warning btn-sm">Удалить Запрос</button></a>-->
+          <!--<a href="{{url_for('feedback', id=req.id)}}"><button type="button" class="btn btn-warning btn-sm">Подробнее</button></a>-->
+        {%if current_user.role !='sale'%}
+          <a href="{{ url_for('re_direct', id=req.id) }}"><button type="button" class="btn btn-info btn-sm" > Перенаправить</button></a>
+        {%endif%}
+      </th>
+          <th> {{req.id}}</th>
+        <th> {{req.customer_name}}</th>
+        <th> {{req.payment_day}}</th>
+        <td>{{req.user.name}} </td>
+        <td>{{req.org}}</td>
+        <td>{{req.dest}}</td>
+        <td>{{req.type_of_truck}}</td>
+        <td>{{req.type_of_loading}}</td>
+        <td>{{req.weigth_cargo}}</td>
+        <td>{{req.cargo_desciption}}</td>
+        <td>{{req.cargo_value}}</td>
+        <td>{{req.cost}}</td>
+        <td>{{req.direction}}</td>
+        <td>{{req.cargo_type}}</td>
+        <td>{{req.request_comments}}</td>
+        <td>{{moment(req.created).fromNow()}} </td>
+        {%if req.cost%}
+        <td><b>{{moment(req.cost_created).fromNow()}}</b></td>
+        {%endif%}
+        {%if req.redirect_comment%}
+        <td>{{req.redirect_comment}}</td>
+        {%endif%}
+    </table>
+
+
+
+
+
+
+<div class="container">
+    <form action="" method="post">
+        {{form.hidden_tag()}}
+
+            {{form.comments.label()}}<br>
+            {{form.comments(cols=100, raw=30)}}
+
+            {{form.submit()}}
+
+
+
+</form>
+</div>
+</div>
+
+<br>
+    {%for post in posts%}
+         {%if post.user.role=='sale'%}
+              <p style="text-indent:150px">
+                  <b>{{ post.user.name}}: </b>
+                    {{post.post}}
+                    {{moment(post.post_date).fromNow()}}
+              </p>
+
+    {%else%}
+                <p style="text-indent:200px" >
+
+                        <em> {{ post.user.name}}:</em>
+                        {{post.post}}
+                        {{moment(post.post_date).fromNow()}}
+
+                </p>
+                    {%endif%}
+                {%endfor%}
+
+
+{%endblock%}
+
+</body>

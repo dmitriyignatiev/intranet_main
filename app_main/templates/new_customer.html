@@ -1,0 +1,30 @@
+{%extends "base.html"%}
+
+
+
+{% block content %}
+
+<div class="container">
+    <h1>Новый  клиент</h1>
+    <form action="" method="post">
+
+        <dl>
+            {{form.hidden_tag()}}
+            {{wtf.form_field(form.name)}}
+            {{wtf.form_field(form.dm)}}
+            {{wtf.form_field(form.phone)}}
+            {{wtf.form_field(form.email)}}
+            {{wtf.form_field(form.payment_day)}}
+            {{wtf.form_field(form.payment_terms)}}
+            {{wtf.form_field(form.customer_base)}}
+
+
+
+
+            {{form.submit()}}
+        </dl>
+
+
+    </form>
+</div>
+{% endblock %}

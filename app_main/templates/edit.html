@@ -1,0 +1,46 @@
+{%extends "base.html"%}
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{%block content%}
+<div class="container">
+    <h1>Скорректировать запрос #{{request.id}}</h1>
+<form action="" method="post" novalidate>
+
+     {{form.hidden_tag()}}
+    <dl>
+
+            {{wtf.form_field(form.customer)}}
+                 {{request.direction}}
+            {{wtf.form_field(form.direction)}}
+                {{request.org}}
+            {{wtf.form_field(form.org)}}
+                {{request.dest}}
+            {{wtf.form_field(form.dest)}}
+                {{request.type_of_truck}}
+            {{wtf.form_field(form.type_of_truck)}}
+                {{request.weigth_cargo}}
+            {{wtf.form_field(form.weigth_cargo)}}
+                {{request.type_of_loading}}
+            {{wtf.form_field(form.type_of_loading)}}
+                {{request.cargo_value}}
+            {{wtf.form_field(form.cargo_value)}}
+                {{request.cargo_value}}
+            {{wtf.form_field(form.cargo_type)}}
+                {{request.cargo_desciption}}
+            {{wtf.form_field(form.cargo_desciption)}}
+                {{request.quantity}}
+            {{wtf.form_field(form.quantity)}}
+                {{request_comments}}
+            {{wtf.form_field(form.request_comments)}}
+
+
+            {{form.submit()}}
+    </dl>
+
+</form>
+</div>
+</body>
+{%endblock%}

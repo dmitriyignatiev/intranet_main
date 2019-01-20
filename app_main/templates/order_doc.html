@@ -1,0 +1,35 @@
+{%extends "base.html"%}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{%block content%}
+<div class="container">
+    <form action="" method="post">
+          <dl>
+            {{form.hidden_tag()}}
+                {{wtf.form_field(form.number)}}
+                {{wtf.form_field(form.date)}}
+                {{wtf.form_field(form.customer_type)}}
+                {{wtf.form_field(form.customer_name)}}
+                {{wtf.form_field(form.by_who)}}
+                {{wtf.form_field(form.name)}}
+                {{wtf.form_field(form.basis_on)}}
+                {{wtf.form_field(form.untill)}}
+                {{wtf.form_field(form.legal_add)}}
+                {{wtf.form_field(form.fact_add)}}
+                {{wtf.form_field(form.inn)}}
+                {{wtf.form_field(form.kpp)}}
+                {{wtf.form_field(form.ogrn)}}
+                {{wtf.form_field(form.bank)}}
+                {{wtf.form_field(form.bic)}}
+                {{wtf.form_field(form.kor_acc)}}
+                {{wtf.form_field(form.acc_number)}}
+            {{form.submit()}}
+        </dl>
+    </form>
+</div>
+</body>
+{%endblock%}

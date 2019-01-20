@@ -1,0 +1,86 @@
+{%extends "base.html"%}
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{%block content%}
+<div class="container">
+<form action="" method="post">
+{{form.hidden_tag()}}
+    <dl>
+        {{wtf.form_field(form.buyer)}}
+        {{form.submit()}}
+
+    </dl>
+</form>
+
+     <div class="container-full">
+      <table class="table table-sm">
+
+    <tr>
+        <th scope="col">Возможные действие</th>
+        <th scope="col">#</th>
+        <th scope="col">Клиент</th>
+        <th scope="col">Дата отгрузки</th>
+        <th scope="col">Срок оплаты</th>
+        <th scope="col">Продавец</th>
+        <th scope="col">Откуда</th>
+        <th scope="col">Куда</th>
+        <th scope="col">Необходимая Грузоподъемность</th>
+        <th scope="col">Вид загрузки</th>
+        <th scope="col">Вес груза</th>
+        <th scope="col">Характер Груза</th>
+        <th scope="col">Стоимость груза</th>
+        <th scope="col">Кост с НДС</th>
+        <th scope="col">Направление</th>
+        <th scope="col">Тип перевозки</th>
+        <th scope="col">Комментарии</th>
+        <th scope="col">Время запроса</th>
+        <th scope="col">Дата ставки</th>
+        <th scope="col">Кто перенаправил</th>
+    </tr>
+
+<tr>
+      <th >
+
+         <a href="{{ url_for('re_direct', id=update_request.id) }}"><button type="button" class="btn btn-info btn-sm" > Перенаправить</button></a>
+          <a href="{{url_for('feedback', id=update_request.id)}}"><button type="button" class="btn btn-warning btn-sm">Подробнее</button></a>
+      </th>
+
+         <th> {{update_request.id}}</th>
+        <th> {{update_request.customer_name}}</th>
+        <th>{{moment(update_request.pick_up_date).format('ll')}}</th>
+        <th> {{update_request.payment_day}}</th>
+        <td>{{update_request.user.name}} </td>
+        <td>{{update_request.org}}</td>
+        <td>{{update_request.dest}}</td>
+        <td>{{update_request.type_of_truck}}</td>
+        <td>{{update_request.type_of_loading}}</td>
+        <td>{{update_request.weigth_cargo}}</td>
+        <td>{{update_request.cargo_desciption}}</td>
+        <td>{{update_request.cargo_value}}</td>
+        <td>{{update_request.cost}}</td>
+        <td>{{update_request.direction}}</td>
+        <td>{{update_request.cargo_type}}</td>
+        <td>{{update_request.request_comments}}</td>
+        <td>{{moment(update_request.created).fromNow()}} </td>
+        {%if update_request.cost%}
+        <td><b>{{moment(update_request.cost_created).fromNow()}}</b></td>
+        {%endif%}
+        {%if update_request.redirect_comment%}
+        <td>{{update_request.redirect_comment}}</td>
+        {%endif%}
+    </tr>
+
+    </dl>
+
+
+
+      </table>
+        </div>
+
+</div>
+</body>
+
+{%endblock%}

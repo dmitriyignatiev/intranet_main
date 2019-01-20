@@ -1,0 +1,220 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf%}
+
+
+
+    {%if title%}
+    <title>{{title}}-Rosexport</title>
+    {%else%}
+    <title>Rosexport</title>
+    {%endif%}
+
+{% block navbar %}
+<div class="container-full">
+   <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+        <h15><a class="navbar-brand" href="{{url_for('index')}}">Главная</a></h15>
+
+        <h15><a class="navbar-brand" href="{{url_for('my_customers')}}">Мои клиенты</a></h15>
+        <h15><a class="navbar-brand" href="{{url_for('new_customer')}}">Создать клиента</a></h15>
+
+ <!--       <h15><a a class="navbar-brand" href="{{url_for('agreement_form')}}">Создать договор</a></h15>
+        <h15><a a class="navbar-brand" href="{{url_for('my_agreements')}}">Мои договора</a></h15>
+        <h15><a a class="navbar-brand" href="{{url_for('agreement_form_subc')}}">Создать договор с перевозчиком</a></h15>
+-->
+    </nav>
+</div>
+{% endblock %}
+
+
+
+<body>
+
+  {%block content%}
+
+  <div class="container-full">
+
+<h1>Hi {{current_user.name}}  </h1>
+    <h7>Количество запросов без цены: {{ req_cost}}</h7><p></p>
+
+    <p>
+            <a href="{{url_for('login')}}"><button type="button" class="btn btn-primary btn-sm">Login</button></a>
+            <a href="{{url_for('logout')}}"><button type="button" class="btn btn-primary btn-sm">Logout</button></a>
+          <!--  <a href="{{url_for('recieve_order')}}"><button type="button" class="btn btn-primary btn-sm">Договор с клиентом</button></a>-->
+
+    {% if current_user.role=='sale'%}
+            <a href="{{url_for('new_request')}}"><button type="button" class="btn btn-success btn-sm">Новый запрос</button></a>
+        <!--    <a href="{{url_for('request_with_cost')}}"><button type="button" class="btn btn-info btn-sm" > Прокотированные запросы</button></a>-->
+
+    {% endif%}
+
+    {%if current_user.role=='buyer'%}
+          <!--  <a href="{{url_for('request_with_cost')}}"><button type="button" class="btn btn-info btn-sm" > Прокотированные запросы</button></a>-->
+          <!-- <a href="{{url_for('index')}}"><button type="button" class="btn btn-info btn-sm" > Мои запросы</button></a></p>-->
+
+    {%endif%}
+
+    {% if current_user.role=='admin'%}
+            <a href="{{url_for('delete')}}"><button type="button" class="btn btn-warning btn-sm">Удалить</button></a>
+    {% endif%}
+
+    </p>
+
+
+
+{% if current_user.role=='sale'%}
+    <p>
+        <table class="col-md-3">
+            <table class="table">
+  <thead>
+    <tr>
+        <th scope="col">Действие</th>
+        <th scope="col">Cтатус</th>
+        <th scope="col">#</th>
+        <th scope="col">Клиент</th>
+        <th scope="col">Дата загрузки</th>
+        <th scope="col">Откуда</th>
+        <th scope="col">Куда</th>
+        <th scope="col">Необходимая Грузоподъемность </th>
+        <th scope="col">Вид загрузки</th>
+        <th scope="col">Вес груза</th>
+        <th scope="col">Характер Груза</th>
+        <th scope="col">Стоимость груза</th>
+        <th scope="col">Кост с НДС</th>
+        <th scope="col">Направление</th>
+        <th scope="col">Тип перевозки</th>
+        <th scope="col">Комментарии</th>
+        <th scope="col">Закупщик</th>
+        <th scope="col">Дата запроса</th>
+        <th scope="col">Дата ставки</th>
+
+
+
+
+    </tr>
+
+  </thead>
+    {% for request in requests %}
+
+    <tbody>
+    <tr>
+
+      <th scope="row">
+         <a href="{{url_for('edit', id=request.id)}}"><button type="button" class="btn btn-info btn-sm"><i class="glyphicon glyphicon-pencil" aria-hidden="true"></i></button></a>
+         <!--<a href="{{url_for('delete_req', id=request.id)}}"><button type="button" class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button></a>-->
+         <a href="{{url_for('feedback', id=request.id)}}"><button type="button" class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-share-alt" aria-hidden="true"></i></button></a>
+      </th>
+       <!--доделать-->
+        <th><form action="" method="post">{{request.id}}</form></th>
+
+        <th>{{request.id}}</th>
+        <th>{{request.customer_name|truncate() }}</th>
+        <th>{{moment(request.pick_up_date).format('ll')}}</th>
+        <td>{{request.org}}</td>
+        <td>{{request.dest}}</td>
+        <td>{{request.type_of_truck}}</td>
+        <td>{{request.type_of_loading}}</td>
+        <td>{{request.weigth_cargo}}</td>
+        <td>{{request.cargo_desciption}}</td>
+        <td>{{request.cargo_value}}</td>
+        <td>{{request.cost}}</td>
+        <td>{{request.direction}}</td>
+        <td>{{request.cargo_type}}</td>
+        <td>{{request.request_comments}}</td>
+         {%for r in request.users%}
+        <td>{{r.name}} </td>
+        {%endfor%}
+        <td>{{moment(request.created).fromNow()}} </td>
+        {%if request.cost_created%}
+        <td><b>{{moment(request.cost_created).fromNow()}}</b></td>
+        {%endif%}
+    </tr>
+    {% endfor %}
+{% endif %}
+
+<!--Если юзер.роль==покупатель-->
+{% if current_user.role== 'buyer' %}
+
+   <p>
+        <table class="table table-sm">
+  <thead>
+    <tr>
+        <th scope="col">Возможные действие</th>
+        <th scope="col">#</th>
+        <th scope="col">Клиент</th>
+        <th scope="col">Дата отгрузки</th>
+        <th scope="col">Срок оплаты</th>
+        <th scope="col">Продавец</th>
+        <th scope="col">Откуда</th>
+        <th scope="col">Куда</th>
+        <th scope="col">Необходимая Грузоподъемность</th>
+        <th scope="col">Вид загрузки</th>
+        <th scope="col">Вес груза</th>
+        <th scope="col">Характер Груза</th>
+        <th scope="col">Стоимость груза</th>
+        <th scope="col">Кост с НДС</th>
+        <th scope="col">Направление</th>
+        <th scope="col">Тип перевозки</th>
+        <th scope="col">Комментарии</th>
+        <th scope="col">Время запроса</th>
+        <th scope="col">Дата ставки</th>
+        <th scope="col">Кто перенаправил</th>
+
+
+
+
+    </tr>
+
+  </thead>
+
+      {% set sort_on = request.args.sort_on|default('id') %}
+
+    {% for req in current_user.requests|sort(attribute=sort_on, reverse = True) %}
+
+    <tbody>
+    <tr>
+
+      <th scope="row">
+          <a href="{{url_for('cost', id = req.id )}}"><button type="button" class="btn btn-info btn-sm">Указать стоимость</button></a>
+         <a href="{{ url_for('re_direct', id=req.id) }}"><button type="button" class="btn btn-info btn-sm" > Перенаправить</button></a>
+          <a href="{{url_for('feedback', id=req.id)}}"><button type="button" class="btn btn-warning btn-sm">Подробнее</button></a>
+      </th>
+        <th> {{req.id}}</th>
+        <th> {{req.customer_name}}</th>
+        <th>{{moment(req.pick_up_date).format('ll')}}</th>
+        <th>{{req.payment_day}}</th>
+        <td>{{req.user.name}} </td>
+        <td>{{req.org}}</td>
+        <td>{{req.dest}}</td>
+        <td>{{req.type_of_truck}}</td>
+        <td>{{req.type_of_loading}}</td>
+        <td>{{req.weigth_cargo}}</td>
+        <td>{{req.cargo_desciption}}</td>
+        <td>{{req.cargo_value}}</td>
+        <td>{{req.cost}}</td>
+        <td>{{req.direction}}</td>
+        <td>{{req.cargo_type}}</td>
+        <td>{{req.request_comments}}</td>
+        <td>{{moment(req.created).fromNow()}} </td>
+        {%if req.cost%}
+        <td><b>{{moment(req.cost_created).fromNow()}}</b></td>
+        {%endif%}
+        {%if req.redirect_comment%}
+        <td>{{req.redirect_comment}}</td>
+        {%endif%}
+    </tr>
+    {% endfor %}
+    {% endif %}
+
+
+</tbody>
+  </table>
+</table>
+</div>
+{%endblock%}
+
+{%block scripts%}
+    {{super()}}
+    {{moment.include_moment()}}
+  {{moment.lang('ru')}}
+{%endblock%}
+

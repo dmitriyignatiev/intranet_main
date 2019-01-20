@@ -1,0 +1,16 @@
+{%extends "base.html"%}
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{%block content%}
+<form action="" method="post">
+    {{form.hidden_tag()}}
+    <p>{{form.remove.label}}<br>
+        {{form.remove}}
+    </p>
+    <p>{{form.submit()}}</p>
+</form>
+</body>
+{%endblock%}

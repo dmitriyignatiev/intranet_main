@@ -1,0 +1,24 @@
+{%extends "base.html"%}
+
+
+
+{% block navbar %}
+<div class="container">
+   <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+        <h7><a class="navbar-brand" href="{{url_for('index')}}">Главная</a></h7>
+        <h7><a a class="navbar-brand" href="{{url_for('agreement_form')}}">Договор с клиентом</a></h7>
+        <h7><a a class="navbar-brand" href="{{url_for('my_agreements')}}">Мои договора</a></h7>
+    </nav>
+</div>
+{% endblock %}
+
+{%block content%}
+<div class="container">
+
+{%for agreement in base%}
+
+<p><a href="{{url_for('download_agreement', filename='{}'.format(agreement.filename))}}">{{agreement.id}}: {{agreement.filename}}</a></p>
+
+{%endfor%}
+</div>
+{%endblock%}

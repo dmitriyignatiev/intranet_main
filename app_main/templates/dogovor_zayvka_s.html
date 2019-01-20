@@ -1,0 +1,75 @@
+{%extends "base.html"%}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{%block content%}
+<div class="container">
+    <form action="" method="post">
+         {{form.hidden_tag()}}
+        <dl>
+                {{wtf.form_field(form.from_)}}
+                {{wtf.form_field(form.to)}}
+                {{wtf.form_field(form.date_loading)}}
+                {{wtf.form_field(form.time_loading)}}
+                {{wtf.form_field(form.shipper_name)}}
+                {{wtf.form_field(form.shipper_address)}}
+                {{wtf.form_field(form.shipper_phone)}}
+                {{wtf.form_field(form.date_unloading)}}
+                {{wtf.form_field(form.time_unloading)}}
+                {{wtf.form_field(form.cnee_name)}}
+                {{wtf.form_field(form.cnee_address)}}
+                {{wtf.form_field(form.cnee_fio)}}
+                {{wtf.form_field(form.cargo_description)}}
+                {{wtf.form_field(form.number_request)}}
+                {{wtf.form_field(form.cargo_value)}}
+                {{wtf.form_field(form.loading_type)}}
+                {{wtf.form_field(form.unloading_type)}}
+
+              {{wtf.form_field(form.cargo_pallets)}}
+              {{wtf.form_field(form.cargo_total_weight)}}
+              {{wtf.form_field(form.cargo_m3)}}
+              {{wtf.form_field(form.truck_description)}}
+              {{wtf.form_field(form.truck_type)}}
+              {{wtf.form_field(form.special)}}
+              {{wtf.form_field(form.truck_cost)}}
+              {{wtf.form_field(form.cost_payment_day)}}
+
+
+
+              {{wtf.form_field(form.truck_model)}}
+              {{wtf.form_field(form.driver_fio)}}
+              {{wtf.form_field(form.passort_seria_nomer)}}
+              {{wtf.form_field(form.passport_vydan)}}
+              {{wtf.form_field(form.truck_plate)}}
+
+              {{wtf.form_field(form.cargo_phone)}}
+              {{wtf.form_field(form.driver_license)}}
+              {{wtf.form_field(form.contact_phone)}}
+              {{wtf.form_field(form.contact_name)}}
+
+              {{wtf.form_field(form.driver_phone)}}
+              {{wtf.form_field(form.cargo_name)}}
+
+              {{wtf.form_field(form.llc)}}
+              {{wtf.form_field(form.llc_name)}}
+              {{wtf.form_field(form.legal_add)}}
+              {{wtf.form_field(form.fact_address)}}
+              {{wtf.form_field(form.inn)}}
+
+              {{wtf.form_field(form.kpp)}}
+              {{wtf.form_field(form.ogrn)}}
+              {{wtf.form_field(form.bank)}}
+              {{wtf.form_field(form.bik)}}
+              {{wtf.form_field(form.rc)}}
+              {{wtf.form_field(form.kc)}}
+              {{wtf.form_field(form.driver_director)}}
+
+            {{form.submit()}}
+        </dl>
+    </form>
+</div>
+</body>
+{%endblock%}
