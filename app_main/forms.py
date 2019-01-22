@@ -278,7 +278,7 @@ class CustomerForm(FlaskForm):
         ('ОБЩАЯ', 'ОБЩАЯ'),
         ('КАЗАНЬ', 'КАЗАНЬ'),
         ('НИЖНИЙ НОВГОРОД', 'НИЖНИЙ НОВГОРОД'),
-        ('МОСКВА', 'МОСКВА')], validators=DataRequired())
+        ('МОСКВА', 'МОСКВА')], validators=[DataRequired()])
 
     submit = SubmitField('записать')
 ########

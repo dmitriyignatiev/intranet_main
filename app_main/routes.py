@@ -82,7 +82,11 @@ def new_request():
         db.session.commit()
         print('da')
         ######выбираем закупщика с наименьшем количеством запросов
-        if new.direction == 'INT':
+        if new.customer.name == 'Шенкер Екатеринбург':
+            buyer = User.query.get(3)
+        elif new.customer.name == 'ДСВ':
+            buyer = User.query.get(1)
+        elif new.direction == 'INT':
             buyer = User.query.filter(User.competention=='int').order_by(User.request_count.asc()).first()
         else:
             buyer = User.query.filter(User.role=='buyer').order_by(User.request_count.asc()).first()
@@ -161,7 +165,7 @@ def edit(id):
 #маршрут, чтобы смотреть кто поехал
 @app.route('/orders')
 def orders():
-    requests = Request.query.filter(Request.request_status=='ЕДЕМ').all()
+    requests = db.session.query(Request).filter(Request.request_status=='ЕДЕМ'). filter(Request.user_id==current_user.id).all()
     return render_template('request_confirmed.html', requests = requests)
 
 
@@ -533,3 +537,8 @@ def status_for_request(id):
         db.session.commit()
         return redirect(url_for('index'))
     return render_template('status_request.html', request = request, form=form)
+
+@app.route('/my_orders')
+def my_orders():
+    requests = Request.query.filter(Request.user_id == current_user.id, Request.request_status=='ЕДЕМ').all()
+    return render_template('include.html', requests=requests)

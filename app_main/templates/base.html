@@ -41,7 +41,7 @@
             <a href="{{url_for('logout')}}"><button type="button" class="btn btn-primary btn-sm">Logout</button></a>
           <!--  <a href="{{url_for('recieve_order')}}"><button type="button" class="btn btn-primary btn-sm">Договор с клиентом</button></a>-->
 
-    {% if current_user.role=='sale'%}
+    {% if current_user.role=='sale' or current_user.name=='Leysan' or  current_user.name=='Olga_p'%}
             <a href="{{url_for('new_request')}}"><button type="button" class="btn btn-success btn-sm">Новый запрос</button></a>
         <a href="{{url_for('orders')}}"><button type="button" class="btn btn-success btn-sm">Кто поехал</button></a>
         <!--    <a href="{{url_for('request_with_cost')}}"><button type="button" class="btn btn-info btn-sm" > Прокотированные запросы</button></a>-->
@@ -62,7 +62,7 @@
 
 
 
-{% if current_user.role=='sale'%}
+{% if current_user.role=='sale' %}
     <p>
         <table class="col-md-3">
             <table class="table">
@@ -181,7 +181,7 @@
           <a href="{{url_for('feedback', id=req.id)}}"><button type="button" class="btn btn-warning btn-sm">Подробнее</button></a>
 
       </th>
-        <th> {{req.request_status}}</th>
+        <th> <a href="{{url_for('status_for_request', id = req.id)}}">{{req.request_status}}</a></th>
         <th> {{req.id}}</th>
         <th> {{req.customer_name}}</th>
         <th>{{moment(req.pick_up_date).format('ll')}}</th>
