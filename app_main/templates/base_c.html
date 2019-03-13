@@ -52,16 +52,16 @@
 
 
 
-    {% if current_user.role=='sale' or current_user.name=='Vova' or current_user.name=='Dima' or current_user.name=='Leysan' or  current_user.name=='Olga_p' or current_user.name=='Roman_k' or current_user.name=='Olga_m' %}
+    {% if current_user.role=='sale' or current_user.name=='Leysan' or  current_user.name=='Olga_p' or current_user.name=='Roman_k' or current_user.name=='Olga_m' %}
             <a href="{{url_for('new_request')}}"><button type="button" class="btn btn-success btn-sm">Новый запрос</button></a>
           <a href="{{url_for('stavka_ok')}}"><button type="button" class="btn btn-success btn-sm">Ставка ОК</button></a>
         <a href="{{url_for('orders')}}"><button type="button" class="btn btn-success btn-sm">Кто поехал</button></a>
         <a href="{{url_for('non_actual')}}"><button type="button" class="btn btn-success btn-sm">НЕАКТУАЛЬНО</button></a>
-        <a href="{{url_for('int_customer')}}"><button type="button" class="btn btn-success btn-sm">Все запросы</button></a>
-        <form action="" method="post">
-            {{form.cust}}
-            {{form.submit}}
-        </form>
+
+      <form action="" method="post">
+                    {{form.cust}}
+                    {{form.submit}}
+                </form>
 
         <!--    <a href="{{url_for('request_with_cost')}}"><button type="button" class="btn btn-info btn-sm" > Прокотированные запросы</button></a>-->
 

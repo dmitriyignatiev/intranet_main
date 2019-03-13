@@ -12,20 +12,12 @@
 {% block navbar %}
 <div class="container-full">
    <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
-
         <h15><a class="navbar-brand" href="{{url_for('index')}}">Главная</a></h15>
-       <h15><a class="navbar-brand" href="{{url_for('all_customers')}}">Все клиенты</a></h15>
-        <h15><a class="navbar-brand" href="{{url_for('my_customers')}}">Мои рабочие клиенты</a></h15>
-
+        <h15><a class="navbar-brand" href="{{url_for('my_customers')}}">Мои клиенты</a></h15>
 
         <!--<h15><a class="navbar-brand" href="{{url_for('orders')}}">Мои Перевозки</a></h15>-->
         <h15><a class="navbar-brand" href="{{url_for('new_customer')}}">Создать клиента</a></h15>
-       <h15><a class="navbar-brand" href="{{url_for('users')}}">Номера телефонов сотрудников</a></h15>
 
-
-        {%if current_user.user_email=='abruhanova@rosexport.su'%}
-         <h15><a class="navbar-brand" href="{{url_for('employees')}}">Информация по сотрудникам</a></h15>
-       {%endif%}
  <!--       <h15><a a class="navbar-brand" href="{{url_for('agreement_form')}}">Создать договор</a></h15>
         <h15><a a class="navbar-brand" href="{{url_for('my_agreements')}}">Мои договора</a></h15>
         <h15><a a class="navbar-brand" href="{{url_for('agreement_form_subc')}}">Создать договор с перевозчиком</a></h15>
@@ -50,19 +42,11 @@
             <a href="{{url_for('logout')}}"><button type="button" class="btn btn-primary btn-sm">Logout</button></a>
           <!--  <a href="{{url_for('recieve_order')}}"><button type="button" class="btn btn-primary btn-sm">Договор с клиентом</button></a>-->
 
-
-
-    {% if current_user.role=='sale' or current_user.name=='Vova' or current_user.name=='Dima' or current_user.name=='Leysan' or  current_user.name=='Olga_p' or current_user.name=='Roman_k' or current_user.name=='Olga_m' %}
+    {% if current_user.role=='sale' or current_user.name=='Leysan' or  current_user.name=='Olga_p' or current_user.name=='Roman_k' %}
             <a href="{{url_for('new_request')}}"><button type="button" class="btn btn-success btn-sm">Новый запрос</button></a>
           <a href="{{url_for('stavka_ok')}}"><button type="button" class="btn btn-success btn-sm">Ставка ОК</button></a>
         <a href="{{url_for('orders')}}"><button type="button" class="btn btn-success btn-sm">Кто поехал</button></a>
-        <a href="{{url_for('non_actual')}}"><button type="button" class="btn btn-success btn-sm">НЕАКТУАЛЬНО</button></a>
-        <a href="{{url_for('int_customer')}}"><button type="button" class="btn btn-success btn-sm">Все запросы</button></a>
-        <form action="" method="post">
-            {{form.cust}}
-            {{form.submit}}
-        </form>
-
+        <!--<a href="{{url_for('stavka_ok')}}"><button type="button" class="btn btn-success btn-sm">Ставка ОК</button></a>-->
         <!--    <a href="{{url_for('request_with_cost')}}"><button type="button" class="btn btn-info btn-sm" > Прокотированные запросы</button></a>-->
 
     {% endif%}
@@ -89,10 +73,10 @@
     <tr>
         <th scope="col">Действие</th>
         <th scope="col">Статус запроса</th>
-        <th scope="col">#</th>
-        <th scope="col">Клиент</th>
-        <th scope="col">Количество перевозок</th>
 
+        <th scope="col">#</th>
+        <th scope="col">Количество перевозок по данному маршруту в месяц</th>
+        <th scope="col">Клиент</th>
         <th scope="col">Дата загрузки</th>
         <th scope="col">Откуда</th>
         <th scope="col">Куда</th>
@@ -130,8 +114,8 @@
 
         <th><a href="{{url_for('status_for_request', id = request.id)}}">{{request.request_status}}</a></th>
         <th>{{request.id}}</th>
-        <th>{{request.customer_name|truncate() }}</th>
         <th>{{request.quantity}}</th>
+        <th>{{request.customer_name|truncate() }}</th>
         <th>{{moment(request.pick_up_date).format('ll')}}</th>
         <td>{{request.org}}</td>
         <td>{{request.dest}}</td>
@@ -166,10 +150,9 @@
     <tr>
         <th scope="col">Возможные действие</th>
         <th scope="col">Cтатус(цель запроса)</th>
+        <th scope="col">Количество перевозок по данному маршруту в месяц</th>
         <th scope="col">#</th>
-
         <th scope="col">Клиент</th>
-        <th scope="col">Количество перевозок в месяц</th>
         <th scope="col">Дата отгрузки</th>
         <th scope="col">Срок оплаты</th>
         <th scope="col">Продавец</th>
@@ -198,7 +181,7 @@
       {% set sort_on = request.args.sort_on|default('id') %}
 
     {% for req in current_user.requests|sort(attribute=sort_on, reverse = True) %}
-      {% if req.request_status != 'НЕАКТУАЛЬНО' and req.request_status != 'СТАВКА_ОК'%}
+      {%if req.request_status == 'НЕАКТУАЛЬНО'%}
 
     <tbody>
     <tr>
@@ -210,9 +193,9 @@
 
       </th>
         <th> <a href="{{url_for('status_for_request', id = req.id)}}">{{req.request_status}}</a></th>
+        <th>{{req.quantity}}</th>
         <th> {{req.id}}</th>
         <th> {{req.customer_name}}</th>
-        <th>{{req.quantity}}</th>
         <th>{{moment(req.pick_up_date).format('ll')}}</th>
         <th>{{req.payment_day}}</th>
         <td>{{req.user.name}} </td>

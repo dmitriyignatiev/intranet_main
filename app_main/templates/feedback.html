@@ -16,6 +16,8 @@
     <tr>
        <th scope="col">Возможные действие</th>
         <th scope="col">#</th>
+        <th scope="col">Статус запроса</th>
+        <th scope="col">Количество перевозок по этому напарвлению в месяц</th>
         <th scope="col">Клиент</th>
         <th scope="col">Срок оплаты</th>
         <th scope="col">Продавец</th>
@@ -47,7 +49,9 @@
           <a href="{{ url_for('re_direct', id=req.id) }}"><button type="button" class="btn btn-info btn-sm" > Перенаправить</button></a>
         {%endif%}
       </th>
-          <th> {{req.id}}</th>
+        <th> {{req.id}}</th>
+        <th><a href="{{url_for('status_for_request', id = req.id)}}">{{req.request_status}}</a></th>
+        <th>{{req.quantity}}</th>
         <th> {{req.customer_name}}</th>
         <th> {{req.payment_day}}</th>
         <td>{{req.user.name}} </td>
@@ -80,7 +84,16 @@
      <a href="{{url_for('feedback', id=req.id)}}"><button type="button" class="btn btn-warning btn-sm">Обновить</button></a>
     <form action="" method="post">
         {{form.hidden_tag()}}
+            {% if current_user.id == 5 %}
 
+                {{form.ask_buyer}} закупщик
+                {{form.ask_sale}}  продавец
+                {{form.deadline}} дедлайн
+
+                {{form.deadline_answer}} срок ответа
+
+            {% endif %}
+        <p></p>
             {{form.comments.label()}}<br>
             {{form.comments(cols=100, raw=30)}}
 

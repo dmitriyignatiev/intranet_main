@@ -10,6 +10,8 @@
 
         <dl>
             {{form.hidden_tag()}}
+            {{wtf.form_field(form.customer_character)}}
+
             {{wtf.form_field(form.name)}}
             {{wtf.form_field(form.dm)}}
             {{wtf.form_field(form.phone)}}

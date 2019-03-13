@@ -30,6 +30,8 @@
         <h15><a a class="navbar-brand" href="{{url_for('my_agreements')}}">Мои договора</a></h15>
         <h15><a a class="navbar-brand" href="{{url_for('agreement_form_subc')}}">Создать договор с перевозчиком</a></h15>
 -->
+
+
     </nav>
 </div>
 {% endblock %}
@@ -45,23 +47,21 @@
 <h1>Hi {{current_user.name}}  </h1>
     <h7>Количество запросов без цены: {{ req_cost}}</h7><p></p>
 
+      <form action="" method="post">
+            {{form.cust}}
+            {{form.submit}}
+        </form>
     <p>
             <a href="{{url_for('login')}}"><button type="button" class="btn btn-primary btn-sm">Login</button></a>
             <a href="{{url_for('logout')}}"><button type="button" class="btn btn-primary btn-sm">Logout</button></a>
           <!--  <a href="{{url_for('recieve_order')}}"><button type="button" class="btn btn-primary btn-sm">Договор с клиентом</button></a>-->
 
-
-
-    {% if current_user.role=='sale' or current_user.name=='Vova' or current_user.name=='Dima' or current_user.name=='Leysan' or  current_user.name=='Olga_p' or current_user.name=='Roman_k' or current_user.name=='Olga_m' %}
+    {% if current_user.role=='sale' or current_user.name=='Leysan' or  current_user.name=='Olga_p' or current_user.name=='Roman_k' or current_user.name=='Olga_m' %}
             <a href="{{url_for('new_request')}}"><button type="button" class="btn btn-success btn-sm">Новый запрос</button></a>
           <a href="{{url_for('stavka_ok')}}"><button type="button" class="btn btn-success btn-sm">Ставка ОК</button></a>
         <a href="{{url_for('orders')}}"><button type="button" class="btn btn-success btn-sm">Кто поехал</button></a>
         <a href="{{url_for('non_actual')}}"><button type="button" class="btn btn-success btn-sm">НЕАКТУАЛЬНО</button></a>
-        <a href="{{url_for('int_customer')}}"><button type="button" class="btn btn-success btn-sm">Все запросы</button></a>
-        <form action="" method="post">
-            {{form.cust}}
-            {{form.submit}}
-        </form>
+
 
         <!--    <a href="{{url_for('request_with_cost')}}"><button type="button" class="btn btn-info btn-sm" > Прокотированные запросы</button></a>-->
 
@@ -198,7 +198,7 @@
       {% set sort_on = request.args.sort_on|default('id') %}
 
     {% for req in current_user.requests|sort(attribute=sort_on, reverse = True) %}
-      {% if req.request_status != 'НЕАКТУАЛЬНО' and req.request_status != 'СТАВКА_ОК'%}
+
 
     <tbody>
     <tr>
@@ -233,7 +233,7 @@
         {%endif%}
         {%if req.redirect_comment %}
         <td>{{ req.redirect_comment }}</td>
-        {%endif%}
+
     </tr>
  {%endif%}
     {% endfor %}

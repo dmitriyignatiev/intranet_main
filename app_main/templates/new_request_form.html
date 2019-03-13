@@ -10,9 +10,9 @@
 
         <dl>
             {{form.hidden_tag()}}
+            {{wtf.form_field(form.dogovor_zayavka)}}
             {{wtf.form_field(form.customer)}}
             {{wtf.form_field(form.request_status)}}
-
             {{wtf.form_field(form.pick_up_date)}}
             {{wtf.form_field(form.direction)}}
             {{wtf.form_field(form.org)}}
@@ -21,12 +21,10 @@
             {{wtf.form_field(form.weigth_cargo)}}
             {{wtf.form_field(form.type_of_loading)}}
             {{wtf.form_field(form.cargo_value)}}
-
             {{wtf.form_field(form.cargo_type)}}
             {{wtf.form_field(form.cargo_desciption)}}
             {{wtf.form_field(form.quantity)}}
             {{wtf.form_field(form.request_comments)}}
-
 
             {{form.submit()}}
         </dl>

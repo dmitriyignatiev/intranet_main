@@ -13,7 +13,6 @@
 <div class="container-full">
    <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
         <h15><a class="navbar-brand" href="{{url_for('index')}}">Главная</a></h15>
-
         <h15><a class="navbar-brand" href="{{url_for('my_customers')}}">Мои клиенты</a></h15>
         <h15><a class="navbar-brand" href="{{url_for('new_customer')}}">Создать клиента</a></h15>
 
@@ -169,6 +168,7 @@
       {% set sort_on = request.args.sort_on|default('id') %}
 
     {% for req in current_user.requests|sort(attribute=sort_on, reverse = True) %}
+
 
     <tbody>
     <tr>

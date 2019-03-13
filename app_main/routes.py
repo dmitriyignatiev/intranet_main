@@ -1,4 +1,6 @@
 import os
+from datetime import timedelta
+
 from mailmerge import MailMerge
 from sqlalchemy import desc
 
@@ -29,14 +31,32 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-@app.route('/')
+@app.route('/', methods=['POST', 'GET'])
 @login_required
 def index():
-    requests = Request.query.filter(Request.user_id==current_user.id).order_by(desc(Request.created)).all()
+    form = ch_customer()
+    requests = Request.query.filter(db.and_(Request.user_id==current_user.id, Request.request_status != 'НЕАКТУАЛЬНО')).order_by(desc(Request.created)).all()
     req_cost = Request.query.filter(Request.user_id==current_user.id).filter(Request.cost==None).all()
     now = datetime.now()
+    customer = form.cust.data
+    if form:
+        if customer is not None:
+            return redirect(url_for('index_c', name=customer.name))
 
-    return render_template('base.html', title = 'Home', requests=requests, req_cost=len(req_cost), now=now)
+    return render_template('base.html', title = 'Home',
+                           requests=requests,
+                           req_cost=len(req_cost),
+                           now=now, form=form)
+
+@app.route('/index_c/<string:name>', methods=['GET', 'POST'])
+def index_c(name):
+    form=ch_customer()
+    customer=form.cust.data
+    requests = Request.query.join(Customer).filter(Customer.name==name).all()
+
+    if form and customer is not None:
+        return redirect(url_for('index_c', name=customer.name))
+    return render_template('base_c.html', requests=requests, form=form)
 
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
@@ -59,7 +79,7 @@ def new_request():
         choose_customer = form.customer.data
         cargo_type = form.cargo_type.data
         quantity_all = form.quantity.data
-
+        dogovor_zayavka = form.dogovor_zayavka.data
         new = Request(org=form.org.data,
                       pick_up_date=form.pick_up_date.data,
                       dest = form.dest.data,
@@ -76,7 +96,8 @@ def new_request():
                       type_of_truck = form.type_of_truck.data,
                       weigth_cargo = form.weigth_cargo.data,
                       request_comments = form.request_comments.data,
-                      request_status = form.request_status.data
+                      request_status = form.request_status.data,
+                      dogovor_zayavka=form.dogovor_zayavka.data
                       )
         db.session.add(new)
         db.session.commit()
@@ -84,12 +105,19 @@ def new_request():
         ######выбираем закупщика с наименьшем количеством запросов
         if new.customer.name == 'Шенкер Екатеринбург':
             buyer = User.query.get(3)
+
+        #### запросы Ромы всегда на Роме
+        elif new.user_id == 4:
+            buyer = User.query.get(4)
+        ################
+
+
         elif new.customer.name == 'ДСВ':
             buyer = User.query.get(1)
         elif new.direction == 'INT':
-            buyer = User.query.filter(User.competention=='int').order_by(User.request_count.asc()).first()
+            buyer = User.query.filter(db.and_(User.competention=='int', User.id !=4)).order_by(User.request_count.asc()).first()
         else:
-            buyer = User.query.filter(User.role=='buyer').order_by(User.request_count.asc()).first()
+            buyer = User.query.filter(db.and_(User.role=='buyer', User.id !=4)).order_by(User.request_count.asc()).first()
         new.users.append(buyer)
         buyer.request_count +=1
         db.session.add(new)
@@ -104,13 +132,33 @@ def new_request():
 def cost(id):
     update_request = Request.query.get(id)
     form = ConfirmRate()
+    req_sale = update_request.user.id
+    sale = User.query.get(req_sale)
+    sale_email = sale.user_email
     if form.validate_on_submit():
         cost = form.cost.data
         update_request.cost = cost
         db.session.add(update_request)
         db.session.commit()
-        update_request.cost_created = datetime.utcnow ()
-        db.session.commit ()
+        update_request.cost_created = datetime.utcnow()
+        db.session.commit()
+        if form.truck_available.data:
+            update_request.truck_available_opt=1
+            db.session.commit()
+            msg = Message ('ЕСТЬ АВТО!!!!Получена ставка по запросу {}'.format(str(update_request.id)), sender='redmessageinfo@gmail.com',
+                               recipients=[sale_email])
+            msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.cost.data, str(update_request.id))
+            mail.send(msg)
+        else:
+            update_request.truck_available_opt=0
+            db.session.commit()
+            msg = Message('АВТО НЕТ!!!!Получена ставка по запросу {}'.format(str(update_request.id)),
+                          sender='redmessageinfo@gmail.com',
+                          recipients=[sale_email])
+            msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.cost.data, str(update_request.id))
+            mail.send(msg)
+
+
         return redirect(url_for('index'))
     return render_template('confirm_rate.html', form=form, id=id, update_request=update_request)
 
@@ -156,6 +204,7 @@ def edit(id):
         update_request.request_comments = request_comments
         update_request.created = datetime.utcnow()
         update_request.request_status  = form.request_status.data
+        update_request.pick_up_date = form.pick_up_date.data
 
         db.session.add(update_request)
         db.session.commit()
@@ -165,7 +214,7 @@ def edit(id):
 #маршрут, чтобы смотреть кто поехал
 @app.route('/orders')
 def orders():
-    requests = db.session.query(Request).filter(Request.request_status=='ЕДЕМ'). filter(Request.user_id==current_user.id).all()
+    requests = Request.query.filter(db.and_(Request.request_status=='ЕДЕМ', Request.user_id==current_user.id)).all()
     return render_template('request_confirmed.html', requests = requests)
 
 
@@ -242,7 +291,6 @@ def feedback(id):
     posts = Posts.query.filter(Posts.request_id==id).order_by(Posts.post_date.desc()).all()
     form = FeedBack()
 
-
     if form.validate_on_submit():
         req = Request.query.get(id)
         req_sale = req.user.id
@@ -256,6 +304,32 @@ def feedback(id):
         req.comment.append(Posts(post=feedback, user_id=current_user.id))
         db.session.commit()
 
+        ask_buyer = form.ask_buyer.data
+        ask_sale = form.ask_sale.data
+        deadline = form.deadline.data
+        deadline_answer = form.deadline_answer.data
+
+        if current_user.id == 5:
+            if deadline:
+                if ask_buyer:
+                    msg = Message('Запрос на проработку {} срок ответа до {} '.format(str(req.id), deadline_answer), sender='redmessageinfo@gmail.com',
+                                  recipients=[buyer_email])
+                    msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
+                    mail.send(msg)
+                    print(deadline_answer)
+                    req.questions=msg.body
+                    req.deadline_buyer=datetime.strftime(deadline_answer, '%Y-%m-%d')
+                    db.session.commit()
+
+                if ask_sale:
+                    msg = Message('Запрос на проработку {} срок ответа'.format(str(req.id), deadline_answer), sender='redmessageinfo@gmail.com',
+                                  recipients=[sale_email])
+                    msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
+                    mail.send(msg)
+                    req.questions = msg.body
+                    req.deadline_sale = datetime.strftime(deadline_answer, '%Y-%m-%d')
+                    db.session.commit()
+
         # функция отправки письма
         if current_user.role == 'buyer':
             msg = Message ('New comment in request{}'.format(str(req.id)), sender='redmessageinfo@gmail.com',
@@ -263,7 +337,7 @@ def feedback(id):
             msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
             mail.send(msg)
 
-        else:
+        if current_user.role == 'sale' and current_user.id!=5:
             msg = Message('New comment in request{}'.format(str(req.id)), sender='redmessageinfo@gmail.com',
                           recipients=[buyer_email])
             print(buyer_email)
@@ -421,7 +495,9 @@ def new_customer():
             email = form.email.data,
             payment_day = form.payment_day.data,
             payment_terms =form.payment_terms.data,
-            customer_base = form.customer_base.name,
+            customer_base = form.customer_base.data,
+            customer_character = form.customer_character.data,
+
 
 
         )
@@ -432,8 +508,11 @@ def new_customer():
 
 @app.route('/my_customers')
 def my_customers():
-    customers = Customer.query.filter(Customer.user_id==current_user.id).all()
-    return render_template('my_customers.html', customers=customers)
+    customers = Customer.query.join(Request).filter(Customer.user_id==current_user.id).order_by(Request.created.desc()).all()
+
+
+    return render_template('my_customers.html', customers=customers, Request=Request, Customer=Customer,
+                           db=db, User=User, current_user=current_user)
 
 #форма заявки с перевозами
 @app.route('/agreement_form_subc', methods=['POST', 'GET'])
@@ -533,12 +612,130 @@ def status_for_request(id):
     request = Request.query.get(id)
     form = StatusForm()
     if form.validate_on_submit():
-        request.request_status = form.name.data
-        db.session.commit()
+        if form.name.data != 'НЕАКТУАЛЬНО':
+            request.request_status = form.name.data
+            request.created = datetime.utcnow()
+            db.session.commit()
+        else:
+            request.request_status = form.name.data
+            request.created=request.created
+            db.session.commit()
+
+
+
+        buyer = request.users.first()
+        buyer_email = buyer.user_email
+        if request.request_status=='НЕАКТУАЛЬНО':
+            msg = Message('!!!НЕАКТУЛЬНО!!! in request{}'.format(str(request.id)), sender='redmessageinfo@gmail.com',
+                          recipients=[buyer_email])
+            msg.body = "НЕАКТУАЛЬНО, \n \n http://192.168.1.117:5000/feedback/{}".format(str(request.id))
+            mail.send(msg)
+
         return redirect(url_for('index'))
     return render_template('status_request.html', request = request, form=form)
 
 @app.route('/my_orders')
 def my_orders():
-    requests = Request.query.filter(Request.user_id == current_user.id, Request.request_status=='ЕДЕМ').all()
+    requests = Request.query.filter(db.and_(Request.user_id == current_user.id, Request.request_status=='ЕДЕМ')).all()
     return render_template('include.html', requests=requests)
+
+# маршрут если проходим по ставке
+@app.route('/stavka_ok')
+def stavka_ok():
+    requests = Request.query.filter(db.and_(Request.request_status == 'СТАВКА_ОК', Request.user_id==current_user.id)).all()
+    return render_template('stavka_ok.html', requests=requests)
+
+@app.route('/non_actual')
+def non_actual():
+    requests = Request.query.filter(db.and_(Request.request_status == 'НЕАКТУАЛЬНО', Request.user_id == current_user.id)).all()
+    return render_template('non_actual.html', requests=requests)
+
+
+# ###### для Мэнеджмента, основные отчеты
+@app.route('/data_test', methods=['POST', 'GET'])
+def data_test():
+    form = DateForm()
+    date1 = form.date.data
+    date2 = form.date_sec.data
+    day = datetime.today()
+    day = day.replace(hour=0)
+    tomorrow = day + timedelta(1)
+    requests = Request.query.filter(db.and_(Request.created >= day, Request.created <= tomorrow)).all()
+    reqs = Request.query.filter(Request.cost_created>=day).order_by(Request.cost_created.desc()).first()
+    reqs_parh = Request.query.filter(Request.cost_created>=day).\
+        join(subs).join(User).filter(subs.c.user_id==1).order_by(Request.cost_created.desc()).first()
+    reqs_lyesan = Request.query.filter(Request.cost_created >= day). \
+        join(subs).join(User).filter(subs.c.user_id == 3).order_by(Request.cost_created.desc()).first()
+    reqs_olga_m = Request.query.filter(Request.cost_created >= day). \
+        join(subs).join(User).filter(subs.c.user_id == 2).order_by(Request.cost_created.desc()).first()
+
+    if form.validate_on_submit():
+        date1 = form.date.data
+        date2 = form.date_sec.data
+        req = Request.query.filter(db.and_(Request.created >= date1,
+                                                Request.created <= date2)).count()
+        return render_template('data.html', requests=requests, form=form, Request=Request, day=day, tomorrow=tomorrow,
+                               db=db, date1=date1, date2=date2, req=req, User = User, reqs=reqs, reqs_parh=reqs_parh,
+                               reqs_lyesan=reqs_lyesan, reqs_olga_m=reqs_olga_m, subs=subs)
+
+    return render_template('data.html', form=form, requests=requests, Request=Request, day=day, tomorrow=tomorrow,
+                           db=db, date1=date1, date2=date2, User = User, reqs=reqs, reqs_parh=reqs_parh,
+                           reqs_lyesan=reqs_lyesan, reqs_olga_m=reqs_olga_m, subs=subs)
+
+######Менеджмент, подробности по прокатированным грузам
+@app.route('/data_view')
+def data_view():
+    day = datetime.today()
+    day = day.replace(hour=0)
+    requests = Request.query.filter(db.or_(Request.request_status=='СТАВКА_ОК', Request.request_status=='СТАВКА_ОК, ТС')).filter(Request.created>=day).join(subs).join(User).filter(subs.c.user_id==2).order_by(Request.cost_created.desc()).all()
+    return render_template('data_view.html', day=day, requests=requests)
+
+@app.route('/employees', methods=['POST', 'GET'])
+def employees():
+    form = EmployeesForm()
+    if form.validate_on_submit():
+        emp = form.choose_emloyee.data
+        print(emp.id)
+        user = User.query.get(emp.id)
+        user.fio = form.fio.data
+        user.mobile = form.mobile.data
+        user.external = form.external.data
+        user.start_work = form.start_work.data
+
+        print(user)
+        db.session.commit()
+
+        return render_template('empoyeeform.html', form=form, user=user)
+    return render_template('empoyeeform.html', form=form)
+
+@app.route('/users')
+def users():
+    users = User.query.all()
+    return render_template('users.html', users=users)
+
+@app.route('/all_customers')
+def all_customers():
+    customers = Customer.query.all()
+    return render_template('all_customers.html', customers=customers)
+
+# all requests
+@app.route('/int_customer', methods=['GET', 'POST'])
+def int_customer():
+    form = ch_all_customer()
+    requests = Request.query.all()
+    customer = form.cust.data
+    if form:
+        if customer is not None:
+            return redirect(url_for('index_all', name=customer.name))
+    return render_template('int_customer_cost.html', requests=requests, form=form)
+
+@app.route('/index_all/<string:name>', methods=['GET', 'POST'])
+def index_all(name):
+    form = ch_all_customer()
+    customer = form.cust.data
+    requests = Request.query.join(Customer).filter(Customer.name == name).all()
+    if form:
+        if customer is not None:
+            return redirect(url_for('index_all', name=customer.name))
+
+    return render_template('ind_all.html', form=form, name=name, requests=requests)

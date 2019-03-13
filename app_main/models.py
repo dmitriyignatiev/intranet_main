@@ -44,6 +44,11 @@ class User(UserMixin, db.Model):
     competention = db.Column(db.String(240))
     active = db.Column(db.Integer)
 
+    fio = db.Column(db.String(240))
+    mobile = db.Column(db.String(120))
+    external = db.Column(db.String(120))
+    start_work = db.Column(db.DateTime)
+
 
 
 
@@ -117,6 +122,12 @@ class Request (db.Model):
     pick_up_date = db.Column(db.DateTime)
     request_status = db.Column(db.String(120))
     request_order = db.Column(db.String(120))
+    truck_available_opt = db.Column(db.Integer)
+    dogovor_zayavka = db.Column(db.Integer)
+    deadline_buyer = db.Column(db.DateTime)
+    deadline_sale = db.Column(db.DateTime)
+    questions = db.Column(db.String(240))
+
 
 
     def diff_time(self):
@@ -198,8 +209,11 @@ class Customer(db.Model):
     payment_terms = db.Column(db.String(240))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     date_creation = db.Column(db.DateTime, default= datetime.utcnow)
-
     customer_base = db.Column(db.String(240))
+    customer_character = db.Column(db.String(120))
+    customer_inn = db.Column(db.Integer)
+
+
 
     def __repr__(self):
         return "Customer <{}>".format(self.name, self.user.name)
@@ -283,6 +297,8 @@ class Ttn(db.Model):
 class Customer_base(db.Model):
     id = db.Column (db.Integer, primary_key=True)
     name = db.Column (db.String (120), unique=True)
+
+
 
 
 

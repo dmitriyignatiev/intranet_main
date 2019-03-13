@@ -82,15 +82,21 @@ class NewRequestForm(FlaskForm):
         ('ИНДИКАТИВ', 'ИНДИКАТИВ'),
         ('СРОЧНЫЙ ЗАПРОС', 'СРОЧНЫЙ ЗАПРОС'),
         ('ТЕНДЕР', 'ТЕНДЕР'),
+        ('ЕДЕМ', 'ЕДЕМ'),
+        ('СТАВКА_ОК', 'СТАВКА_ОК'),
+        ('СТАВКА_ОК, ТС', 'СТАВКА_ОК, ТС')
          ],
                                  validators=[DataRequired()])
 
+
+    dogovor_zayavka = BooleanField()
     submit = SubmitField('Отправить на расчет')
 
 ######################
 
 class ConfirmRate(FlaskForm):
     cost = IntegerField('стоимость')
+    truck_available = BooleanField()
     submit = SubmitField('Подтвердить стоимость')
 
 class EditForm(FlaskForm):
@@ -123,11 +129,16 @@ class EditForm(FlaskForm):
 
     weigth_cargo = IntegerField ('Вес груза', validators=[DataRequired()])
     request_comments = TextAreaField ('Комментарии')
+    pick_up_date = DateField('Дата загрузки', format='%Y-%m-%d')
+
     request_status = SelectField('Статус запроса', choices=[
                                     ('ИНДИКАТИВ', 'ИНДИКАТИВ'),
                                     ('СРОЧНЫЙ ЗАПРОС', 'СРОЧНЫЙ ЗАПРОС'),
                                     ('ТЕНДЕР', 'ТЕНДЕР'),
-                                    ('ЕДЕМ', 'ЕДЕМ'), ],
+                                    ('ЕДЕМ', 'ЕДЕМ'),
+        ('СТАВКА_ОК', 'СТАВКА_ОК'),
+        ('СТАВКА_ОК, ТС', 'СТАВКА_ОК, ТС')
+                                                ],
                                     validators = [DataRequired()])
 
     submit = SubmitField ('Отправить на расчет')
@@ -165,7 +176,12 @@ class Order_doc(FlaskForm):
 #обратная связь
 class FeedBack(FlaskForm):
     comments = TextAreaField('обратная связь')
+    ask_buyer = BooleanField()
+    ask_sale = BooleanField ()
+    deadline = BooleanField()
+    deadline_answer = DateField('Дата ответа', format='%Y-%m-%d')
     submit = SubmitField('отправить')
+
 
 #форма договора с клиентом
 class Agreement_form(FlaskForm):
@@ -263,6 +279,10 @@ def choice_base():
 
 
 class CustomerForm(FlaskForm):
+    customer_character = SelectField('Экспедитор или Компания?', choices=[
+        ('ЭКСЕПИТОР', 'ЭКСПЕДИТОР'),
+        ('КОМПАНИЯ', 'КОМПАНИЯ')], validators=[DataRequired()])
+
     name = StringField('наименование клиента, пример:ООО Росэкспорт', validators=[DataRequired()])
     dm = StringField('ФИО Контактное лицо', validators=[DataRequired()])
     phone = StringField('контактный  телефон, пример: +78482555555', validators=[DataRequired()])
@@ -278,7 +298,14 @@ class CustomerForm(FlaskForm):
         ('ОБЩАЯ', 'ОБЩАЯ'),
         ('КАЗАНЬ', 'КАЗАНЬ'),
         ('НИЖНИЙ НОВГОРОД', 'НИЖНИЙ НОВГОРОД'),
-        ('МОСКВА', 'МОСКВА')], validators=[DataRequired()])
+        ('МОСКВА', 'МОСКВА'),
+        ('РЯЗАНЬ', 'РЯЗАНЬ'),
+        ('ЧУВАШИЯ', 'ЧУВАШИЯ'),
+        ('ВОРОНЕЖ', 'ВОРОНЕЖ')
+    ], validators=[DataRequired()])
+
+
+
 
     submit = SubmitField('записать')
 ########
@@ -296,8 +323,52 @@ class StatusForm(FlaskForm):
                                     ('ИНДИКАТИВ', 'ИНДИКАТИВ'),
                                     ('СРОЧНЫЙ ЗАПРОС', 'СРОЧНЫЙ ЗАПРОС'),
                                     ('ТЕНДЕР', 'ТЕНДЕР'),
-                                    ('ЕДЕМ', 'ЕДЕМ'), ],
+                                    ('ЕДЕМ', 'ЕДЕМ'),
+                                    ('НЕАКТУАЛЬНО', 'НЕАКТУАЛЬНО'),
+        ('СТАВКА_ОК', 'СТАВКА_ОК'),
+        ('СТАВКА_ОК, ТС', 'СТАВКА_ОК, ТС'),
+                                    ],
                                     validators = [DataRequired()])
     submit = SubmitField('записать')
 
 
+#####Отчеты для менеджмента
+class ManageForm_first(FlaskForm):
+    date = DateField('Дата загрузки', format='%Y-%m-%d')
+    submit = SubmitField('записать')
+
+###форма для менеджмента
+class DateForm(FlaskForm):
+    date = DateField('Choose date', format='%Y-%m-%d')
+    date_sec = DateField('Choose date #2', format='%Y-%m-%d')
+    submit = SubmitField('confirm')
+
+def choice_employee():
+    employee=User.query
+    return employee
+
+class EmployeesForm(FlaskForm):
+    choose_emloyee = QuerySelectField('выберите сотрудника', query_factory=choice_employee, get_label='name')
+    fio = StringField()
+    mobile = StringField()
+    external = StringField()
+    start_work = DateField('Дата начала работы', format='%Y-%m-%d')
+
+    submit = SubmitField('confirm')
+
+#выбор только для продавцов
+def ChoiceCustomer():
+    return Customer.query.filter(Customer.user_id==current_user.id)
+
+class ch_customer(FlaskForm):
+    cust = QuerySelectField('выбрать клиента', query_factory=ChoiceCustomer, get_label='name')
+    submit = SubmitField('confirm')
+############################
+
+#выбор для всех
+def ChoiceAllCustomer():
+    return Customer.query
+
+class ch_all_customer(FlaskForm):
+    cust = QuerySelectField('выбрать клиента', query_factory=ChoiceAllCustomer, get_label='name')
+    submit = SubmitField('confirm')
