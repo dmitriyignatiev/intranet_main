@@ -136,11 +136,13 @@ def cost(id):
     req_sale = update_request.user.id
     sale = User.query.get(req_sale)
     sale_email = sale.user_email
+    print(form.vat)
+    print(form.no_vat)
     if form.validate_on_submit():
         if form.vat:
-            print(form.vat)
             vat = form.cost.data * 0.18
             print(vat)
+            print(form.vat)
             cost = form.cost.data + vat
             update_request.cost = cost
             db.session.add(update_request)
@@ -159,12 +161,13 @@ def cost(id):
                 update_request.truck_available_opt=0
                 db.session.commit()
                 msg = Message('АВТО НЕТ!!!!Получена ставка по запросу {}'.format(str(update_request.id)),
+
                           sender='redmessageinfo@gmail.com',
                           recipients=[sale_email])
                 msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(cost, str(update_request.id))
                 mail.send(msg)
             return redirect(url_for('index'))
-        if form.vat is None:
+        else:
             print('No')
             cost = form.cost.data/0.93
             update_request.cost = cost
@@ -189,7 +192,7 @@ def cost(id):
                 msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(cost, str(update_request.id))
                 mail.send(msg)
 
-            # return redirect(url_for('index'))
+            return redirect(url_for('index'))
     return render_template('confirm_rate.html', form=form, id=id, update_request=update_request)
 
 #маршрут для редактирования запроса продавцом
