@@ -17,7 +17,7 @@
 
 {%for customer in customers%}
 
-    <p>{{customer.id}} - {{customer.name}}-{{customer.phone}}-{{customer.db}}-{{customer.payment_day}}--{{customer.payment_terms}}
+    <p>{{customer.id}} - <a href="{{url_for('individual_customer', customer_name=customer.name)}}">{{customer.name}}</a>-{{customer.phone}}-{{customer.db}}-{{customer.payment_day}}--{{customer.payment_terms}}
         --{{customer.customer_character}}
         --Колич-во запросов всего по клиенту: {{Request.query.join(Customer).filter(Request.customer_id==customer.id).count()}}
         -- Дата последнего запроса по клиенту: {{Request.query.join(Customer).filter(Customer.id==customer.id).order_by(Request.created.desc()).first().created}}

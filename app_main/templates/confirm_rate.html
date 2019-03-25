@@ -13,15 +13,19 @@
 <div class="container">
 <form action="" method="post" novalidate>
      {{form.hidden_tag()}}
-    <dl>
+
 
         {{wtf.form_field(form.cost)}}
-        {{wtf.form_field(form.truck_available)}}
 
+        {{wtf.form_field(form.truck_available)}}
+        {{wtf.form_field(form.vat)}}
+        {{wtf.form_field(form.no_vat)}}
     <p>
+
+
         {{form.submit}}
     </p>
-    </dl>
+
 </form>
 </div>
         <div class="container-full">

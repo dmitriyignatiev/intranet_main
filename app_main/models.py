@@ -124,9 +124,13 @@ class Request (db.Model):
     request_order = db.Column(db.String(120))
     truck_available_opt = db.Column(db.Integer)
     dogovor_zayavka = db.Column(db.Integer)
+
     deadline_buyer = db.Column(db.DateTime)
     deadline_sale = db.Column(db.DateTime)
-    questions = db.Column(db.String(240))
+    questions = db.Column(db.String(800))
+
+    actual = db.Column(db.String(120))
+
 
 
 

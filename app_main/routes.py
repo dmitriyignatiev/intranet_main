@@ -115,9 +115,10 @@ def new_request():
         elif new.customer.name == 'ДСВ':
             buyer = User.query.get(1)
         elif new.direction == 'INT':
-            buyer = User.query.filter(db.and_(User.competention=='int', User.id !=4)).order_by(User.request_count.asc()).first()
+            buyer = User.query.get(21)
+            #buyer = User.query.filter(db.and_(User.competention=='int', User.id !=4)).order_by(User.request_count.asc()).first()
         else:
-            buyer = User.query.filter(db.and_(User.role=='buyer', User.id !=4)).order_by(User.request_count.asc()).first()
+            buyer = User.query.filter(db.and_(User.role=='buyer', User.id !=4, User.id !=21)).order_by(User.request_count.asc()).first()
         new.users.append(buyer)
         buyer.request_count +=1
         db.session.add(new)
@@ -136,30 +137,59 @@ def cost(id):
     sale = User.query.get(req_sale)
     sale_email = sale.user_email
     if form.validate_on_submit():
-        cost = form.cost.data
-        update_request.cost = cost
-        db.session.add(update_request)
-        db.session.commit()
-        update_request.cost_created = datetime.utcnow()
-        db.session.commit()
-        if form.truck_available.data:
-            update_request.truck_available_opt=1
+        if form.vat:
+            print(form.vat)
+            vat = form.cost.data * 0.18
+            print(vat)
+            cost = form.cost.data + vat
+            update_request.cost = cost
+            db.session.add(update_request)
             db.session.commit()
-            msg = Message ('ЕСТЬ АВТО!!!!Получена ставка по запросу {}'.format(str(update_request.id)), sender='redmessageinfo@gmail.com',
+            update_request.cost_created = datetime.utcnow()
+            db.session.commit()
+            print(update_request.cost)
+            if form.truck_available.data:
+                update_request.truck_available_opt=1
+                db.session.commit()
+                msg = Message ('ЕСТЬ АВТО!!!!Получена ставка по запросу {}'.format(str(update_request.id)), sender='redmessageinfo@gmail.com',
                                recipients=[sale_email])
-            msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.cost.data, str(update_request.id))
-            mail.send(msg)
-        else:
-            update_request.truck_available_opt=0
-            db.session.commit()
-            msg = Message('АВТО НЕТ!!!!Получена ставка по запросу {}'.format(str(update_request.id)),
+                msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(cost, str(update_request.id))
+                mail.send(msg)
+            elif not form.truck_available.data:
+                update_request.truck_available_opt=0
+                db.session.commit()
+                msg = Message('АВТО НЕТ!!!!Получена ставка по запросу {}'.format(str(update_request.id)),
                           sender='redmessageinfo@gmail.com',
                           recipients=[sale_email])
-            msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.cost.data, str(update_request.id))
-            mail.send(msg)
+                msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(cost, str(update_request.id))
+                mail.send(msg)
+            return redirect(url_for('index'))
+        if form.vat is None:
+            print('No')
+            cost = form.cost.data/0.93
+            update_request.cost = cost
+            db.session.add(update_request)
+            db.session.commit()
+            update_request.cost_created = datetime.utcnow()
+            db.session.commit()
+            print(update_request.cost)
+            if form.truck_available.data:
+                update_request.truck_available_opt=1
+                db.session.commit()
+                msg = Message ('ЕСТЬ АВТО!!!!Получена ставка по запросу {}'.format(str(update_request.id)), sender='redmessageinfo@gmail.com',
+                               recipients=[sale_email])
+                msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(cost, str(update_request.id))
+                mail.send(msg)
+            else:
+                update_request.truck_available_opt=0
+                db.session.commit()
+                msg = Message('АВТО НЕТ!!!!Получена ставка по запросу {}'.format(str(update_request.id)),
+                          sender='redmessageinfo@gmail.com',
+                          recipients=[sale_email])
+                msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(cost, str(update_request.id))
+                mail.send(msg)
 
-
-        return redirect(url_for('index'))
+            # return redirect(url_for('index'))
     return render_template('confirm_rate.html', form=form, id=id, update_request=update_request)
 
 #маршрут для редактирования запроса продавцом
@@ -739,3 +769,24 @@ def index_all(name):
             return redirect(url_for('index_all', name=customer.name))
 
     return render_template('ind_all.html', form=form, name=name, requests=requests)
+
+
+#все запросы по которым заданны вопросы
+@app.route('/pipeline')
+def pipeline():
+    requests = Request.query.filter(Request.questions != None).order_by(Request.customer_id).all()
+    form = ch_customer()
+    req_cost = Request.query.filter(Request.user_id == current_user.id).filter(Request.cost == None).all()
+    now = datetime.now()
+    customer = form.cust.data
+    return render_template('base_pipeline.html', title='Home',
+                           requests=requests,
+                           req_cost=len(req_cost),
+                           now=now, form=form)
+
+
+@app.route('/individual_customer/<string:customer_name>')
+def individual_customer(customer_name):
+    form = ch_customer()
+    requests = Request.query.join(Customer).filter(Customer.name == customer_name).all()
+    return render_template('base_pipeline.html', requests=requests,form = form)

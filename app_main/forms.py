@@ -97,6 +97,8 @@ class NewRequestForm(FlaskForm):
 class ConfirmRate(FlaskForm):
     cost = IntegerField('стоимость')
     truck_available = BooleanField()
+    vat = BooleanField()
+    no_vat = BooleanField()
     submit = SubmitField('Подтвердить стоимость')
 
 class EditForm(FlaskForm):
@@ -110,7 +112,7 @@ class EditForm(FlaskForm):
                                 ('LTL', 'LTL')
                             ], validators=[DataRequired()])
 
-    cargo_desciption = StringField ('Характер груза', validators=[DataRequired ()])
+    cargo_desciption = StringField ('Характер груза', validators=[DataRequired()])
     cargo_value = IntegerField ('Стоимость груза, в рублях')
     quantity = QuerySelectField ('Частота отправок в месяц', query_factory=quantity_per_month, get_label='quantity')
 
