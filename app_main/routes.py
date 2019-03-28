@@ -136,15 +136,12 @@ def cost(id):
     req_sale = update_request.user.id
     sale = User.query.get(req_sale)
     sale_email = sale.user_email
-    print(form.vat)
-    print(form.no_vat)
+
     if form.validate_on_submit():
-        if form.vat:
-            vat = form.cost.data * 0.18
-            print(vat)
-            print(form.vat)
-            cost = form.cost.data + vat
+        if request.form.get('vat'):
+            cost = form.cost.data
             update_request.cost = cost
+            update_request.min_sale = cost *0.12 + cost + 1000
             db.session.add(update_request)
             db.session.commit()
             update_request.cost_created = datetime.utcnow()
@@ -171,6 +168,8 @@ def cost(id):
             print('No')
             cost = form.cost.data/0.93
             update_request.cost = cost
+            update_request.min_sale = cost*0.12+cost + 1000
+
             db.session.add(update_request)
             db.session.commit()
             update_request.cost_created = datetime.utcnow()
@@ -318,11 +317,10 @@ def request_with_cost():
 @app.route('/feedback/<int:id>', methods=['GET', 'POST'])
 def feedback(id):
     req = Request.query.get(id)
-
-
     user = User.query.get(current_user.id)
     posts = Posts.query.filter(Posts.request_id==id).order_by(Posts.post_date.desc()).all()
     form = FeedBack()
+    form_for_buyer = formForBuyer()
 
     if form.validate_on_submit():
         req = Request.query.get(id)
@@ -334,7 +332,9 @@ def feedback(id):
         buyer_email = buyer.user_email
         feedback = form.comments.data
 
+
         req.comment.append(Posts(post=feedback, user_id=current_user.id))
+
         db.session.commit()
 
         ask_buyer = form.ask_buyer.data
@@ -342,10 +342,18 @@ def feedback(id):
         deadline = form.deadline.data
         deadline_answer = form.deadline_answer.data
 
+        #отмечает если есть вопрос по запросу
+        if request.form.get('quest'):
+            print(request.form.get('quest'))
+            req.quest = 'yes'
+            db.session.commit()
+        elif request.form.get('noquest'):
+            req.quest = ''
+            db.session.commit()
+
         if current_user.id == 5:
-            if deadline:
-                if ask_buyer:
-                    msg = Message('Запрос на проработку {} срок ответа до {} '.format(str(req.id), deadline_answer), sender='redmessageinfo@gmail.com',
+            if request.form.get('ask_buyer'):
+                    msg = Message('Запрос на проработку {} '.format(str(req.id)), sender='redmessageinfo@gmail.com',
                                   recipients=[buyer_email])
                     msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
                     mail.send(msg)
@@ -354,8 +362,8 @@ def feedback(id):
                     req.deadline_buyer=datetime.strftime(deadline_answer, '%Y-%m-%d')
                     db.session.commit()
 
-                if ask_sale:
-                    msg = Message('Запрос на проработку {} срок ответа'.format(str(req.id), deadline_answer), sender='redmessageinfo@gmail.com',
+            elif request.form.get('ask_sale'):
+                    msg = Message('Запрос на проработку {}'.format(str(req.id)), sender='redmessageinfo@gmail.com',
                                   recipients=[sale_email])
                     msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
                     mail.send(msg)
@@ -364,18 +372,43 @@ def feedback(id):
                     db.session.commit()
 
         # функция отправки письма
-        if current_user.role == 'buyer':
-            msg = Message ('New comment in request{}'.format(str(req.id)), sender='redmessageinfo@gmail.com',
-                           recipients=[sale_email])
-            msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
-            mail.send(msg)
+        elif current_user.role == 'buyer':
+            if req.questions !='':
+                msg = Message('New comment in request{}'.format(str(req.id)), sender='redmessageinfo@gmail.com',
+                               recipients=[sale_email])
+                msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
+                mail.send(msg)
+            else:
+                msg = Message('New comment in request{}'.format(str(req.id)), sender='redmessageinfo@gmail.com',
+                              recipients=[sale_email])
+                msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
+                mail.send(msg)
 
-        if current_user.role == 'sale' and current_user.id!=5:
-            msg = Message('New comment in request{}'.format(str(req.id)), sender='redmessageinfo@gmail.com',
-                          recipients=[buyer_email])
-            print(buyer_email)
-            msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
-            mail.send(msg)
+        # if current_user.role == 'buyer' and request.form_for_buyer.get('question')
+
+        elif current_user.role == 'sale' and current_user.id!=5:
+            if req.questions !='':
+                msg = Message('New comment in request{}'.format(str(req.id)), sender='redmessageinfo@gmail.com',
+                              recipients=[buyer_email])
+                print(buyer_email)
+                msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
+                mail.send(msg)
+            else:
+                msg = Message('New comment in request{}'.format(str(req.id)), sender='redmessageinfo@gmail.com',
+                              recipients=[sale_email])
+                print(buyer_email)
+                msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
+                mail.send(msg)
+
+
+        #доставка уведомлений менеджеру
+        # if current_user.role == 'sale' and req.questions!='':
+        #     msg = Message('New comment in request{}'.format(str(req.id)), sender='redmessageinfo@gmail.com',
+        #                   recipients=['dmitriy@rosexport.su'])
+        #     print(buyer_email)
+        #     msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
+        #     mail.send(msg)
+        #
 
 
         return redirect(url_for('feedback', id=id))
@@ -530,9 +563,6 @@ def new_customer():
             payment_terms =form.payment_terms.data,
             customer_base = form.customer_base.data,
             customer_character = form.customer_character.data,
-
-
-
         )
         db.session.add(new_customer)
         db.session.commit()

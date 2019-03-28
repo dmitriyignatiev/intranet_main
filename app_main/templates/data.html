@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf%}
+
+{% block content %}
+
+<div class="container">
+<form action="" method="post">
+    {{form.hidden_tag()}}
+
+    {{wtf.form_field(form.date)}}
+
+    {{wtf.form_field(form.date_sec)}}
+
+    {{wtf.form_field(form.submit)}}
+
+</form>
+
+</div>
+    <p></p>
+<div class="container">
+    <div class="row">
+    <div class="col">
+
+
+    <dl><b> Итоговое количество запросов за сегодня: {{Request.query.filter(db.and_(Request.created>=day, Request.created<=tomorrow)).count()}}</b></dl>
+        <p></p>
+        <p><b>Итоговое количество прокотированных запросов за сегодня: {{Request.query.filter(Request.cost_created>=day).count()}}</b>
+</p>
+        <p><b>Итоговое количество прокотированных запросов за сегодня Ольга Пархоменко: {{Request.query.filter(Request.cost_created>=day).join(subs).join(User).filter(subs.c.user_id==1).order_by(Request.cost_created.desc()).count()}}</b>
+        <p><b>Итоговое количество прокотированных запросов за сегодня Лейсан: {{Request.query.filter(Request.cost_created>=day).join(subs).join(User).filter(subs.c.user_id==3).order_by(Request.cost_created.desc()).count()}}</b>
+        <p><b>Итоговое количество прокотированных запросов за сегодня Ольга_м: {{Request.query.filter(Request.cost_created>=day).join(subs).join(User).filter(subs.c.user_id==2).order_by(Request.cost_created.desc()).count()}}</b>
+        <p></p>
+        <p>
+            {%if reqs.cost_created %}
+           <b> Прошло времени с момента последней ставки: {{moment(reqs.cost_created).fromNow()}}<b>
+            {%else%}
+               <p>
+               Прошло времени с момента последней ставки: Нет ставок за сегодня
+            {%endif%}
+        </p>
+         <p>
+             {%if reqs_parh.cost_created %}
+           <b> Прошло времени с момента последней ставки от Ольги Пархоменко: {{moment(reqs_parh.cost_created).fromNow()}}<b>
+        {%else%}
+               <p>
+               Прошло времени с момента последней ставки от  от Ольги Пархоменко: Нет ставок за сегодня
+            {%endif%}
+        </p>
+         </p>
+        <p>
+            {%if reqs_lyesan.cost_created  %}
+           <b> Прошло времени с момента последней ставки от Лейсан: {{moment(reqs_lyesan.cost_created).fromNow()}}<b>
+        </p>
+        {%else%}
+            Прошло времени с момента последней ставки от Лейсан: Нет котировок за сегодня
+        {%endif%}
+        <p>
+            {%if reqs_olga_m.cost_created %}
+           <b> Прошло времени с момента последней ставки от Ольги_м: {{moment(reqs_olga_m.cost_created).fromNow()}}<b>
+            {%else%}
+               <p>
+               Прошло времени с момента последней ставки от Ольги_м: Нет котировок за сегодня
+               {%endif%}
+        </p>
+
+    {%if form.validate_on_submit()%}
+        Итоговое количество за выбранные даты: <b>{{Request.query.filter(db.and_(Request.created>=date1, Request.created<=date2)).count()}}</b></dl>
+       <p>
+           Из них:
+        <p>{{User.query.get(6)}}:<b>{{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==6)).count()}}</b>
+            INT:{{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==6, Request.direction=='INT')).count()}}/
+                {{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==6, Request.direction=='INT', Request.request_status=='СТАВКА_ОК')).count()}}
+
+            DOM:{{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==6, Request.direction=='DOM', )).count()}}/
+                 {{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==6, Request.direction=='INT', Request.request_status=='СТАВКА_ОК')).count()}}
+
+        </p>
+        <p>{{User.query.get(7)}}:<b>{{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==7)).count()}}</b>
+             INT:{{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==7, Request.direction=='INT')).count()}}/
+                 {{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==7, Request.direction=='INT', Request.request_status=='СТАВКА_ОК')).count()}}
+
+            DOM:{{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==7, Request.direction=='DOM', )).count()}}/
+                {{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==7, Request.direction=='INT', Request.request_status=='СТАВКА_ОК')).count()}}
+        </p>
+
+
+        <p>{{User.query.get(8)}}:<b>{{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==8)).count()}}</b>
+             INT:{{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==8, Request.direction=='INT')).count()}}/
+                 {{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==8, Request.direction=='INT', Request.request_status=='СТАВКА_ОК')).count()}}
+
+            DOM:{{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==8, Request.direction=='DOM', )).count()}}/
+                {{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==8, Request.direction=='DOM', Request.request_status=='СТАВКА_ОК')).count()}}
+        </p>
+
+        <p>{{User.query.get(9)}}:<b>{{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==9)).count()}}</b>
+             INT:{{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==9, Request.direction=='INT')).count()}}/
+                 {{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==9, Request.direction=='INT', Request.request_status=='СТАВКА_ОК')).count()}}
+
+            DOM:{{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==9, Request.direction=='DOM', )).count()}}/
+                {{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==9, Request.direction=='DOM', Request.request_status=='СТАВКА_ОК')).count()}}
+        </p>
+
+        <p>{{User.query.get(17)}}:<b>{{Request.query.filter(db.and_(Request.created>date1, Request.created<=date2, Request.user_id==17)).count()}}</b>
+             INT:{{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==17, Request.direction=='INT')).count()}}/
+                 {{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==17, Request.direction=='INT', Request.request_status=='СТАВКА_ОК')).count()}}
+
+            DOM:{{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==17, Request.direction=='DOM', )).count()}}/
+                {{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==17, Request.direction=='DOM', Request.request_status=='СТАВКА_ОК')).count()}}
+        </p>
+
+        <p>{{User.query.get(13)}}:<b>{{Request.query.filter(db.and_(Request.created>date1, Request.created<=date2, Request.user_id==13)).count()}}</b>
+             INT:{{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==13, Request.direction=='INT')).count()}}/
+                 {{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==13, Request.direction=='INT', Request.request_status=='СТАВКА_ОК')).count()}}
+
+            DOM:{{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==13, Request.direction=='DOM', )).count()}}/
+                {{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==13, Request.direction=='DOM', Request.request_status=='СТАВКА_ОК')).count()}}
+        </p>
+
+        <p>{{User.query.get(15)}}:<b>{{Request.query.filter(db.and_(Request.created>date1, Request.created<=date2, Request.user_id==15)).count()}}</b>
+             INT:{{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==15, Request.direction=='INT')).count()}}/
+                 {{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==15, Request.direction=='INT', Request.request_status=='СТАВКА_ОК')).count()}}
+
+            DOM:{{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==15, Request.direction=='DOM', )).count()}}/
+                {{Request.query.filter(db.and_(Request.created>date1,  Request.created<=date2, Request.user_id==15, Request.direction=='DOM', Request.request_status=='СТАВКА_ОК')).count()}}
+        </p>
+
+
+</div>
+    </div>
+
+
+
+      <div class="col-sm">
+        <p> <b>Запросы, где мы прошли по ставкам (INT) за все время {{Request.query.filter(db.or_(Request.request_status=='СТАВКА_ОК', Request.request_status=='СТАВКА_ОК, ТС', Request.request_status=='ЕДЕМ')).filter(Request.direction=='INT').count()}}:</b>
+        {%for i in    Request.query.filter(db.or_(Request.request_status=='СТАВКА_ОК', Request.request_status=='СТАВКА_ОК, ТС', Request.request_status=='ЕДЕМ')).filter(Request.direction=='INT').all() %}
+    <p>{{i.customer}}</p>
+        {%endfor%}
+      </div>
+    <p></p>
+    <div class="col-sm">
+        <p> <b>Запросы, где мы прошли по ставкам (DOM) за все время {{Request.query.filter(db.or_(Request.request_status=='СТАВКА_ОК', Request.request_status=='СТАВКА_ОК, ТС', Request.request_status=='ЕДЕМ')).filter(Request.direction=='DOM').count() }}:</b>
+        {%for i in Request.query.filter(db.or_(Request.request_status=='СТАВКА_ОК', Request.request_status=='СТАВКА_ОК, ТС', Request.request_status=='ЕДЕМ')).filter(Request.direction=='DOM').all() %}
+    <p>{{i.customer}}</p>
+        {%endfor%}
+      </div>
+    {%endif%}
+
+</div>
+
+
+
+
+{%endblock%}
+
+
+

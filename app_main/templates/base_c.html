@@ -52,7 +52,7 @@
 
 
 
-    {% if current_user.role=='sale' or current_user.name=='Leysan' or  current_user.name=='Olga_p' or current_user.name=='Roman_k' or current_user.name=='Olga_m' %}
+    {% if current_user.role=='sale' or current_user.name=='Leysan' or  current_user.name=='Olga_p' or current_user.name=='Roman_k' or current_user.name=='Olesya_a' %}
             <a href="{{url_for('new_request')}}"><button type="button" class="btn btn-success btn-sm">Новый запрос</button></a>
           <a href="{{url_for('stavka_ok')}}"><button type="button" class="btn btn-success btn-sm">Ставка ОК</button></a>
         <a href="{{url_for('orders')}}"><button type="button" class="btn btn-success btn-sm">Кто поехал</button></a>
@@ -65,7 +65,7 @@
 
         <!--    <a href="{{url_for('request_with_cost')}}"><button type="button" class="btn btn-info btn-sm" > Прокотированные запросы</button></a>-->
 
-    {% endif%}
+    <!--{% endif%}-->
 
     {%if current_user.role=='buyer'%}
           <!--  <a href="{{url_for('request_with_cost')}}"><button type="button" class="btn btn-info btn-sm" > Прокотированные запросы</button></a>-->

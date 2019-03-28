@@ -1,0 +1,55 @@
+{%extends 'base.html'%}
+
+
+{%block content%}
+<div class="container-full">
+  <table class="col-md-3">
+            <table class="table">
+  <thead>
+    <tr>
+        <th scope="col">№ id</th>
+        <th scope="col">Наименование компании</th>
+        <th scope="col">ИНН</th>
+        <th scope="col">Телефон компании</th>
+        <th scope="col">EMAIL</th>
+        <th scope="col">Срок оплаты</th>
+        <th scope="col">Скан/Оригинал</th>
+        <th scope="col">Контактное лицо</th>
+        <th scope="col">Чей клиент</th>
+        <th scope="col">Экспедитор/Компания</th>
+        <th scope="col">Дата создания</th>
+
+
+
+    </tr>
+  </thead>
+                {%for customer in customers%}
+                <tbody>
+
+                <tr>
+                <th>{{customer.id}}</th>
+                <th>{{customer.name}}</th>
+                <th>{{customer.customer_inn}}</th>
+                <th>{{customer.phone}}</th>
+                <th>{{customer.email}}</th>
+                <th>{{customer.payment_day}}</th>
+                <th>{{customer.payment_terms}}</th>
+                 <th>{{customer.dm}}</th>
+                    <th>{{customer.user.name}}</th>
+                    <th>{{customer.customer_character}}</th>
+                    <th>{{customer.date_creation}}</th>
+
+
+
+
+
+
+                </tr>
+                </tbody>
+                {%endfor%}
+            </table>
+  </table>
+
+
+
+{%endblock%}

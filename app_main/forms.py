@@ -182,6 +182,8 @@ class FeedBack(FlaskForm):
     ask_sale = BooleanField ()
     deadline = BooleanField()
     deadline_answer = DateField('Дата ответа', format='%Y-%m-%d')
+    quest = BooleanField()
+    noquest = BooleanField()
     submit = SubmitField('отправить')
 
 
@@ -374,3 +376,6 @@ def ChoiceAllCustomer():
 class ch_all_customer(FlaskForm):
     cust = QuerySelectField('выбрать клиента', query_factory=ChoiceAllCustomer, get_label='name')
     submit = SubmitField('confirm')
+
+class formForBuyer(FlaskForm):
+    question = BooleanField()

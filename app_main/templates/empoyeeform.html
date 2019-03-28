@@ -1,0 +1,26 @@
+{%extends 'base.html'%}
+
+{%block content%}
+<div class="container">
+    <h1>Сотрудник</h1>
+    <form action="" method="post">
+        {{form.hidden_tag()}}
+        <dl>
+            {{wtf.form_field(form.choose_emloyee)}}
+            {{wtf.form_field(form.fio)}}
+            {{wtf.form_field(form.mobile)}}
+            {{wtf.form_field(form.external)}}
+            {{wtf.form_field(form.start_work)}}
+
+            {{form.submit()}}
+
+        </dl>
+    </form>
+    {{user}}
+    {%if user%}
+    {{user.fio}}
+    {%endif%}
+    </div>
+
+
+{%endblock%}

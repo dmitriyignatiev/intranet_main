@@ -1,0 +1,44 @@
+{%extends 'base.html'%}
+
+
+{%block content%}
+<div class="container-full">
+  <table class="col-md-3">
+            <table class="table">
+  <thead>
+    <tr>
+        <th scope="col">№ id</th>
+        <th scope="col">ФИО сотрудника</th>
+        <th scope="col">Вн.номер</th>
+        <th scope="col">Сотовый</th>
+        <th scope="col">EMAIL</th>
+        <th scope="col">Когда пришел в компанию</th>
+
+<!--{%for user in users%}-->
+<!--<dl>{{user.id}}  {{user.fio}}  {{user.user_email}}-->
+<!--{%endfor%}-->
+<!--</dl>-->
+    </tr>
+  </thead>
+                {%for user in users%}
+                {%if user.fio%}
+                <tbody>
+
+                <tr>
+                <th>{{user.id}}</th>
+                <th>{{user.fio}}</th>
+                <th>{{user.external}}</th>
+                <th>{{user.mobile}}</th>
+                <th>{{user.user_email}}</th>
+                    <th>{{moment(user.start_work).fromNow()}}</th>
+
+                </tr>
+                </tbody>
+                {%endif%}
+                {%endfor%}
+            </table>
+  </table>
+
+
+
+{%endblock%}

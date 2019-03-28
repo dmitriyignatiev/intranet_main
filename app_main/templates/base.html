@@ -22,7 +22,7 @@
         <h15><a class="navbar-brand" href="{{url_for('new_customer')}}">Создать клиента</a></h15>
        <h15><a class="navbar-brand" href="{{url_for('users')}}">Номера телефонов сотрудников</a></h15>
 
-       {%if current_user.id==5%}
+       {%if current_user.id==5 or current_user.id==21%}
        <h15><a class="navbar-brand" href="{{url_for('pipeline')}}">Pipeline</a></h15>
        {%endif%}
 
@@ -55,7 +55,7 @@
 
 
 
-    {% if current_user.role=='sale' or current_user.name=='Vova' or current_user.name=='Dima' or current_user.name=='Leysan' or  current_user.name=='Olga_p' or current_user.name=='Roman_k' or current_user.name=='Olga_m' %}
+    {% if current_user.role=='sale' or current_user.name=='Vova' or current_user.name=='Dima' or current_user.name=='Leysan' or  current_user.name=='Olga_p' or current_user.name=='Roman_k' or current_user.name=='Olesya_a' %}
             <a href="{{url_for('new_request')}}"><button type="button" class="btn btn-success btn-sm">Новый запрос</button></a>
           <a href="{{url_for('stavka_ok')}}"><button type="button" class="btn btn-success btn-sm">Ставка ОК</button></a>
         <a href="{{url_for('orders')}}"><button type="button" class="btn btn-success btn-sm">Кто поехал</button></a>
@@ -95,7 +95,6 @@
         <th scope="col">#</th>
         <th scope="col">Клиент</th>
         <th scope="col">Количество перевозок</th>
-
         <th scope="col">Дата загрузки</th>
         <th scope="col">Откуда</th>
         <th scope="col">Куда</th>
@@ -105,6 +104,7 @@
         <th scope="col">Характер Груза</th>
         <th scope="col">Стоимость груза</th>
         <th scope="col">Кост с НДС</th>
+        <th scope="col">Минимальная продажа</th>
         <th scope="col">Направление</th>
         <th scope="col">Тип перевозки</th>
         <th scope="col">Комментарии</th>
@@ -144,6 +144,7 @@
         <td>{{request.cargo_desciption}}</td>
         <td>{{request.cargo_value}}</td>
         <td>{{request.cost}}</td>
+        <td>{{request.min_sale}}</td>
         <td>{{request.direction}}</td>
         <td>{{request.cargo_type}}</td>
         <td><a href="{{url_for('feedback', id = request.id) }}">{{request.request_comments|truncate(15)}}</a></td>
@@ -184,6 +185,7 @@
         <th scope="col">Характер Груза</th>
         <th scope="col">Стоимость груза</th>
         <th scope="col">Кост с НДС</th>
+        <th scope="col">Минимальная продажа</th>
         <th scope="col">Направление</th>
         <th scope="col">Тип перевозки</th>
         <th scope="col">Комментарии</th>
@@ -213,7 +215,12 @@
 
       </th>
         <th> <a href="{{url_for('status_for_request', id = req.id)}}">{{req.request_status}}</a></th>
+        {%if req.quest%}
+        <th bgcolor="green">{{req.id}}</th>
+        {%else%}
         <th> {{req.id}}</th>
+        {%endif%}
+
         <th> {{req.customer_name}}</th>
         <th>{{req.quantity}}</th>
         <th>{{moment(req.pick_up_date).format('ll')}}</th>
@@ -227,6 +234,8 @@
         <td>{{req.cargo_desciption}}</td>
         <td>{{req.cargo_value}}</td>
         <td>{{req.cost}}</td>
+        <td>{{req.min_sale}}</td>
+
         <td>{{req.direction}}</td>
         <td>{{req.cargo_type}}</td>
         <td><a href="{{url_for('feedback', id=req.id)}}">{{req.request_comments|truncate(15)}}</a></td>

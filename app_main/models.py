@@ -131,6 +131,14 @@ class Request (db.Model):
 
     actual = db.Column(db.String(120))
 
+    min_sale = db.Column(db.Integer)
+
+    #вопросы по запросом
+    quest = db.Column(db.String(120))
+
+    #0 не актуально, 1 - актуально
+    nonactf_buyer = db.Column(db.Integer)
+
 
 
 

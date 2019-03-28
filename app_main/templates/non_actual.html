@@ -194,7 +194,11 @@
       </th>
         <th> <a href="{{url_for('status_for_request', id = req.id)}}">{{req.request_status}}</a></th>
         <th>{{req.quantity}}</th>
+        {%if req.quest%}
+        <th bgcolor="green">{{req.id}}</th>
+        {%else%}
         <th> {{req.id}}</th>
+        {%endif%}
         <th> {{req.customer_name}}</th>
         <th>{{moment(req.pick_up_date).format('ll')}}</th>
         <th>{{req.payment_day}}</th>

@@ -1,0 +1,71 @@
+{%extends 'base.html'%}
+
+{% if current_user.role=='sale' or current_user.name=='Leysan' or  current_user.name=='Olga_p' %}
+    <p>
+        <table class="col-md-3">
+            <table class="table">
+  <thead>
+    <tr>
+        <th scope="col">Действие</th>
+        <th scope="col">Статус запроса</th>
+        <th scope="col">#</th>
+        <th scope="col">Клиент</th>
+        <th scope="col">Дата загрузки</th>
+        <th scope="col">Откуда</th>
+        <th scope="col">Куда</th>
+        <th scope="col">Необходимая Грузоподъемность </th>
+        <th scope="col">Вид загрузки</th>
+        <th scope="col">Вес груза</th>
+        <th scope="col">Характер Груза</th>
+        <th scope="col">Стоимость груза</th>
+        <th scope="col">Кост с НДС</th>
+        <th scope="col">Направление</th>
+        <th scope="col">Тип перевозки</th>
+        <th scope="col">Комментарии</th>
+        <th scope="col">Закупщик</th>
+        <th scope="col">Дата запроса</th>
+        <th scope="col">Дата ставки</th>
+
+
+
+
+    </tr>
+
+  </thead>
+    {% for request in requests %}
+
+    <tbody>
+    <tr>
+
+      <th scope="row">
+         <a href="{{url_for('edit', id=request.id)}}"><button type="button" class="btn btn-info btn-sm"><i class="glyphicon glyphicon-pencil" aria-hidden="true"></i></button></a>
+         <!--<a href="{{url_for('delete_req', id=request.id)}}"><button type="button" class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button></a>-->
+         <a href="{{url_for('feedback', id=request.id)}}"><button type="button" class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-share-alt" aria-hidden="true"></i></button></a>
+      </th>
+       <!--доделать-->
+
+        <th><a href="{{url_for('status_for_request', id = request.id)}}">{{request.request_status}}</a></th>
+        <th>{{request.id}}</th>
+        <th>{{request.customer_name|truncate() }}</th>
+        <th>{{moment(request.pick_up_date).format('ll')}}</th>
+        <td>{{request.org}}</td>
+        <td>{{request.dest}}</td>
+        <td>{{request.type_of_truck}}</td>
+        <td>{{request.type_of_loading}}</td>
+        <td>{{request.weigth_cargo}}</td>
+        <td>{{request.cargo_desciption}}</td>
+        <td>{{request.cargo_value}}</td>
+        <td>{{request.cost}}</td>
+        <td>{{request.direction}}</td>
+        <td>{{request.cargo_type}}</td>
+        <td>{{request.request_comments}}</td>
+         {%for r in request.users%}
+        <td>{{r.name}} </td>
+        {%endfor%}
+        <td>{{moment(request.created).fromNow()}} </td>
+        {%if request.cost_created%}
+        <td><b>{{moment(request.cost_created).fromNow()}}</b></td>
+        {%endif%}
+    </tr>
+    {% endfor %}
+{% endif %}
