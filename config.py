@@ -9,7 +9,7 @@ class Config(object):
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 465
     MAIL_USERNAME = 'redmessageinfo@gmail.com'
-    MAIL_PASSWORD = 'D@tctkjd1478520369'
+    MAIL_PASSWORD = '******'
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
 
