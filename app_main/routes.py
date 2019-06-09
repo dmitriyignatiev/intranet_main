@@ -1,8 +1,10 @@
 import os
 from datetime import timedelta
 
-from mailmerge import MailMerge
+
+# from mailmerge import MailMerge
 from sqlalchemy import desc
+
 
 from werkzeug.utils import secure_filename
 from flask import render_template, flash, url_for, redirect, request
@@ -15,6 +17,8 @@ from app_main.forms import *
 
 from app_main import mail
 from flask_mail import Message
+
+from flask import request, jsonify
 
 
 @app.before_request
@@ -823,3 +827,22 @@ def individual_customer(customer_name):
     form = ch_customer()
     requests = Request.query.join(Customer).filter(Customer.name == customer_name).all()
     return render_template('base_pipeline.html', requests=requests,form = form)
+
+
+@app.route('/confirm/<int:id>')
+def confirm(id):
+    request = Request.query.get(id)
+       
+    return render_template('confirm.html', request=request)
+    
+@app.route('/process', methods=['POST', 'GET'])
+def process():
+    name = request.args.get('x') 
+    date = request.args.get('y')  
+    print(date) 
+    new = Finance(name=name, dtae = date)
+    db.session.add(new)
+    db.session.commit()
+    print('ok')
+    return jsonify(name=name, date=date)
+   

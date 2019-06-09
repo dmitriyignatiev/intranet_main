@@ -1,0 +1,11 @@
+{% import "bootstrap/wtf.html" as wtf%}
+<h15>Поставщик успешно занесен в базу {{new_supp.id}}</h15>
+
+
+<form action="" method="post" novalidate>
+        {{form.hidden_tag()}}
+   
+           {{wtf.form_field(form.name)}}
+           {{form.submit}}
+ </form>
+

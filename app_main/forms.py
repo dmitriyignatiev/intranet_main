@@ -7,6 +7,7 @@ from flask_login import current_user
 from wtforms.fields.html5 import DateField
 
 
+
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
@@ -379,3 +380,8 @@ class ch_all_customer(FlaskForm):
 
 class formForBuyer(FlaskForm):
     question = BooleanField()
+
+
+# class Supplier(FlaskForm)
+
+

@@ -233,22 +233,24 @@ class Customer(db.Model):
 #база контакный лиц
 
 #база данных поставщиков, полностью дублирует заявку
-class Supplier(db.Model):
-    id = db.Column (db.Integer, primary_key=True)
-    llc = db.Column (db.String (240))
-    llc_name = db.Column (db.String (240))
-    legal_add = db.Column(db.String(240))
-    fact_address = db.Column(db.String(240))
-    inn = db.Column(db.String(240))
-    kpp = db.Column(db.String(240))
-    ogrn = db.Column(db.String(240))
-    bank = db.Column(db.String(240))
-    bik = db.Column(db.String(240))
-    rc = db.Column(db.String(240))
-    kc = db.Column(db.String(240))
-    driver_director = db.Column(db.String(240))
-    user_id = db.Column(db.Integer, db.ForeignKey ('user.id'))
-    date = db.Column(db.DateTime, default=datetime.utcnow)
+# class Supplier(db.Model):
+#     id = db.Column (db.Integer, primary_key=True)
+#     llc = db.Column (db.String (240))
+#     llc_name = db.Column (db.String (240))
+#     legal_add = db.Column(db.String(240))
+#     fact_address = db.Column(db.String(240))
+#     inn = db.Column(db.String(240))
+#     kpp = db.Column(db.String(240))
+#     ogrn = db.Column(db.String(240))
+#     bank = db.Column(db.String(240))
+#     bik = db.Column(db.String(240))
+#     rc = db.Column(db.String(240))
+#     kc = db.Column(db.String(240))
+#     driver_director = db.Column(db.String(240))
+#     user_id = db.Column(db.Integer, db.ForeignKey ('user.id'))
+#     date = db.Column(db.DateTime, default=datetime.utcnow)
+#     finance = db.Column(db.Integer, db.ForeignKey('finance.id'))
+#     pay = db.Column(db.Integer, db.ForeignKey('paid.id'))
 
 
 
@@ -312,5 +314,41 @@ class Customer_base(db.Model):
 
 
 
+class Finance(db.Model):
+    id = db.Column (db.Integer, primary_key=True)
+    name = db.Column (db.String (120), unique=True)
+    dtae = db.Column (db.DateTime)
+    cost  = db.Column (db.Integer)
+    payid_off = db.relationship('Paid', backref='payd_off', lazy='dynamic')
+    cost = db.relationship('Supplier', backref='supplier', lazy='dynamic')
+    new_cost = db.Column(db.Integer)
+
+    
+    def newCost(self):
+
+        self.new_cost = self.cost
+        db.session.commit()
+        
+        for i in self.payid_off:
+            self.new_cost -= i.summ
+            db.session.commit()
+        return self.new_cost
+
+
+class Paid(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    summ = db.Column(db.Integer)
+    date = db.Column(db.DateTime)
+    finance = db.Column(db.Integer, db.ForeignKey('finance.id'))
+
+
+
+
+
+
+
+
+
+    
 
 

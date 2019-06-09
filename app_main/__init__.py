@@ -5,6 +5,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
+# from mailmerge import MailMerge
 
 from flask_mail import Mail
 
@@ -20,4 +21,7 @@ bootstrap = Bootstrap(app)
 moment = Moment(app)
 
 from app_main import routes, models
+
+from suppliers.routes import supp
+app.register_blueprint(supp, url_prefix='/suppliers')
 
