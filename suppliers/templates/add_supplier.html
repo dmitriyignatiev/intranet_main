@@ -1,7 +1,12 @@
 
+
 {%extends 'base.html'%}
 
+
+
 {%block head%}
+
+
 {{super()}}
 <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.js"> </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
@@ -15,17 +20,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" /> 
 
-<div>
-    <input type='text' placeholder="поиск поставщика" id='search'>
-    <button type="submit" class="btn btn-default" id='search'>Поиск</button>
 
-</div>
 <form>
     <input type="text" placeholder="наименование поставщика" id='supp_name' name=name>
     <input type='number' placeholder='срок оплаты' id='credit_days', name=credit>
     <input type='text' placeholder='оригинал или копия' id='orginal', name=orginal >
     <button type="submit" class="btn btn-default" id='submit'>Записать в базу</button>
 </form>
+
 <div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
 <div class>
 <script src="{{url_for('.static', filename='supp.js')}}"></script>
@@ -34,18 +36,75 @@
 
 
 
-<form action="" method="post" novalidate>
-        {{form.hidden_tag()}}
-   
-           
-{{req.customer.name}} - {{form.name}}
-           {{form.submit}}
- </form>
 
+
+
+ 
+ <table class="table table-sm">
+  <thead>
+    <tr>
+        <th scope="col">ТОРА или РЭД</th>
+        <th scope="col">Наименование подрядчика</th>
+        <th scope="col">Direction</th>
+        <th scope="col">#</th>
+
+        
+        <th scope="col">Продавец</th>
+        <th scope="col">Закупщик</th>
+        <th scope="col">Клиент</th>
+        
+        <th scope="col">№ заявки с клиентом</th>
+        <th scope="col">дата заявки</th>
+        <th scope="col">Необходимая Грузоподъемность</th>
+        <th scope="col">место загрузки</th>
+        <th scope="col">когда загрузка</th>
+        <th scope="col">место выгрузки</th>
+        <th scope="col">когда выгрузка</th>
+        
+        <th scope="col">№ счета от подрядчика</th>
+        <th scope="col">дата счета</th>
+        <th scope="col">сумма счета</th>
+        <th scope="col">НДС/БЕЗ НДС</th>
+        <th scope="col">валюта счета</th>
+        <th scope="col">Аванс</th>
+        <th scope="col">КОСТ</th>
+        <th scope="col">Почта</th>
+    </tr>
+
+    <tbody>
+    <tr>
+
+<th><input type="text" placeholder='Тора или РЭД'>  </th>
+
+<th>
+<form action="" method="post" novalidate>
+{{form.name}}
+</form>
+</th>
+<th>{{req.direction}}</th>
+<th>{{req.id}}</th>
+<th>{{req.user.name}}</th>
+<th> {{req.users[0].name}}</th>
+<th>{{req.customer.name}}</th>
+<th>{{req.id}}<th>
+
+
+
+ 
+        
+        
+
+    </tr>
+
+  </thead>
+
+
+</div>
 {%endblock%}
+
+
 
 {%block scripts%}
 
 
 {%endblock%}
-

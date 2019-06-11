@@ -5,17 +5,17 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" /> 
 
 <h15>Поставщик успешно занесен в базу {{new_supp.id}}</h15>
+<button id="reload">
+Вернуться
+</button>
+
+<script>
+$('#reload').click(function() {
+    location.reload();
+});
+</script>
 
 
-<form action="" method="post" novalidate>
-        {{form.hidden_tag()}}
-   
-           {{form.name}}
-           {{form.submit}}
- </form>
 
-<script type='text/javascript'>
-        $(document).ready(function() {
-                $('#name').select2();
-        });
+
 

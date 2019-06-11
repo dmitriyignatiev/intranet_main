@@ -2,18 +2,20 @@
 
 
 $(function(){
-    $(document).ready(function() {
+    $(document).ready(function(e) {
+       
         $('#name').select2();
     });
 
  
     // $('#submit').bind('click', function(e){
+    //     console.log('ready')
     //     e.preventDefault();
 
     //     $.getJSON('/suppliers/add_supplier_to_db', {
     //         name: $('input[name="name"]').val(),
     //     }, function(data){
-    //         console.log(data)
+    //         console.log(data.name)
     //         if (data.error){
 
     //             $('#successAlert').text(data.error).show();           

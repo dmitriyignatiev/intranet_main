@@ -6,6 +6,10 @@ from app_main import db
 from .forms import *
 
 
+@supp.route('/index')
+def index():
+    return render_template('index.html')
+
 @supp.route('/add_supplier/<int:id>', methods=['GET', 'POST'])
 def add_supplier(id):
     req = Request.query.get(id)
@@ -18,6 +22,7 @@ def add_supplier(id):
 
 @supp.route('/add_supplier_to_db', methods=['POST', 'GET'])
 def add_supplier_to_db():
+
     form=formSupplier()
     name = request.args.get('name')
     print(name)
@@ -31,7 +36,7 @@ def add_supplier_to_db():
         db.session.commit()
         return render_template('section.html', new_supp=new_supp, form=form)
     
-    
+
 
 
     

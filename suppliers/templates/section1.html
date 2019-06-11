@@ -4,17 +4,14 @@
 
 <h15>Поставщик с таким именем уже есть в базе</h15>
 
+<button id="reload">
+Вернуться
+</button>
 
-<form action="" method="post" novalidate>
-        {{form.hidden_tag()}}
-   
-           {{form.name}}
-           {{form.submit}}
- </form>
-
-<script type='text/javascript'>
-        $(document).ready(function() {
-                $('#name').select2();
-        });
+<script>
+$('#reload').click(function() {
+    location.reload();
+});
+</script>
 
 
