@@ -7,6 +7,9 @@ from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 # from mailmerge import MailMerge
 
+from flask_bootstrap import WebCDN
+
+
 from flask_mail import Mail
 
 app = Flask(__name__)
@@ -18,6 +21,10 @@ login.login_view = 'login'
 mail = Mail(app)
 
 bootstrap = Bootstrap(app)
+app.extensions['bootstrap']['cdns']['jquery'] = WebCDN(
+    '//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/'
+)
+
 moment = Moment(app)
 
 from app_main import routes, models
