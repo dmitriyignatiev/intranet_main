@@ -2,7 +2,9 @@
 
 
 $(function(){
-    
+    $(document).ready(function() {
+        $('#name').select2();
+    });
 
  
     // $('#submit').bind('click', function(e){
@@ -35,16 +37,20 @@ $(function(){
         
         var name = $('input[name="name"]').val();
         console.log(name);
+        var credit = $('input[name="credit"]').val();
+        console.log(credit);
 
         req = $.ajax({
             
             url: '/suppliers/add_supplier_to_db',
             type: 'GET', 
-            data: {name: name}
+            data:{name:name},
+            
         });
 
         req.done(function(data){
             $('#content').html(data);
+            
         });
     });
 

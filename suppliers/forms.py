@@ -12,4 +12,4 @@ def choice_supp():
 
 class formSupplier(FlaskForm):
     name = QuerySelectField('Поставщик', query_factory=choice_supp, get_label='llc_name')
-
+    submit = SubmitField('Подтвердить')

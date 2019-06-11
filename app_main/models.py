@@ -323,6 +323,7 @@ class Finance(db.Model):
     cost = db.relationship('Supplier', backref='supplier', lazy='dynamic')
     new_cost = db.Column(db.Integer)
 
+
     
     def newCost(self):
 

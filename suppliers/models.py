@@ -19,3 +19,7 @@ class Supplier(db.Model):
     date = db.Column(db.DateTime, default=datetime.utcnow)
     finance = db.Column(db.Integer, db.ForeignKey('finance.id'))
     pay = db.Column(db.Integer, db.ForeignKey('paid.id'))
+
+class newSup(db.Model):
+    id = db.Column (db.Integer, primary_key=True)
+    name = db.Column (db.String (240))

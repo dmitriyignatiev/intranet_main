@@ -1,10 +1,20 @@
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.js"> </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" /> 
+
 <h15>Поставщик с таким именем уже есть в базе</h15>
-{% import "bootstrap/wtf.html" as wtf%}
 
 
 <form action="" method="post" novalidate>
         {{form.hidden_tag()}}
    
-           {{wtf.form_field(form.name)}}
+           {{form.name}}
            {{form.submit}}
  </form>
+
+<script type='text/javascript'>
+        $(document).ready(function() {
+                $('#name').select2();
+        });
+
+
