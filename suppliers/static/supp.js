@@ -26,7 +26,7 @@ $(function() {
             
             if (data.error){
                 // $('#successAlert').attr("css", {backgroundColor:"red"});
-                $('#successAlert').text(data.error).show();
+                $('#errorAlert').text(data.error).show();
                 
                
             }else{

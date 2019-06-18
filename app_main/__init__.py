@@ -9,7 +9,6 @@ from flask_moment import Moment
 
 from flask_bootstrap import WebCDN
 
-
 from flask_mail import Mail
 
 app = Flask(__name__)

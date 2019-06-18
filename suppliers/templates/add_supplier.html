@@ -31,14 +31,16 @@
 </form>
 
 <div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
+<div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
 <div class>
 <script src="{{url_for('.static', filename='supp.js')}}"></script>
+<script src="{{url_for('.static', filename='add.js')}}"></script>
 
 <div id='content'>
 
 
 
-
+<input type="text" name='testname'>
 
 
  
@@ -59,27 +61,29 @@
         <th scope="col">дата заявки</th>
         <th scope="col">Необходимая Грузоподъемность</th>
         <th scope="col">место загрузки</th>
-        <th scope="col">когда загрузка</th>
-        <th scope="col">место выгрузки</th>
-        <th scope="col">когда выгрузка</th>
         
-        <th scope="col">№ счета от подрядчика</th>
-        <th scope="col">дата счета</th>
-        <th scope="col">сумма счета</th>
-        <th scope="col">НДС/БЕЗ НДС</th>
-        <th scope="col">валюта счета</th>
-        <th scope="col">Аванс</th>
-        <th scope="col">КОСТ</th>
-        <th scope="col">Почта</th>
-    </tr>
+    
+      <th scope="col">когда загрузка</th>
+      <th scope="col">место выгрузки</th>
+      <th scope="col">когда выгрузка</th>
+      <th scope="col">№ счета от подрядчика</th>
+      <th scope="col">дата счета</th>
+      <th scope="col">сумма счета</th>
+      <th scope="col">НДС/БЕЗ НДС</th>
+      <th scope="col">валюта счета</th>
+      <th scope="col">Аванс</th>
+      <th scope="col">КОСТ</th>
+      <th scope="col">Почта</th>
 
+
+    </tr>
     <tbody>
     <tr>
 
-<th>{{form.tora_red}}</th>
- <th>{{form.name}}</th>
-<th>{{req.direction}}</th>
-<th>{{req.id}}</th>
+<th name='tora_red'>{{form.tora_red}}</th>
+ <th name='name'>{{form.name}}</th>
+<th name='direction'>{{req.direction}}</th>
+<th name='id'>{{req.id}}</th>
 <th>{{req.user.name}}</th>
 <th> {{req.users[0].name}}</th>
 <th>{{req.customer.name}}</th>
@@ -91,29 +95,29 @@
 <th>{{req.dest}}</th>
 <th>{{form.date_unloading_plan}}</th>
 
-<form method="POST" enctype="multipart/form-data">
-<th>{{form.photo}}<th>
+<th>{{form.inv_n_S}}<th>
+ <form action="", method='post' id='myform'>
 
-      
+  <button type="submit">записать данные</button>
+
+</th>
 </form>
-  
 
-
-<th></th>
-
-
- 
-        
-        
 
     </tr>
 
   </thead>
 
+  <div >
 
-</div>
+  </div>
+
+
+
+
+
+  
 {%endblock%}
-
 
 
 {%block scripts%}

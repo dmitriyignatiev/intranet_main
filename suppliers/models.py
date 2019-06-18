@@ -24,4 +24,10 @@ class newSup(db.Model):
     id = db.Column (db.Integer, primary_key=True)
     name = db.Column (db.String (240))
     path = db.Column(db.String(1000))
-    
+
+class preFin(db.Model):
+    id = db.Column (db.Integer, primary_key=True)
+    llc = db.Column (db.String (240))
+    supplier = db.Column (db.String (240))
+    req_id = db.Column(db.Integer, unique=True)
+

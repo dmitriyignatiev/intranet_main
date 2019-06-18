@@ -12,7 +12,8 @@ class Config(object):
     MAIL_PASSWORD = '******'
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
-
+    UPLOADER_FOLDER = 'intranet_main\app_main\templates\agreements'
+    
 
 
 

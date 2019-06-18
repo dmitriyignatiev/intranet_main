@@ -405,14 +405,7 @@ def feedback(id):
                 mail.send(msg)
 
 
-        #доставка уведомлений менеджеру
-        # if current_user.role == 'sale' and req.questions!='':
-        #     msg = Message('New comment in request{}'.format(str(req.id)), sender='redmessageinfo@gmail.com',
-        #                   recipients=['dmitriy@rosexport.su'])
-        #     print(buyer_email)
-        #     msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
-        #     mail.send(msg)
-        #
+     
 
 
         return redirect(url_for('feedback', id=id))
@@ -429,58 +422,8 @@ def count(id):
 
 #функция загрузки файла
 
-UPLOAD_FOLDER = 'app_main/templates/agreements'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'docx'])
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-AGG_FOLDER ='app_main/templates/agreements'
-app.config['AGG_FOLDER'] = AGG_FOLDER
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/upload', methods=['GET', 'POST'])
-def upload_file():
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('upl', filename=filename))
-    return render_template('uploads.html')
-
-#рут для подтверждения загрузки
-@app.route('/upl/<filename>')
-def upl(filename):
-    return render_template('upl.html', filename=filename)
-
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
-
-#функция выгрузки файла
-
-# #функция выбора номер договора
-# @app_main.route('/agrement_number', methods=['POST', 'GET'])
-# def agrement_number():
-#     form = Who()
-#     if form.validate_on_submit():
-#         choice = form.who_number.data
-#         if choice == 'наш номер договора':
-#             count = 3
-#             agreement = Agreement.query.filter(Agreement.count).first()
-#             add_count = agreement.count
-#
-#             new = Agreement(number=str())
 
 
 
@@ -538,18 +481,6 @@ def my_agreements():
     base = Agreement.query.filter(Agreement.user_id==current_user.id).all()
     return render_template('my_agreements.html', base=base)
         #send_from_directory(app_main.config['AGG_FOLDER'], filename=filename, base=base)
-
-#Функция вскачивает договор
-@app.route('/download_agreement/<filename>')
-def download_agreement(filename):
-    return send_from_directory(app.config['AGG_FOLDER'], filename=filename)
-
-@app.route('/test')
-def test():
-    msg = Message('Hello', sender='rosexport.200@gmail.com', recipients=['dmitriy@rosexport.su'])
-    mail.send(msg)
-    return 'Message sent'
-
 
 @app.route('/new_customer', methods=['POST', 'GET'])
 def new_customer():
@@ -718,6 +649,8 @@ def non_actual():
     return render_template('non_actual.html', requests=requests)
 
 
+
+
 # ###### для Мэнеджмента, основные отчеты
 @app.route('/data_test', methods=['POST', 'GET'])
 def data_test():
@@ -845,4 +778,7 @@ def process():
     db.session.commit()
     print('ok')
     return jsonify(name=name, date=date)
-   
+
+
+
+
