@@ -30,4 +30,9 @@ class preFin(db.Model):
     llc = db.Column (db.String (240))
     supplier = db.Column (db.String (240))
     req_id = db.Column(db.Integer, unique=True)
+    date_request = db.Column(db.DateTime)
+    
+
+
+
 

@@ -1,126 +1,109 @@
-
-
-{%extends 'base.html'%}
-
-
-
-{%block head%}
-
-
-{{super()}}
-<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.js"> </script>
+ {%extends 'base.html'%} {%block head%} {{super()}}
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.js">
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" /> 
-{%endblock%}
-
-
-{%block content%}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" /> {%endblock%} {%block content%}
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" /> 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
 
 
 <form>
     <input type="text" placeholder="наименование поставщика" id='supp_name' name=name>
-    <input type='number' placeholder='срок оплаты' id='credit_days', name=credit>
-    <input type='text' placeholder='оригинал или копия' id='orginal', name=orginal >
-    <input type='text' placeholder='телефон' id='orginal', name=phone>
-    <input type='text' placeholder='имя' id='orginal', name=orginal>
+    <input type='text' placeholder='ati номер' id='ATI' , name='ati'>
+    <input type='text' placeholder='телефон' id='phone' , name='phone'>
+    <input type='text' placeholder='имя контакта' id='orginal' , name='name'>
     <button type="submit" class="btn btn-default" id='submit'>Записать в базу</button>
 </form>
 
 <div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
 <div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
 <div class>
-<script src="{{url_for('.static', filename='supp.js')}}"></script>
-<script src="{{url_for('.static', filename='add.js')}}"></script>
+    <script src="{{url_for('.static', filename='supp.js')}}"></script>
+    <script src="{{url_for('.static', filename='add.js')}}"></script>
 
-<div id='content'>
-
-
-
-<input type="text" name='testname'>
+    <div id='content'>
 
 
- 
- <table class="table table-sm">
-  <thead>
-    <tr>
-        <th scope="col">ТОРА или РЭД</th>
-        <th scope="col">Наименование подрядчика</th>
-        <th scope="col">Direction</th>
-        <th scope="col">#</th>
+        <div id="successAlert" class="alert alert-success" role="alert" style="display:none;">
 
-        
-        <th scope="col">Продавец</th>
-        <th scope="col">Закупщик</th>
-        <th scope="col">Клиент</th>
-        
-        <th scope="col">№ заявки с клиентом</th>
-        <th scope="col">дата заявки</th>
-        <th scope="col">Необходимая Грузоподъемность</th>
-        <th scope="col">место загрузки</th>
-        
-    
-      <th scope="col">когда загрузка</th>
-      <th scope="col">место выгрузки</th>
-      <th scope="col">когда выгрузка</th>
-      <th scope="col">№ счета от подрядчика</th>
-      <th scope="col">дата счета</th>
-      <th scope="col">сумма счета</th>
-      <th scope="col">НДС/БЕЗ НДС</th>
-      <th scope="col">валюта счета</th>
-      <th scope="col">Аванс</th>
-      <th scope="col">КОСТ</th>
-      <th scope="col">Почта</th>
+        </div>
+        <div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;">
+
+        </div>
+
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th scope="col">ТОРА или РЭД</th>
+                    <th scope="col">Наименование подрядчика</th>
+                    <th scope="col">Direction</th>
+                    <th scope="col">#</th>
+
+                    <th scope="col">Продавец</th>
+                    <th scope="col">Закупщик</th>
+                    <th scope="col">Клиент</th>
+
+                    <th scope="col">№ заявки с клиентом</th>
+                    <th scope="col">дата заявки</th>
+                    <th scope="col">Необходимая Грузоподъемность</th>
+                    <th scope="col">место загрузки</th>
 
 
-    </tr>
-    <tbody>
-    <tr>
-
-<th name='tora_red'>{{form.tora_red}}</th>
- <th name='name'>{{form.name}}</th>
-<th name='direction'>{{req.direction}}</th>
-<th name='id'>{{req.id}}</th>
-<th>{{req.user.name}}</th>
-<th> {{req.users[0].name}}</th>
-<th>{{req.customer.name}}</th>
-<th>{{req.id}}</th>
-<th>{{form.date_order_C}}</th>
-<th>{{req.type_of_truck}}</th>
-<th>{{req.org}}</th>
-<th>{{form.date_loading_plan}}</th>
-<th>{{req.dest}}</th>
-<th>{{form.date_unloading_plan}}</th>
-
-<th>{{form.inv_n_S}}<th>
- <form action="", method='post' id='myform'>
-
-  <button type="submit">записать данные</button>
-
-</th>
-</form>
+                    <th scope="col">когда загрузка</th>
+                    <th scope="col">место выгрузки</th>
+                    <th scope="col">когда выгрузка</th>
+                    <th scope="col">№ счета от подрядчика</th>
+                    <th scope="col">дата счета</th>
+                    <th scope="col">сумма счета</th>
+                    <th scope="col">НДС/БЕЗ НДС</th>
+                    <th scope="col">валюта счета</th>
+                    <th scope="col">Аванс</th>
+                    <th scope="col">КОСТ</th>
+                    <th scope="col">Почта</th>
 
 
-    </tr>
+                </tr>
+                <tbody>
+                    <tr>
 
-  </thead>
+                        <th name='tora_red'>{{form.tora_red}}</th>
+                        <th name='name'>{{form.name}}</th>
+                        <th name='direction'>{{req.direction}}</th>
+                        <th name='id'>{{req.id}}</th>
+                        <th>{{req.user.name}}</th>
+                        <th> {{req.users[0].name}}</th>
+                        <th>{{req.customer.name}}</th>
+                        <th>{{req.id}}</th>
+                        <th name='date_request'>{{form.date_order_C}}</th>
+                        <th>{{req.type_of_truck}}</th>
+                        <th>{{req.org}}</th>
+                        <th>{{form.date_loading_plan}}</th>
+                        <th>{{req.dest}}</th>
+                        <th>{{form.date_unloading_plan}}</th>
 
-  <div >
+                        <th>{{form.inv_n_S}}
+                            <th>
+                                <form action="" , method='post' id='myform'>
 
-  </div>
+                                    <button type="submit">записать данные</button>
+                                </form>
+                            </th>
 
 
 
+                    </tr>
+
+            </thead>
+
+            <div>
+
+            </div>
 
 
-  
-{%endblock%}
 
 
-{%block scripts%}
 
 
-{%endblock%}
+            {%endblock%} {%block scripts%} {%endblock%}

@@ -79,15 +79,20 @@ def download_file(filename):
 def prefin():
     lls = request.args.get('name')
     req_id = request.args.get('id')
+    date_request='dsada'
+    print(date_request)
     try:
-        if preFin.query.filter_by(llc=lls).first():
-            print(lls + str(req_id))
-            newFin = preFin(llc=lls, req_id=req_id)
+        if not preFin.query.filter_by(req_id=req_id).first():
+            print(lls + str(req_id) + date_request)
+            newFin = preFin(llc=lls, req_id=req_id, date_request=date_request)
             db.session.add(newFin)
             db.session.commit()
             return jsonify({'success':'данные успешно внесены в базу'})
+        else:
+            print(date_request)
+            return jsonify({'not':'в базе уже есть запись с таким ID'})
     except exc.IntegrityError as e:
-        return jsonify({'not':'НЕ успешно внесены в базу'})
+        return jsonify({'not':'в базе уже есть запись с таким ID'})
    
 
 
