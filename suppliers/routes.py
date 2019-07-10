@@ -79,12 +79,13 @@ def download_file(filename):
 def prefin():
     lls = request.args.get('name')
     req_id = request.args.get('id')
-    date_request='dsada'
+    date_request = request.args.get('date')
+    date_request=datetime.strptime(date_request, '%Y-%m-%d')
     print(date_request)
     try:
         if not preFin.query.filter_by(req_id=req_id).first():
-            print(lls + str(req_id) + date_request)
-            newFin = preFin(llc=lls, req_id=req_id, date_request=date_request)
+            print(lls + str(req_id) + ' ' + str(date_request))
+            newFin = preFin(llc=lls, req_id=req_id, date_request=date_request, complete=1)
             db.session.add(newFin)
             db.session.commit()
             return jsonify({'success':'данные успешно внесены в базу'})

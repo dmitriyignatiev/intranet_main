@@ -31,6 +31,7 @@ class preFin(db.Model):
     supplier = db.Column (db.String (240))
     req_id = db.Column(db.Integer, unique=True)
     date_request = db.Column(db.DateTime)
+    complete = db.Column(db.Integer)
     
 
 

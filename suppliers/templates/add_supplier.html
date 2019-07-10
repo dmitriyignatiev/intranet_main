@@ -36,6 +36,7 @@
         <table class="table table-sm">
             <thead>
                 <tr>
+                    <th>Действия</th>
                     <th scope="col">ТОРА или РЭД</th>
                     <th scope="col">Наименование подрядчика</th>
                     <th scope="col">Direction</th>
@@ -68,6 +69,14 @@
                 <tbody>
                     <tr>
 
+                        <th>
+
+                            <button id=re_write>
+                                исправить
+                           </button>
+                        </th>
+
+
                         <th name='tora_red'>{{form.tora_red}}</th>
                         <th name='name'>{{form.name}}</th>
                         <th name='direction'>{{req.direction}}</th>
@@ -96,6 +105,11 @@
                     </tr>
 
             </thead>
+
+            {%if req.complete==1%}
+            <button id=re_write>
+                исправить
+            </button> {%endif%}
 
             <div>
 

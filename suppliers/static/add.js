@@ -12,7 +12,7 @@ $(document).ready(function() {
         $.getJSON('/suppliers/prefin', {
             name: llc,
             id: req_id,
-            data: date_request,
+            date: date_request,
             type: 'POST',
             data: '/suppliers/prefin',
 
