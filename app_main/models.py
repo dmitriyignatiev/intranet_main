@@ -98,47 +98,40 @@ class Request (db.Model):
     redirect_comment = db.Column(db.String(120))
     direction = db.Column (db.String(120))
     cost_created = db.Column(db.DateTime, default=None)
-
     dest = db.Column (db.String (120))
     customer = db.relationship ('Customer', backref='request')
     customer_id = db.Column (db.Integer, db.ForeignKey ('customer.id'))
-
     customer_name = db.Column(db.String(120))
     payment_day = db.Column (db.Integer)
-
     cargo_type = db.Column(db.String(120))
     cargo_desciption = db.Column(db.String(120))
     cargo_value = db.Column(db.String(120))
     quantity = db.Column(db.Integer)
-
     Truck_type = db.Column(db.String(120))
     ttn = db.Column (db.String (140))
-
     type_of_loading = db.Column(db.String(120))
     type_of_truck = db.Column(db.String(120))
     weigth_cargo = db.Column(db.Integer)
     request_comments = db.Column(db.Text)
-
     pick_up_date = db.Column(db.DateTime)
     request_status = db.Column(db.String(120))
     request_order = db.Column(db.String(120))
     truck_available_opt = db.Column(db.Integer)
     dogovor_zayavka = db.Column(db.Integer)
-
     deadline_buyer = db.Column(db.DateTime)
     deadline_sale = db.Column(db.DateTime)
     questions = db.Column(db.String(800))
-
     actual = db.Column(db.String(120))
-
     min_sale = db.Column(db.Integer)
-
     #вопросы по запросом
     quest = db.Column(db.String(120))
-
     #0 не актуально, 1 - актуально
     nonactf_buyer = db.Column(db.Integer)
+    test_new = db.Column(db.Integer)
+    complete_fin = db.Column(db.Integer)
+    
 
+    
 
 
 

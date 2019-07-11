@@ -81,11 +81,12 @@ def prefin():
     req_id = request.args.get('id')
     date_request = request.args.get('date')
     date_request=datetime.strptime(date_request, '%Y-%m-%d')
-    print(date_request)
+    request_one=Request.query.get(req_id)
     try:
         if not preFin.query.filter_by(req_id=req_id).first():
             print(lls + str(req_id) + ' ' + str(date_request))
-            newFin = preFin(llc=lls, req_id=req_id, date_request=date_request, complete=1)
+            newFin = preFin(llc=lls, req_id=req_id, date_request=date_request)
+            request_one.complete_fin=1
             db.session.add(newFin)
             db.session.commit()
             return jsonify({'success':'данные успешно внесены в базу'})
@@ -95,6 +96,28 @@ def prefin():
     except exc.IntegrityError as e:
         return jsonify({'not':'в базе уже есть запись с таким ID'})
    
+
+@supp.route('/prefin_change', methods=['POST', 'GET'])
+def prefin_change():
+    lls = request.args.get('name')
+    req_id = request.args.get('id')
+    date_request = request.args.get('date')
+    date_request=datetime.strptime(date_request, '%Y-%m-%d')
+    request_one=Request.query.get(req_id)
+    newFin=preFin.query.filter_by(req_id=req_id).first()
+    try:
+        if  newFin:
+            print(lls + str(req_id) + ' ' + str(date_request))
+            newFin.date_request = date_request
+            db.session.commit()
+            return jsonify({'success':'данные успешно изменены'})
+        else:
+            print(date_request)
+            return jsonify({'not':'не удалось изменить данные'})
+    except exc.IntegrityError:
+        return jsonify({'not':'не удалось изменить данные'})
+    else:
+        return jsonify({'not':'не удалось изменить данные'})
 
 
     

@@ -70,13 +70,16 @@
                     <tr>
 
                         <th>
+                            <form action="" , method='post' id='myform'>
+                                <button type="submit">записать данные</button>
+                            </form>
 
+
+                            {%if req.complete_fin %}
                             <button id=re_write>
-                                исправить
-                           </button>
+                                исправить данные
+                           </button> {%endif%}
                         </th>
-
-
                         <th name='tora_red'>{{form.tora_red}}</th>
                         <th name='name'>{{form.name}}</th>
                         <th name='direction'>{{req.direction}}</th>
@@ -93,12 +96,7 @@
                         <th>{{form.date_unloading_plan}}</th>
 
                         <th>{{form.inv_n_S}}
-                            <th>
-                                <form action="" , method='post' id='myform'>
 
-                                    <button type="submit">записать данные</button>
-                                </form>
-                            </th>
 
 
 
