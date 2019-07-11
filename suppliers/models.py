@@ -32,6 +32,9 @@ class preFin(db.Model):
     req_id = db.Column(db.Integer, unique=True)
     date_request = db.Column(db.DateTime)
     complete = db.Column(db.Integer)
+    direction = db.Column(db.String(240))
+    sale = db.Column(db.String(240))
+    status = db.Column(db.String(240))
     
 
 

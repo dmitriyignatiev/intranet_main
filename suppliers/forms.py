@@ -7,15 +7,22 @@ from flask_login import current_user
 from wtforms.fields.html5 import DateField
 from .models import *
 
+
+
+
 def choice_supp():
     return Supplier.query
 
 class formSupplier(FlaskForm):
     name = QuerySelectField('Поставщик', query_factory=choice_supp, get_label='llc_name')
     tora_red = SelectField('ТОРА или РЭД', choices=[('Тора', 'Тора'), ('РЭД', 'РЭД')], validators=[DataRequired()])
-    date_order_C = DateField('Дата заявки с клиентом', validators=[DataRequired()], render_kw={"placeholder": "01-01-2019"})
-    date_loading_plan = DateField('Дата заявки с клиентом', validators=[DataRequired()])
+    date_order_C = DateField('Дата заявки с клиентом', validators=[DataRequired()], default=datetime.today())
+    date_loading_plan = DateField('Дата загрузки', validators=[DataRequired()], default=datetime.today())
     date_unloading_plan = DateField('Дата планируемой выгрузки', validators=[DataRequired()])
     inv_n_S=StringField('Номер счета подрядчика')
     photo = FileField()
+    status=SelectField('СТАТУС', choices=[
+        ('ЗАПЛАНИРОВАН', 'ЗАПЛАНИРОВАН'),
+        ('В ПУТИ', 'В ПУТИ'),
+        ('ДОСТАВЛЕН', 'ДОСТАВЛЕН')], validators=[DataRequired()])
     submit = SubmitField('Подтвердить')

@@ -15,11 +15,12 @@ def index():
 @supp.route('/add_supplier/<int:id>', methods=['GET', 'POST'])
 def add_supplier(id):
     req = Request.query.get(id)
+    date = req.pick_up_date
     form=formSupplier()
     if form.validate_on_submit():
         choose_supp = form.name.data
         name = choose_supp.llc_name
-    return render_template('add_supplier.html', form=form, req=req)
+    return render_template('add_supplier.html', form=form, req=req, date=date)
 
 @supp.route('/add_supplier_to_db', methods=['POST', 'GET'])
 def add_supplier_to_db():
@@ -77,15 +78,27 @@ def download_file(filename):
 
 @supp.route('/prefin', methods=['POST', 'GET'])
 def prefin():
+    
     lls = request.args.get('name')
     req_id = request.args.get('id')
     date_request = request.args.get('date')
     date_request=datetime.strptime(date_request, '%Y-%m-%d')
+    supp=request.args.get('supp')
+    
     request_one=Request.query.get(req_id)
+    dirr = request_one.direction
+    sale = request_one.user.name
+    
+
+
+
     try:
         if not preFin.query.filter_by(req_id=req_id).first():
-            print(lls + str(req_id) + ' ' + str(date_request))
-            newFin = preFin(llc=lls, req_id=req_id, date_request=date_request)
+            print(lls + str(req_id) + ' ' + str(date_request)+''+str(supp) + ''+ str(dir))
+            newFin = preFin(llc=lls, req_id=req_id, date_request=date_request,
+                        supplier=supp, direction=dirr, sale=sale,
+                        status=form.status.data,
+                        )
             request_one.complete_fin=1
             db.session.add(newFin)
             db.session.commit()
@@ -115,8 +128,6 @@ def prefin_change():
             print(date_request)
             return jsonify({'not':'не удалось изменить данные'})
     except exc.IntegrityError:
-        return jsonify({'not':'не удалось изменить данные'})
-    else:
         return jsonify({'not':'не удалось изменить данные'})
 
 

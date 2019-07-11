@@ -2,11 +2,12 @@ $(document).ready(function() {
     console.log('ready')
 
     $('#re_write').bind('click', function(e) {
-        alert('hi')
+
 
         const llc = document.querySelector("#select2-tora_red-container").innerText;
         const req_id = document.getElementsByName('id')[0].innerText;
         const date_request = document.querySelector('input#date_order_C').value;
+
 
         $.getJSON('/suppliers/prefin_change', {
                 name: llc,
@@ -36,7 +37,9 @@ $(document).ready(function() {
         const req_id = document.getElementsByName('id')[0].innerText;
         const date_request = document.querySelector('input#date_order_C').value;
 
-        //для функции исправить
+        const supplier_name = document.querySelectorAll("span")[6].innerText
+
+
 
 
 
@@ -47,6 +50,7 @@ $(document).ready(function() {
             name: llc,
             id: req_id,
             date: date_request,
+            supp: supplier_name,
             type: 'POST',
             data: '/suppliers/prefin',
 
