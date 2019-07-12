@@ -26,3 +26,4 @@ class formSupplier(FlaskForm):
         ('В ПУТИ', 'В ПУТИ'),
         ('ДОСТАВЛЕН', 'ДОСТАВЛЕН')], validators=[DataRequired()])
     submit = SubmitField('Подтвердить')
+

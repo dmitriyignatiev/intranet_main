@@ -69,17 +69,35 @@
                 </tr>
                 <tbody>
                     <tr>
-
+                       
                         <th>
+                            {%if req.complete_fin !=1 %}
                             <form action="" , method='post' id='myform'>
                                 <button type="submit">записать данные</button>
                             </form>
+                            {%endif%}
 
 
-                            {%if req.complete_fin %}
+                            {%if req.complete_fin==1 %}
                             <button id=re_write>
                                 исправить данные
                            </button> {%endif%}
+                           
+                        </form>
+                        <p></p>
+    
+                
+                        <form id='my_form_id' action="{{url_for('supp.upload')}}" method="post" enctype="multipart/form-data">
+                            <div>
+                              <label for="file"></label>
+                              <input type="file" id="file" name="file" multiple>
+                            </div>
+                            <div>
+                              <button>Submit</button>
+                            </div>
+                          </form>
+                       
+                        
                         </th>
                         <th name='tora_red'>{{form.tora_red}}</th>
                         <th name='name'>{{form.name}}</th>

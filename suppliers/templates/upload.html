@@ -1,15 +1,9 @@
-<!doctype html>
-<title>Upload new File</title>
-<h1>Upload new File</h1>
-<form method=post enctype=multipart/form-data>
-  <input type=file name=file>
-  <input type=submit value=Upload id='up'>
+<form action="{{url_for('supp.upload')}}" method="post" enctype="multipart/form-data">
+  <div>
+    <label for="file">Choose file to upload</label>
+    <input type="file" id="file" name="file" multiple>
+  </div>
+  <div>
+    <button>Submit</button>
+  </div>
 </form>
-<script type="text/javascript">
-    const button =document.querySelector('#up');
-    button.addEventListener('click', function(){
-
-        alert('hi');
-    })
-    
-    </script>

@@ -42,32 +42,39 @@ import os
 
 from werkzeug.utils import secure_filename
 
-UPLOAD_FOLDER=r'C:\Users\Admin\Desktop\int12_07\intranet_main\TN'
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'pdf'])
 
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 
 def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@supp.route('/', methods=['GET', 'POST'])
-def upload_file():
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            print(filename)
-            return redirect(url_for('index'))
-    return render_template('upload.html')
+@supp.route('/new')
+def new():
+    return render_template("upload.html")
+
+@supp.route('/upload', methods=['POST'])
+def upload():
+    target = os.path.join(APP_ROOT, 'documents/')
+    print(target)
+
+    if not os.path.isdir(target):
+        os.mkdir(target)
+
+    for file in request.files.getlist("file"):
+        print(file)
+        filename=file.filename
+        destination = "/".join([target, filename])
+        print(destination)
+        file.save(destination)
+    return jsonify({'success':'файлы успешно сохранены'})
+    # return render_template("complete.html")
+
+
+    
   
 
 @supp.route('/uploads/<path:filename>')

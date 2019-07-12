@@ -1,6 +1,38 @@
 $(document).ready(function() {
     console.log('ready')
 
+    $('#my_form_id').on('submit', function(e) {
+        e.preventDefault();
+        var formData = new FormData($(this)[0]);
+        var msg_error = 'An error has occured. Please try again later.';
+        var msg_timeout = 'The server is not responding';
+        var message = '';
+        var form = $('#my_form_id');
+        $.ajax({
+            data: formData,
+            async: false,
+            cache: false,
+            processData: false,
+            contentType: false,
+            url: form.attr('action'),
+            type: form.attr('method'),
+            error: function(xhr, status, error) {
+                if (status==="timeout") {
+                    alert(msg_timeout);
+                } else {
+                    alert(msg_error);
+                }
+            },
+            success: function(response) {
+                $('#successAlert').text(response.success).show();
+                $('#errorAlert').hide();
+            },
+            timeout: 7000
+        });
+    });
+
+
+
     $('#re_write').bind('click', function(e) {
 
 
@@ -20,8 +52,13 @@ $(document).ready(function() {
             }, function(data) {
 
                 if (data.success) {
-                    $('#successAlert').text(data.success).show();
-                    $('#errorAlert').hide();
+                    if (data.success) {
+                        $('#successAlert').text(data.success).show();
+                        $('#errorAlert').hide();
+                    } else {
+                        $('#errorAlert').text(data.not).show();
+                        $('#successAlert').hide();
+                    }
                 } else {
                     $('#errorAlert').text(data.not).show();
                     $('#successAlert').hide();
