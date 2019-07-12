@@ -10,7 +10,7 @@ from sqlalchemy import exc
 
 @supp.route('/index')
 def index():
-    return render_template('index.html')
+    return render_template('app_main.base.html')
 
 @supp.route('/add_supplier/<int:id>', methods=['GET', 'POST'])
 def add_supplier(id):
@@ -42,7 +42,7 @@ import os
 
 from werkzeug.utils import secure_filename
 
-UPLOAD_FOLDER=r'C:\Users\Dmitriy\Desktop\int_1\intranet_main\TN'
+UPLOAD_FOLDER=r'C:\Users\Admin\Desktop\int12_07\intranet_main\TN'
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'pdf'])
 
@@ -55,7 +55,6 @@ def allowed_file(filename):
 @supp.route('/', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
-
         if 'file' not in request.files:
             flash('No file part')
             return redirect(request.url)
@@ -67,7 +66,7 @@ def upload_file():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             print(filename)
-            return redirect(url_for('supp.download_file', filename=filename))
+            return redirect(url_for('index'))
     return render_template('upload.html')
   
 
@@ -79,25 +78,26 @@ def download_file(filename):
 @supp.route('/prefin', methods=['POST', 'GET'])
 def prefin():
     
-    lls = request.args.get('name')
+    tora_red = request.args.get('name')
     req_id = request.args.get('id')
     date_request = request.args.get('date')
-    date_request=datetime.strptime(date_request, '%Y-%m-%d')
-    supp=request.args.get('supp')
+    customer_order_date=datetime.strptime(date_request, '%Y-%m-%d')
+    supplier_name=request.args.get('supp')
+    status_of_request = request.args.get('st')
     
     request_one=Request.query.get(req_id)
-    dirr = request_one.direction
+    direction = request_one.direction
     sale = request_one.user.name
-    
-
+    customer = request_one.customer.name
 
 
     try:
         if not preFin.query.filter_by(req_id=req_id).first():
-            print(lls + str(req_id) + ' ' + str(date_request)+''+str(supp) + ''+ str(dir))
-            newFin = preFin(llc=lls, req_id=req_id, date_request=date_request,
-                        supplier=supp, direction=dirr, sale=sale,
-                        status=form.status.data,
+            print(tora_red + str(req_id) + ' ' + str(date_request)+''+str(supplier_name) + ''+ str(direction) + str(status_of_request))
+            newFin = preFin(tora_red=tora_red, req_id=req_id, 
+                        customer_order_date=customer_order_date,
+                        direction=direction, sale=sale,
+                        status_of_request=status_of_request,
                         )
             request_one.complete_fin=1
             db.session.add(newFin)

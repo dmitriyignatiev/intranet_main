@@ -9,6 +9,7 @@ $(document).ready(function() {
         const date_request = document.querySelector('input#date_order_C').value;
 
 
+
         $.getJSON('/suppliers/prefin_change', {
                 name: llc,
                 id: req_id,
@@ -37,8 +38,8 @@ $(document).ready(function() {
         const req_id = document.getElementsByName('id')[0].innerText;
         const date_request = document.querySelector('input#date_order_C').value;
 
-        const supplier_name = document.querySelectorAll("span")[6].innerText
-
+        const supplier_name = document.querySelectorAll("span")[6].innerText;
+        const status = document.getElementsByTagName('span')[12].innerText;
 
 
 
@@ -51,6 +52,7 @@ $(document).ready(function() {
             id: req_id,
             date: date_request,
             supp: supplier_name,
+            st: status,
             type: 'POST',
             data: '/suppliers/prefin',
 

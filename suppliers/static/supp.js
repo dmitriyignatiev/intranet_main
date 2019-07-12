@@ -4,6 +4,7 @@ $(function() {
         $('#name').select2();
         $('#tora_red').select2();
         $('#type_of_truck').select2();
+        $('#status').select2();
 
     });
 
