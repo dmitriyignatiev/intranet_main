@@ -1,7 +1,7 @@
 from flask import render_template, request, \
-    jsonify, redirect, flash, send_from_directory, url_for, send_file
+    jsonify, redirect, flash, send_from_directory, url_for, send_file, session, make_response
 from suppliers import supp
-from .models import Supplier, preFin
+from .models import Supplier, preFin, Documents
 from app_main.models import *
 from app_main import db, app
 from .forms import *
@@ -15,12 +15,22 @@ def index():
 @supp.route('/add_supplier/<int:id>', methods=['GET', 'POST'])
 def add_supplier(id):
     req = Request.query.get(id)
+    docs = Documents.query.filter(Documents.req_id==session['id'])
+    id = req.id
+    session['id']=id
+
+    new_id = session['id']
+    print(new_id)
+    
+    
+    
+    
     date = req.pick_up_date
     form=formSupplier()
     if form.validate_on_submit():
         choose_supp = form.name.data
         name = choose_supp.llc_name
-    return render_template('add_supplier.html', form=form, req=req, date=date)
+    return render_template('add_supplier.html', form=form, req=req, date=date, docs=docs)
 
 @supp.route('/add_supplier_to_db', methods=['POST', 'GET'])
 def add_supplier_to_db():
@@ -59,14 +69,19 @@ def new():
 @supp.route('/upload', methods=['POST'])
 def upload():
     target = os.path.join(APP_ROOT, 'documents/')
-    print(target)
-
+    r_id = request.args.get('req_id')
+    print(r_id)
     if not os.path.isdir(target):
         os.mkdir(target)
-
     for file in request.files.getlist("file"):
         print(file)
+        new_d = Documents(req_id=session['id'])
+        db.session.add(new_d)
+        db.session.commit()
         filename=file.filename
+        new_d.path=str(filename)
+        db.session.commit()
+
         destination = "/".join([target, filename])
         print(destination)
         file.save(destination)
@@ -74,12 +89,9 @@ def upload():
     # return render_template("complete.html")
 
 
-    
-  
-
-@supp.route('/uploads/<path:filename>')
+@supp.route('/download/<path:filename>', methods=['GET'])
 def download_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'],
+    return send_from_directory(os.path.join(APP_ROOT, 'documents/'),
                                filename, as_attachment=True)
 
 @supp.route('/prefin', methods=['POST', 'GET'])
@@ -91,6 +103,7 @@ def prefin():
     customer_order_date=datetime.strptime(date_request, '%Y-%m-%d')
     supplier_name=request.args.get('supp')
     status_of_request = request.args.get('st')
+    print(request.args)
     
     request_one=Request.query.get(req_id)
     direction = request_one.direction
@@ -119,12 +132,14 @@ def prefin():
 
 @supp.route('/prefin_change', methods=['POST', 'GET'])
 def prefin_change():
+    print(request.args)
     lls = request.args.get('name')
     req_id = request.args.get('id')
     date_request = request.args.get('date')
     date_request=datetime.strptime(date_request, '%Y-%m-%d')
     request_one=Request.query.get(req_id)
     newFin=preFin.query.filter_by(req_id=req_id).first()
+    
     try:
         if  newFin:
             print(lls + str(req_id) + ' ' + str(date_request))

@@ -103,6 +103,13 @@ class preFin(db.Model):
     s_inv_part_march_2019 = db.Column(db.Integer)
     blank_option_5 = db.Column(db.String(120))
     blank_option_6 = db.Column(db.String(120))
+
+
+class Documents(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    req_id = db.Column(db.Integer)
+    path = db.Column(db.Text)
+
     
 
 

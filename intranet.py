@@ -11,7 +11,7 @@ from app_main.models import db, User, Request, Posts, Costs, Status, \
     Direction, Agreement, Customer, Agg_number, Who_number,\
     Truck_opt, Truck, Quantity, Ttn, Customer_base, subs, Finance, Paid
         
-from suppliers.models import Supplier, newSup, preFin
+from suppliers.models import Supplier, newSup, preFin, Documents
 
 fin = Finance.query.get(44)
 pay = Paid.query.get(1)
@@ -27,6 +27,7 @@ def make_shell_context():
             'Supplier':Supplier,
             'newSup': newSup,
             'preFin': preFin,
+            'Documents': Documents,
 
             }
 
