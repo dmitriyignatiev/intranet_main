@@ -56,9 +56,11 @@
                     <th scope="col">когда загрузка</th>
                     <th scope="col">место выгрузки</th>
                     <th scope="col">когда выгрузка</th>
+                    <th scope="col">Продажа на клиента с НДС</th>
+        
                     <th scope="col">№ счета от подрядчика</th>
                     <th scope="col">дата счета</th>
-                    <th scope="col">сумма счета</th>
+                    <th scope="col">сумма счета от подрядчика</th>
                     <th scope="col">НДС/БЕЗ НДС</th>
                     <th scope="col">валюта счета</th>
                     <th scope="col">Аванс</th>
@@ -102,7 +104,7 @@
                         {%endfor%}
                        
                         
-                        </th>
+                        
                         <th name='tora_red'>{{form.tora_red}}</th>
                         <th name='name'>{{form.name}}</th>
                         <th>{{form.status}}</th>
@@ -119,12 +121,13 @@
 
                         <th>{{req.dest}}</th>
                         <th>{{form.date_unloading_plan}}</th>
-
-                        <th>{{form.inv_n_S}}
-
-
-
-
+                        <th>{{form.c_inv_amount(placeholder=fin.c_inv_amount)}}</th>  
+                        <th>{{form.s_invoice_number(placeholder=fin.s_invoice_number)}}</th>
+                        
+                        <th>{{form.s_inv_date(placeholder='req.pick_up_date')}}</th>
+                         <!-- <th><input type="datetime" value="{{req.pick_up_date}}"></th>    -->
+                        <th>{{form.s_inv_amount(placeholder=fin.s_inv_amount)}}</th>
+                         <th>{{form.s_inv_vat(placeholder=fin.s_inv_vat)}}</th> 
                     </tr>
 
             </thead>

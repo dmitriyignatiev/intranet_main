@@ -33,4 +33,4 @@ def make_shell_context():
 
 
 if __name__=='__main__':
-    app.run(debug=True, port=1003)
+    app.run(debug=True, host='10.10.1.38')

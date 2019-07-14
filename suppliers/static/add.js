@@ -83,9 +83,10 @@ $(document).ready(function() {
 
         const supplier_name = document.querySelectorAll("span")[6].innerText;
         const status = document.getElementsByTagName('span')[12].innerText;
-
-
-
+        const s_invoice_number = $('#s_invoice_number').val()
+        const s_inv_amount = $('#s_inv_amount').val()
+        const s_inv_vat = $('#s_inv_vat').val()
+        const c_inv_amount = $('#c_inv_amount').val()
 
         console.log(llc, req_id, date_request)
         e.preventDefault();
@@ -96,6 +97,10 @@ $(document).ready(function() {
             date: date_request,
             supp: supplier_name,
             st: status,
+            invoice_number:s_invoice_number,
+            sinv_amount:s_inv_amount,
+            sinv_vat:s_inv_vat,
+            cinv_amount:c_inv_amount,
             type: 'POST',
             data: '/suppliers/prefin',
 

@@ -6,6 +6,9 @@ from app_main.models import User, Direction, Who_number, Customer, Truck, Quanti
 from flask_login import current_user
 from wtforms.fields.html5 import DateField
 from .models import *
+from flask import session
+from app_main.models import Request
+
 
 
 
@@ -17,9 +20,14 @@ class formSupplier(FlaskForm):
     name = QuerySelectField('Поставщик', query_factory=choice_supp, get_label='llc_name')
     tora_red = SelectField('ТОРА или РЭД', choices=[('Тора', 'Тора'), ('РЭД', 'РЭД')], validators=[DataRequired()])
     date_order_C = DateField('Дата заявки с клиентом', validators=[DataRequired()], default=datetime.today())
-    date_loading_plan = DateField('Дата загрузки', validators=[DataRequired()], default=datetime.today())
+    date_loading_plan = DateField('Дата загрузки', validators=[DataRequired()])
     date_unloading_plan = DateField('Дата планируемой выгрузки', validators=[DataRequired()])
-    inv_n_S=StringField('Номер счета подрядчика')
+    s_invoice_number=StringField('Номер счета подрядчика')
+    s_inv_date = DateField('ДАТА')
+    s_inv_amount = IntegerField('Сумма счета подрячика')
+    s_inv_vat = SelectField('НДС', choices=[(20, 20), (0, 0), (1, 1)])
+    c_inv_amount = IntegerField('Сумма счета на клиента')
+
     photo = FileField()
     status=SelectField('СТАТУС', choices=[
         ('ЗАПЛАНИРОВАН', 'ЗАПЛАНИРОВАН'),

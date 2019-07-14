@@ -14,23 +14,26 @@ def index():
 
 @supp.route('/add_supplier/<int:id>', methods=['GET', 'POST'])
 def add_supplier(id):
+    
     req = Request.query.get(id)
+    session['id']=id
+    fin = preFin.query.filter(preFin.req_id==session['id']).first()
     docs = Documents.query.filter(Documents.req_id==session['id'])
     id = req.id
-    session['id']=id
+    pick_up_date = req.pick_up_date
+    
+    session['pick_up_date'] = pick_up_date
 
     new_id = session['id']
-    print(new_id)
-    
-    
-    
-    
+    print(new_id, pick_up_date)
+
     date = req.pick_up_date
     form=formSupplier()
+    
     if form.validate_on_submit():
         choose_supp = form.name.data
         name = choose_supp.llc_name
-    return render_template('add_supplier.html', form=form, req=req, date=date, docs=docs)
+    return render_template('add_supplier.html', form=form, req=req, date=date, docs=docs, fin=fin)
 
 @supp.route('/add_supplier_to_db', methods=['POST', 'GET'])
 def add_supplier_to_db():
@@ -96,20 +99,26 @@ def download_file(filename):
 
 @supp.route('/prefin', methods=['POST', 'GET'])
 def prefin():
-    
+  
     tora_red = request.args.get('name')
     req_id = request.args.get('id')
     date_request = request.args.get('date')
     customer_order_date=datetime.strptime(date_request, '%Y-%m-%d')
     supplier_name=request.args.get('supp')
     status_of_request = request.args.get('st')
-    print(request.args)
+    s_invoice_number = request.args.get('invoice_number')
+    s_inv_amount = request.args.get('sinv_amount')
+    s_inv_vat = request.args.get('sinv_vat')
+    c_inv_amount=request.args.get('cinv_amount')
+    
+    print(s_invoice_number)
     
     request_one=Request.query.get(req_id)
     direction = request_one.direction
     sale = request_one.user.name
     customer = request_one.customer.name
-
+    s_inv_vat = s_inv_vat
+    print('eto' +str(s_inv_vat))
 
     try:
         if not preFin.query.filter_by(req_id=req_id).first():
@@ -118,6 +127,11 @@ def prefin():
                         customer_order_date=customer_order_date,
                         direction=direction, sale=sale,
                         status_of_request=status_of_request,
+                        s_invoice_number=s_invoice_number,
+                        s_inv_amount=s_inv_amount,
+                        s_inv_vat = s_inv_vat,
+                        c_inv_amount=c_inv_amount
+                        
                         )
             request_one.complete_fin=1
             db.session.add(newFin)

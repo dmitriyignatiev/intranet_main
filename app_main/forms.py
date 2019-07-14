@@ -21,7 +21,9 @@ def choice_direction():
     return buyer
 
 def choice_customer():
+    
     customer = Customer.query.filter(Customer.user_id==current_user.id)
+   
     return customer
 
 def choice_truck():

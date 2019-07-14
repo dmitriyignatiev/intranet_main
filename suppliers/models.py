@@ -1,5 +1,6 @@
 from app_main import db
 from datetime import datetime
+from sqlalchemy.ext.hybrid import hybrid_property
 
 class Supplier(db.Model):
     id = db.Column (db.Integer, primary_key=True)
@@ -50,7 +51,7 @@ class preFin(db.Model):
     s_invoice_number = db.Column(db.String(120))
     ttn_cmr_available = db.Column(db.String(120))
     s_inv_date = db.Column(db.DateTime)
-    s_inv_amount = db.Column(db.Integer)
+    s_inv_amount = db.Column(db.Integer, nullable=True)
     s_inv_vat = db.Column(db.Integer)
     s_inv_currency = db.Column(db.String(120))
     s_prepaid_amount = db.Column(db.Integer)
@@ -103,6 +104,14 @@ class preFin(db.Model):
     s_inv_part_march_2019 = db.Column(db.Integer)
     blank_option_5 = db.Column(db.String(120))
     blank_option_6 = db.Column(db.String(120))
+
+    @hybrid_property
+    def profit(self):
+        self.profit = self.s_inv_amount - self.c_inv_amount
+        db.session.commit()
+        return self.profit
+    
+    
 
 
 class Documents(db.Model):
