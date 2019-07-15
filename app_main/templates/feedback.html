@@ -15,7 +15,8 @@
   <thead>
     <tr>
        <th scope="col">Возможные действие</th>
-        <th scope="col">#</th>
+        
+       <th scope="col">#</th>
         <th scope="col">Статус запроса</th>
         <th scope="col">Закупщик
         <th scope="col">Количество перевозок по этому напарвлению в месяц</th>
@@ -52,14 +53,29 @@
           <a href="{{ url_for('re_direct', id=req.id) }}"><button type="button" class="btn btn-info btn-sm" > Перенаправить</button></a>
           <a href="{{ url_for('cost', id=req.id) }}"><button type="button" class="btn btn-info btn-sm">Указать стоимость</button></a>
         {%endif%}
+        <form id='my_form_id' action="{{url_for('upload')}}" method="post" enctype="multipart/form-data" name='dedwed'>
+          <div>
+            <label for="file"></label>
+            <input type="file" id="file" name="file" multiple>
+            <button>Submit</button>
+          </div>
+            </form>
+          </div>
+          <div>
+          <button id='q'>q</button></div>
 
       </th>
-        <th> {{req.id}}</th>
+        <th id="mid"> {{req.id}}</th>
         <th><a href="{{url_for('status_for_request', id = req.id)}}">{{req.request_status}}</a></th>
         {%for r in req.users%}
         <th>{{r.name}}</th>
         {%endfor%}
-        <th>{{req.quantity}}</th>
+        <th>
+        {%for d in docs %}
+        <p><a href="{{url_for('download_file', filename=d.path)}}">{{d.path}}</a></p>
+        {%endfor%}
+        </th>
+          <th>{{req.quantity}}</th>
         <th>{{moment(req.pick_up_date).format('ll')}}</th>
         <th> {{req.customer_name}}</th>
         <th> {{req.payment_day}}</th>
@@ -143,7 +159,14 @@
 
 
 
-
+                <script>
+                    b = document.querySelector('#q');
+                    req = document.getElementById("mid").innerText;
+                    b.onclick = function() {
+                      alert( req);
+                    };
+                    
+                  </script>
 
 {%endblock%}
 

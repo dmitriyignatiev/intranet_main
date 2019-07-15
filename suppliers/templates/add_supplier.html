@@ -104,7 +104,7 @@
                         {%endfor%}
                        
                         
-                        
+                        <th><a href="{{url_for('download_file', filename=z_doc.path)}}">{{z_doc.path}}</th>
                         <th name='tora_red'>{{form.tora_red}}</th>
                         <th name='name'>{{form.name}}</th>
                         <th>{{form.status}}</th>
@@ -124,11 +124,11 @@
                         <th>{{form.c_inv_amount(placeholder=fin.c_inv_amount)}}</th>  
                         <th>{{form.s_invoice_number(placeholder=fin.s_invoice_number)}}</th>
                         
-                        <th>{{form.s_inv_date(placeholder='req.pick_up_date')}}</th>
-                         <!-- <th><input type="datetime" value="{{req.pick_up_date}}"></th>    -->
+                        <th>{{form.s_inv_date(placeholder=req.pick_up_date)}}</th>
                         <th>{{form.s_inv_amount(placeholder=fin.s_inv_amount)}}</th>
                          <th>{{form.s_inv_vat(placeholder=fin.s_inv_vat)}}</th> 
-                    </tr>
+                        <th><input placeholder="{{req.pick_up_date}}" class="textbox-n" type="text" onfocusin="(this.type='date')" onfocusout="(this.type='text')">dewd</th>
+                        </tr>
 
             </thead>
 

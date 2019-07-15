@@ -336,7 +336,11 @@ class Paid(db.Model):
     finance = db.Column(db.Integer, db.ForeignKey('finance.id'))
 
 
-
+#класс где храняться пути для заявки с клиентами
+class Zayvka(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    req_id = db.Column(db.Integer)
+    path = db.Column(db.Text)
 
 
 

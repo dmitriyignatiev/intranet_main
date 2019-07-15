@@ -6,7 +6,7 @@ from app_main.models import User, Direction, Who_number, Customer, Truck, Quanti
 from flask_login import current_user
 from wtforms.fields.html5 import DateField
 from .models import *
-from flask import session
+from flask import session,g
 from app_main.models import Request
 
 

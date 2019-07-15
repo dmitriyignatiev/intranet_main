@@ -142,11 +142,18 @@
          <a href="{{url_for('edit', id=request.id)}}"><button type="button" class="btn btn-info btn-sm"><i class="glyphicon glyphicon-pencil" aria-hidden="true"></i></button></a>
          <!--<a href="{{url_for('delete_req', id=request.id)}}"><button type="button" class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i></button></a>-->
          <a href="{{url_for('feedback', id=request.id)}}"><button type="button" class="btn btn-warning btn-sm"><i class="glyphicon glyphicon-share-alt" aria-hidden="true"></i></button></a>
-      </th>
+        
+          
+
+          
+            
+
+        
+        </th>
        <!--доделать-->
 
         <th><a href="{{url_for('status_for_request', id = request.id)}}">{{request.request_status}}</a></th>
-        <th>{{request.id}}</th>
+        <th id='id'>{{request.id}}</th>
         <th>{{request.customer_name|truncate() }}</th>
         <th>{{request.quantity}}</th>
         <th>{{moment(request.pick_up_date).format('ll')}}</th>
@@ -231,7 +238,7 @@
       </th>
         <th> <a href="{{url_for('status_for_request', id = req.id)}}">{{req.request_status}}</a></th>
         {%if req.quest%}
-        <th bgcolor="green">{{req.id}}</th>
+        <th bgcolor="green" id='id'>{{req.id}}</th>
         {%else%}
         <th> {{req.id}}</th>
         {%endif%}
@@ -273,6 +280,8 @@
   </table>
 </table>
 </div>
+
+
 {%endblock%}
 
 {%block scripts%}

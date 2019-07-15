@@ -1,11 +1,13 @@
 from flask import render_template, request, \
-    jsonify, redirect, flash, send_from_directory, url_for, send_file, session, make_response
+    jsonify, redirect, flash, \
+        send_from_directory, url_for, send_file, session, make_response, g
 from suppliers import supp
 from .models import Supplier, preFin, Documents
 from app_main.models import *
 from app_main import db, app
 from .forms import *
 from sqlalchemy import exc
+
 
 
 @supp.route('/index')
@@ -16,11 +18,15 @@ def index():
 def add_supplier(id):
     
     req = Request.query.get(id)
-    session['id']=id
+    session['id']=req.id
     fin = preFin.query.filter(preFin.req_id==session['id']).first()
     docs = Documents.query.filter(Documents.req_id==session['id'])
     id = req.id
     pick_up_date = req.pick_up_date
+    
+    z_id = session['id']
+    z_doc = Zayvka.query.filter(Zayvka.req_id==z_id).first()
+    print('z_doc is:' + str(z_id ))
     
     session['pick_up_date'] = pick_up_date
 
@@ -33,7 +39,7 @@ def add_supplier(id):
     if form.validate_on_submit():
         choose_supp = form.name.data
         name = choose_supp.llc_name
-    return render_template('add_supplier.html', form=form, req=req, date=date, docs=docs, fin=fin)
+    return render_template('add_supplier.html', form=form, req=req, date=date, docs=docs, fin=fin, z_doc=z_doc)
 
 @supp.route('/add_supplier_to_db', methods=['POST', 'GET'])
 def add_supplier_to_db():
@@ -77,25 +83,31 @@ def upload():
     if not os.path.isdir(target):
         os.mkdir(target)
     for file in request.files.getlist("file"):
-        print(file)
-        new_d = Documents(req_id=session['id'])
-        db.session.add(new_d)
-        db.session.commit()
-        filename=file.filename
-        new_d.path=str(filename)
-        db.session.commit()
+        if file and allowed_file(file.filename):
+            print(file)
+            new_d = Documents(req_id=session['id'])
+            db.session.add(new_d)
+            db.session.commit()
+            filename=str(new_d.req_id) + file.filename
+            new_d.path=str(filename)
+            db.session.commit()
 
-        destination = "/".join([target, filename])
-        print(destination)
-        file.save(destination)
-    return jsonify({'success':'файлы успешно сохранены'})
-    # return render_template("complete.html")
+            destination = "/".join([target, filename])
+            print(destination)
+            file.save(destination)
+            return jsonify({'success':'файлы успешно сохранены'})
+        else:
+            return jsonify({'success':'файлы запрещен к загрузке'})
+
+
 
 
 @supp.route('/download/<path:filename>', methods=['GET'])
 def download_file(filename):
     return send_from_directory(os.path.join(APP_ROOT, 'documents/'),
                                filename, as_attachment=True)
+
+
 
 @supp.route('/prefin', methods=['POST', 'GET'])
 def prefin():

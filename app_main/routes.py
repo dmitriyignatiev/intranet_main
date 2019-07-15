@@ -8,7 +8,7 @@ from sqlalchemy import desc
 
 from werkzeug.utils import secure_filename
 from flask import render_template, flash, url_for, redirect, request
-from flask import send_from_directory
+from flask import send_from_directory, session
 
 from app_main import app
 from flask_login import current_user, login_required, login_user, logout_user
@@ -38,11 +38,14 @@ def logout():
 @app.route('/', methods=['POST', 'GET'])
 @login_required
 def index():
+   
+    
     form = ch_customer()
     requests = Request.query.filter(db.and_(Request.user_id==current_user.id, Request.request_status != 'НЕАКТУАЛЬНО')).order_by(desc(Request.created)).all()
     req_cost = Request.query.filter(Request.user_id==current_user.id).filter(Request.cost==None).all()
     now = datetime.now()
     customer = form.cust.data
+   
     if form:
         if customer is not None:
             return redirect(url_for('index_c', name=customer.name))
@@ -321,10 +324,15 @@ def request_with_cost():
 @app.route('/feedback/<int:id>', methods=['GET', 'POST'])
 def feedback(id):
     req = Request.query.get(id)
+    session['id']=id
+    docs = Zayvka.query.filter(Zayvka.req_id==session['id'])
     user = User.query.get(current_user.id)
     posts = Posts.query.filter(Posts.request_id==id).order_by(Posts.post_date.desc()).all()
     form = FeedBack()
     form_for_buyer = formForBuyer()
+    z_id = session['id']
+    z_doc = Zayvka.query.filter(Zayvka.req_id==z_id).first()
+    print(z_id)
 
     if form.validate_on_submit():
         req = Request.query.get(id)
@@ -409,7 +417,7 @@ def feedback(id):
 
 
         return redirect(url_for('feedback', id=id))
-    return render_template('feedback.html', form=form, req=req, user=user, posts=posts)
+    return render_template('feedback.html', form=form, req=req, user=user, posts=posts, z_doc=z_doc, docs=docs)
 
 @app.route('/recive_order', methods = ['POST', 'GET'])
 def recieve_order():
@@ -780,5 +788,48 @@ def process():
     return jsonify(name=name, date=date)
 
 
+#загрузка заявки от клиента
+import os
+
+from werkzeug.utils import secure_filename
+
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'pdf'])
 
 
+
+def allowed_file(filename):
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/upload', methods=['POST'])
+def upload():
+   
+    
+    target = os.path.join(APP_ROOT, 'zayavka/')
+    print(session["id"])
+    if not os.path.isdir(target):
+        os.mkdir(target)
+    for file in request.files.getlist("file"):
+        if file and allowed_file(file.filename):
+            print(file)
+            new_d = Zayvka(req_id=session['id'])
+            db.session.add(new_d)
+            db.session.commit()
+            filename=file.filename
+            new_d.path=str(filename)
+            db.session.commit()
+
+            destination = "/".join([target, filename])
+            print(destination)
+            file.save(destination)
+            return jsonify({'success':'файлы успешно сохранены'}, docs=docs)
+        else:
+            return jsonify({'success':'файлы запрещен к загрузке'})
+    
+
+@app.route('/download/<path:filename>', methods=['GET'])
+def download_file(filename):
+    return send_from_directory(os.path.join(APP_ROOT, 'zayavka/'),
+                               filename, as_attachment=True)
