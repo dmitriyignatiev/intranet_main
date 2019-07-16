@@ -114,13 +114,14 @@
                                     <th> {{req.users[0].name}}</th>
                                     <th>{{req.customer.name}}</th>
                                     <th>{{req.id}}</th>
-                                    <th input name='date_request'>{{form.date_order_C}}</th>
+                                    <th><input type='text' value={{req.pick_up_date}} onfocus="(this.type='date')" onblur="(this.type='text')" id='date_order_C'></th>
                                     <th>{{req.type_of_truck}}</th>
                                     <th>{{req.org}}</th>
-                                    <th>{{form.date_loading_plan}}</th>
-
+                                    <th><input type='text' value={{req.loading_date}} onfocus="(this.type='date')" onblur="(this.type='text')" id='date_loading_plan'></th>
                                     <th>{{req.dest}}</th>
-                                    <th>{{form.date_unloading_plan}}</th>
+                                    <th><input type='text' value={{req.unloading_date}} onfocus="(this.type='date')" onblur="(this.type='text')" id='date_order_C'></th>
+                                    <!-- <th><input type='text' value={{req.unloading_date}} onfocus="(this.type='date')" onblur="(this.type='text')" id='unloading_date'></th> -->
+
                                     <th>{{form.c_inv_amount(placeholder=fin.c_inv_amount)}}</th>
                                     <th>{{form.s_invoice_number(placeholder=fin.s_invoice_number)}}</th>
 

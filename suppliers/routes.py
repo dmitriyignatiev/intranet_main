@@ -123,8 +123,9 @@ def prefin():
     s_inv_vat = request.args.get('sinv_vat')
     c_inv_amount=request.args.get('cinv_amount')
     supplier_id = Supplier.query.filter(Supplier.llc_name==supplier_name).first()
-    
-    print('eto supp_id: ' + str(supplier_id))
+    pick_up_date = request.args.get('pick_up_date')
+    unloading_date = request.args.get('unloading_date')
+    print('eto supp_id: ' + str(pick_up_date))
     
     request_one=Request.query.get(req_id)
     direction = request_one.direction
@@ -145,7 +146,8 @@ def prefin():
                         s_inv_vat = s_inv_vat,
                         c_inv_amount=c_inv_amount,
                         supplier_id = supplier_id.id,
-                        
+                        loading_date = pick_up_date,
+                        unloading_date =unloading_date,
                         )
             request_one.complete_fin=1
             db.session.add(newFin)
