@@ -148,6 +148,7 @@ def prefin():
                         supplier_id = supplier_id.id,
                         loading_date = pick_up_date,
                         unloading_date =unloading_date,
+                        
                         )
             request_one.complete_fin=1
             db.session.add(newFin)

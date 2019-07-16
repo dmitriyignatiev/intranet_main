@@ -81,7 +81,7 @@ $(document).ready(function() {
         const req_id = document.getElementsByName('id')[0].innerText;
         const date_request = document.querySelector('input#date_order_C').value;
         const date_loading_plan = document.querySelector('input#date_loading_plan').value;
-        const date_unloading_date = document.querySelector('input#unloading_date').value;
+        const date_unloading_date = document.querySelector('input#date_unloading_date').value;
 
         const supplier_name = document.querySelectorAll("span")[6].innerText;
         const status = document.getElementsByTagName('span')[12].innerText;
@@ -89,6 +89,7 @@ $(document).ready(function() {
         const s_inv_amount = $('#s_inv_amount').val()
         const s_inv_vat = $('#s_inv_vat').val()
         const c_inv_amount = $('#c_inv_amount').val()
+        
 
         console.log(llc, req_id, date_request)
         e.preventDefault();

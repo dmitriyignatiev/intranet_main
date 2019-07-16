@@ -104,7 +104,7 @@
                             {%for d in z_doc%}
                             <p><a href="{{url_for('download_file', filename=d.path)}}">{{d.path}}</a>
                                 <p>{%endfor%}
-
+                                        {{ form.csrf_token()         }}
                                     <th name='tora_red'>{{form.tora_red}}</th>
                                     <th name='name'>{{form.name}}</th>
                                     <th>{{form.status}}</th>
@@ -114,22 +114,24 @@
                                     <th> {{req.users[0].name}}</th>
                                     <th>{{req.customer.name}}</th>
                                     <th>{{req.id}}</th>
-                                    <th><input type='text' value={{req.pick_up_date}} onfocus="(this.type='date')" onblur="(this.type='text')" id='date_order_C'></th>
+                                    <th><input type='text' value={{req.created}} onfocus="(this.type='date')" onblur="(this.type='text')" id='date_order_C'></th>
                                     <th>{{req.type_of_truck}}</th>
                                     <th>{{req.org}}</th>
-                                    <th><input type='text' value={{req.loading_date}} onfocus="(this.type='date')" onblur="(this.type='text')" id='date_loading_plan'></th>
-                                    <th>{{req.dest}}</th>
-                                    <th><input type='text' value={{req.unloading_date}} onfocus="(this.type='date')" onblur="(this.type='text')" id='date_order_C'></th>
-                                    <!-- <th><input type='text' value={{req.unloading_date}} onfocus="(this.type='date')" onblur="(this.type='text')" id='unloading_date'></th> -->
 
-                                    <th>{{form.c_inv_amount(placeholder=fin.c_inv_amount)}}</th>
+                                    <th><input type='text' value={{req.pick_up_date}}  onfocus="(this.type='date')" onblur="(this.type='text')" id='date_loading_plan'></th>
+                                    <th>{{req.dest}}</th>
+                                    <th><input type='date' value={{fin.unloading_date}} onfocus="(this.type='date')" onblur="(this.type='text')" id='date_unloading_date'></th>
+                                    
+
+                                    
+                                    <th>{{form.s_inv_vat(value=fin.s_inv_vat)}}</th>
                                     <th>{{form.s_invoice_number(placeholder=fin.s_invoice_number)}}</th>
 
                                     <th>{{form.s_inv_date(placeholder=req.pick_up_date)}}</th>
                                     <th>{{form.s_inv_amount(placeholder=fin.s_inv_amount)}}</th>
                                     <th>{{form.s_inv_vat(placeholder=fin.s_inv_vat)}}</th>
-                                    <th><input placeholder="{{req.pick_up_date}}" class="textbox-n" type="text" onfocusin="(this.type='date')" onfocusout="(this.type='text')">dewd</th>
-                    </tr>
+                    
+                                </tr>
 
             </thead>
 
@@ -141,8 +143,7 @@
             <div>
 
             </div>
-
-
+          
 
 
 

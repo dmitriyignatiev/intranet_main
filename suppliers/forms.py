@@ -27,6 +27,8 @@ class formSupplier(FlaskForm):
     s_inv_amount = IntegerField('Сумма счета подрячика')
     s_inv_vat = SelectField('НДС', choices=[(20, 20), (0, 0), (1, 1)])
     c_inv_amount = IntegerField('Сумма счета на клиента')
+    c_inv_currency = SelectField('Валюта', choices=[('RUR', 'RUR'), ('EUR', 'EUR'), ('USD', 'USD')])
+
 
     photo = FileField()
     status=SelectField('СТАТУС', choices=[

@@ -106,6 +106,7 @@ class preFin(db.Model):
     blank_option_5 = db.Column(db.String(120))
     blank_option_6 = db.Column(db.String(120))
     supplier_id = db.Column(db.Integer, db.ForeignKey('supplier.id'))
+    vat = db.Column(db.Integer)
 
     
     
