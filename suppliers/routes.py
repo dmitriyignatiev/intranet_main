@@ -25,7 +25,7 @@ def add_supplier(id):
     pick_up_date = req.pick_up_date
     
     z_id = session['id']
-    z_doc = Zayvka.query.filter(Zayvka.req_id==z_id).first()
+    z_doc = Zayvka.query.filter(Zayvka.req_id==z_id)
     print('z_doc is:' + str(z_id ))
     
     session['pick_up_date'] = pick_up_date
@@ -122,8 +122,9 @@ def prefin():
     s_inv_amount = request.args.get('sinv_amount')
     s_inv_vat = request.args.get('sinv_vat')
     c_inv_amount=request.args.get('cinv_amount')
+    supplier_id = Supplier.query.filter(Supplier.llc_name==supplier_name).first()
     
-    print(s_invoice_number)
+    print('eto supp_id: ' + str(supplier_id))
     
     request_one=Request.query.get(req_id)
     direction = request_one.direction
@@ -142,7 +143,8 @@ def prefin():
                         s_invoice_number=s_invoice_number,
                         s_inv_amount=s_inv_amount,
                         s_inv_vat = s_inv_vat,
-                        c_inv_amount=c_inv_amount
+                        c_inv_amount=c_inv_amount,
+                        supplier_id = supplier_id.id,
                         
                         )
             request_one.complete_fin=1

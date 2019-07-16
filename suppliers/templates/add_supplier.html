@@ -57,7 +57,7 @@
                     <th scope="col">место выгрузки</th>
                     <th scope="col">когда выгрузка</th>
                     <th scope="col">Продажа на клиента с НДС</th>
-        
+
                     <th scope="col">№ счета от подрядчика</th>
                     <th scope="col">дата счета</th>
                     <th scope="col">сумма счета от подрядчика</th>
@@ -71,64 +71,64 @@
                 </tr>
                 <tbody>
                     <tr>
-                       
+
                         <th>
                             {%if req.complete_fin !=1 %}
                             <form action="" , method='post' id='myform'>
                                 <button type="submit">записать данные</button>
                             </form>
-                            {%endif%}
-
-
-                            {%if req.complete_fin==1 %}
+                            {%endif%} {%if req.complete_fin==1 %}
                             <button id=re_write>
                                 исправить данные
                            </button> {%endif%}
-                           
-                        </form>
-                        <p></p>
-    
-                
-                        <form id='my_form_id' action="{{url_for('supp.upload')}}" method="post" enctype="multipart/form-data" name='dedwed'>
-                            <div>
-                              <label for="file"></label>
-                              <input type="file" id="file" name="file" multiple>
-                            </div>
-                            <div>
-                              <button>Submit</button>
-                            </div>
-                          </form>
-                        
-                        {%for d in docs%}
-                          <p><a href="{{url_for('supp.download_file', filename=d.path)}}">{{d.path}}</a></p>
-                        {%endfor%}
-                       
-                        
-                        <th><a href="{{url_for('download_file', filename=z_doc.path)}}">{{z_doc.path}}</th>
-                        <th name='tora_red'>{{form.tora_red}}</th>
-                        <th name='name'>{{form.name}}</th>
-                        <th>{{form.status}}</th>
-                        <th name='direction'>{{req.direction}}</th>
-                        <th name='id'>{{req.id}}</th>
-                        <th>{{req.user.name}}</th>
-                        <th> {{req.users[0].name}}</th>
-                        <th>{{req.customer.name}}</th>
-                        <th>{{req.id}}</th>
-                        <th name='date_request'>{{form.date_order_C}}</th>
-                        <th>{{req.type_of_truck}}</th>
-                        <th>{{req.org}}</th>
-                        <th>{{form.date_loading_plan}}</th>
 
-                        <th>{{req.dest}}</th>
-                        <th>{{form.date_unloading_plan}}</th>
-                        <th>{{form.c_inv_amount(placeholder=fin.c_inv_amount)}}</th>  
-                        <th>{{form.s_invoice_number(placeholder=fin.s_invoice_number)}}</th>
-                        
-                        <th>{{form.s_inv_date(placeholder=req.pick_up_date)}}</th>
-                        <th>{{form.s_inv_amount(placeholder=fin.s_inv_amount)}}</th>
-                         <th>{{form.s_inv_vat(placeholder=fin.s_inv_vat)}}</th> 
-                        <th><input placeholder="{{req.pick_up_date}}" class="textbox-n" type="text" onfocusin="(this.type='date')" onfocusout="(this.type='text')">dewd</th>
-                        </tr>
+                            </form>
+                            <p></p>
+
+
+                            <form id='my_form_id' action="{{url_for('supp.upload')}}" method="post" enctype="multipart/form-data" name='dedwed'>
+                                <div>
+                                    <label for="file"></label>
+                                    <input type="file" id="file" name="file" multiple>
+                                </div>
+                                <div>
+                                    <button>Submit</button>
+                                </div>
+                            </form>
+                            <p>ТН, ТТН</p>
+                            {%for d in docs%}
+                            <p><a href="{{url_for('supp.download_file', filename=d.path)}}">{{d.path}}</a></p>
+                            {%endfor%}
+
+                            <p> Заявка от клиента или другие доки от продавца, см ниже:</p>
+                            {%for d in z_doc%}
+                            <p><a href="{{url_for('download_file', filename=d.path)}}">{{d.path}}</a>
+                                <p>{%endfor%}
+
+                                    <th name='tora_red'>{{form.tora_red}}</th>
+                                    <th name='name'>{{form.name}}</th>
+                                    <th>{{form.status}}</th>
+                                    <th name='direction'>{{req.direction}}</th>
+                                    <th name='id'>{{req.id}}</th>
+                                    <th>{{req.user.name}}</th>
+                                    <th> {{req.users[0].name}}</th>
+                                    <th>{{req.customer.name}}</th>
+                                    <th>{{req.id}}</th>
+                                    <th input name='date_request'>{{form.date_order_C}}</th>
+                                    <th>{{req.type_of_truck}}</th>
+                                    <th>{{req.org}}</th>
+                                    <th>{{form.date_loading_plan}}</th>
+
+                                    <th>{{req.dest}}</th>
+                                    <th>{{form.date_unloading_plan}}</th>
+                                    <th>{{form.c_inv_amount(placeholder=fin.c_inv_amount)}}</th>
+                                    <th>{{form.s_invoice_number(placeholder=fin.s_invoice_number)}}</th>
+
+                                    <th>{{form.s_inv_date(placeholder=req.pick_up_date)}}</th>
+                                    <th>{{form.s_inv_amount(placeholder=fin.s_inv_amount)}}</th>
+                                    <th>{{form.s_inv_vat(placeholder=fin.s_inv_vat)}}</th>
+                                    <th><input placeholder="{{req.pick_up_date}}" class="textbox-n" type="text" onfocusin="(this.type='date')" onfocusout="(this.type='text')">dewd</th>
+                    </tr>
 
             </thead>
 

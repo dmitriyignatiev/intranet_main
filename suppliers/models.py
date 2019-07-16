@@ -20,6 +20,7 @@ class Supplier(db.Model):
     date = db.Column(db.DateTime, default=datetime.utcnow)
     finance = db.Column(db.Integer, db.ForeignKey('finance.id'))
     pay = db.Column(db.Integer, db.ForeignKey('paid.id'))
+    prefin = db.relationship('preFin', backref='supplier', lazy='dynamic')
 
 class newSup(db.Model):
     id = db.Column (db.Integer, primary_key=True)
@@ -104,20 +105,22 @@ class preFin(db.Model):
     s_inv_part_march_2019 = db.Column(db.Integer)
     blank_option_5 = db.Column(db.String(120))
     blank_option_6 = db.Column(db.String(120))
+    supplier_id = db.Column(db.Integer, db.ForeignKey('supplier.id'))
 
-    @hybrid_property
-    def profit(self):
-        self.profit = self.s_inv_amount - self.c_inv_amount
-        db.session.commit()
-        return self.profit
     
     
-
 
 class Documents(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     req_id = db.Column(db.Integer)
     path = db.Column(db.Text)
+
+
+
+
+
+
+
 
     
 

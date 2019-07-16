@@ -817,7 +817,7 @@ def upload():
             new_d = Zayvka(req_id=session['id'])
             db.session.add(new_d)
             db.session.commit()
-            filename=file.filename
+            filename=str(session['id'])+file.filename
             new_d.path=str(filename)
             db.session.commit()
 
