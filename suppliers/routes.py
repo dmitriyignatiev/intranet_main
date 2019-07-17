@@ -24,6 +24,7 @@ def add_supplier(id):
     id = req.id
     pick_up_date = req.pick_up_date
     
+    
     z_id = session['id']
     z_doc = Zayvka.query.filter(Zayvka.req_id==z_id)
     print('z_doc is:' + str(z_id ))
@@ -111,6 +112,7 @@ def download_file(filename):
 
 @supp.route('/prefin', methods=['POST', 'GET'])
 def prefin():
+    form = formSupplier()
   
     tora_red = request.args.get('name')
     req_id = request.args.get('id')
@@ -124,8 +126,10 @@ def prefin():
     c_inv_amount=request.args.get('cinv_amount')
     supplier_id = Supplier.query.filter(Supplier.llc_name==supplier_name).first()
     pick_up_date = request.args.get('pick_up_date')
+   
     unloading_date = request.args.get('unloading_date')
-    print('eto supp_id: ' + str(pick_up_date))
+    s_inv_date = request.args.get('sinv_date')
+    print('eto form.inv.date: ')
     
     request_one=Request.query.get(req_id)
     direction = request_one.direction
@@ -147,7 +151,10 @@ def prefin():
                         c_inv_amount=c_inv_amount,
                         supplier_id = supplier_id.id,
                         loading_date = pick_up_date,
-                        unloading_date =unloading_date,
+                        unloading_date = unloading_date,
+                        s_inv_date = s_inv_date,
+                        
+                        
                         
                         )
             request_one.complete_fin=1

@@ -120,14 +120,22 @@
 
                                     <th><input type='text' value={{req.pick_up_date}}  onfocus="(this.type='date')" onblur="(this.type='text')" id='date_loading_plan'></th>
                                     <th>{{req.dest}}</th>
-                                    <th><input type='date' value={{fin.unloading_date}} onfocus="(this.type='date')" onblur="(this.type='text')" id='date_unloading_date'></th>
-                                    
+                                    {%if fin.unloading_date%}
+                                    <th><input type='text' value={{fin.unloading_date}} onfocus="(this.type='date')" onblur="(this.type='text')" id='date_unloading_date'></th>
+                                    {%else%}
+                                    <th><input type='text'  onfocus="(this.type='date')" onblur="(this.type='text')" id='date_unloading_date'></th>
+                                    {%endif%}
+
 
                                     
                                     <th>{{form.s_inv_vat(value=fin.s_inv_vat)}}</th>
                                     <th>{{form.s_invoice_number(placeholder=fin.s_invoice_number)}}</th>
+                                    {%if fin.s_inv_date%}
+                                    <th>{{form.s_inv_date(value=fin.s_inv_date.strftime('%Y-%m-%d'))}}</th>
+                                    {%else%}
+                                    <th>{{form.s_inv_date}}</th>
+                                    {%endif%}
 
-                                    <th>{{form.s_inv_date(placeholder=req.pick_up_date)}}</th>
                                     <th>{{form.s_inv_amount(placeholder=fin.s_inv_amount)}}</th>
                                     <th>{{form.s_inv_vat(placeholder=fin.s_inv_vat)}}</th>
                     
