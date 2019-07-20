@@ -25,11 +25,12 @@ class formSupplier(FlaskForm):
     s_invoice_number=StringField('Номер счета подрядчика')
     s_inv_date = DateField('ДАТА')
     s_inv_amount = IntegerField('Сумма счета подрячика')
-    s_inv_vat = SelectField('НДС', choices=[(20, 20), (0, 0), (1, 1)])
+    s_inv_vat = SelectField('НДС', choices=[('НДС', 'НДС'), ('БЕЗ НДС', 'БЕЗ НДС'), ('НОЛЬ', 'НОЛЬ')])
     s_inv_currency = SelectField('Валюта', choices=[('RUR', 'RUR'), ('EUR', 'EUR'), ('USD', 'USD')])
     c_inv_amount = IntegerField('Сумма счета на клиента')
     c_inv_currency = SelectField('Валюта', choices=[('RUR', 'RUR'), ('EUR', 'EUR'), ('USD', 'USD')])
-
+    c_inv_amount = IntegerField('Сумма счета на клиента')
+    
 
     photo = FileField()
     status=SelectField('СТАТУС', choices=[

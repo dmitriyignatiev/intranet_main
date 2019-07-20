@@ -112,7 +112,7 @@ def download_file(filename):
 
 @supp.route('/prefin', methods=['POST', 'GET'])
 def prefin():
-    transit = 7
+    transit = int(7)
     form = formSupplier()
   
     tora_red = request.args.get('name')
@@ -122,7 +122,7 @@ def prefin():
     supplier_name=request.args.get('supp')
     status_of_request = request.args.get('st')
     s_invoice_number = request.args.get('invoice_number')
-    s_inv_amount = request.args.get('sinv_amount')
+    s_inv_amount =float(request.args.get('sinv_amount'))
     s_inv_vat = request.args.get('sinv_vat')
     c_inv_amount=request.args.get('cinv_amount')
     supplier_id = Supplier.query.filter(Supplier.llc_name==supplier_name).first()
@@ -133,10 +133,14 @@ def prefin():
     s_inv_currency = request.args.get('sinv_currency')
     s_inv_vat = request.args.get('sinv_vat')
     print('eto form.inv.date: ' +str(s_inv_currency) )
-    if s_inv_vat==20 or s_inv_vat==0:
-        cost_with_vat = s_inv_amount+(s_inv_amount*s_inv_vat)
+    if s_inv_vat=='НДС':
+        cost_with_vat = s_inv_amount+(s_inv_amount*0.2)
+    elif s_inv_vat=='БЕЗ НДС':
+        cost_with_vat = s_inv_amount/0.93
     else:
-        cost_with_vat = s_inv_amount/(100-transit)
+        cost_with_vat = cost_with_vat
+        
+
 
 
     

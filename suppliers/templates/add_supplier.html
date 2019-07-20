@@ -65,7 +65,7 @@
                     
                     <th scope="col">валюта счета Подрядчика</th>
                     <th scope="col">КОСТ Подрядчика с НДС</th>
-                    <th scope="col">Почта</th>
+                    <th scope="col">Продажа на клиента</th>
 
 
                 </tr>
@@ -148,6 +148,14 @@
                                     {%else%}
                                     <th>{{form.s_inv_currency}}</th>
                                     {%endif%}
+                                    <th>{{fin.cost_with_vat}}</th>
+                                    {%if fin.c_inv_amount%}
+                                    <th>{{form.c_inv_amount(value=fin.c_inv_amount)}}</th>
+                                    {%else%}
+                                    <th>{{form.c_inv_amount}}</th>
+                                    {%endif%}
+
+
                                     
                     
                                 </tr>
