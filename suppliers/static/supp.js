@@ -5,6 +5,9 @@ $(function() {
         $('#tora_red').select2();
         $('#type_of_truck').select2();
         $('#status').select2();
+        $('#s_inv_currency').select2();
+        $('#s_inv_vat').select2();
+        
 
     });
 

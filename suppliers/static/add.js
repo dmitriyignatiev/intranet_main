@@ -88,6 +88,7 @@ $(document).ready(function() {
         const s_invoice_number = $('#s_invoice_number').val()
         const s_inv_amount = $('#s_inv_amount').val()
         const s_inv_vat = $('#s_inv_vat').val()
+        const s_inv_currency = $('#s_inv_currency').val()
         const c_inv_amount = $('#c_inv_amount').val()
         const s_inv_date = $('#s_inv_date').val()
 
@@ -101,7 +102,7 @@ $(document).ready(function() {
             date: date_request,
             pick_up_date: date_loading_plan,
             unloading_date: date_unloading_date,
-
+            sinv_currency: s_inv_currency,
             supp: supplier_name,
             st: status,
             invoice_number: s_invoice_number,

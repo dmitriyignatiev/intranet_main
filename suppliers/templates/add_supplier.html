@@ -56,15 +56,15 @@
                     <th scope="col">когда загрузка</th>
                     <th scope="col">место выгрузки</th>
                     <th scope="col">когда выгрузка</th>
-                    <th scope="col">Продажа на клиента с НДС</th>
+                    
 
-                    <th scope="col">№ счета от подрядчика</th>
-                    <th scope="col">дата счета</th>
-                    <th scope="col">сумма счета от подрядчика</th>
-                    <th scope="col">НДС/БЕЗ НДС</th>
-                    <th scope="col">валюта счета</th>
-                    <th scope="col">Аванс</th>
-                    <th scope="col">КОСТ</th>
+                    <!-- <th scope="col">№ счета от подрядчика</th>
+                    <th scope="col">дата счета</th> -->
+                    <th scope="col">Кост от подрядчика, БЕЗ НДС</th>
+                    <th scope="col">Размер НДС</th>
+                    
+                    <th scope="col">валюта счета Подрядчика</th>
+                    <th scope="col">КОСТ Подрядчика с НДС</th>
                     <th scope="col">Почта</th>
 
 
@@ -106,7 +106,11 @@
                                 <p>{%endfor%}
                                         {{ form.csrf_token()         }}
                                     <th name='tora_red'>{{form.tora_red}}</th>
+                                    {%if fin.supplier_id%}
+                                    <th name='name'>{{form.name(value=fin.supplier.llc_name)}}</th>
+                                    {%else%}
                                     <th name='name'>{{form.name}}</th>
+                                    {%endif%}
                                     <th>{{form.status}}</th>
                                     <th name='direction'>{{req.direction}}</th>
                                     <th name='id'>{{req.id}}</th>
@@ -127,17 +131,24 @@
                                     {%endif%}
 
 
-                                    
-                                    <th>{{form.s_inv_vat(value=fin.s_inv_vat)}}</th>
-                                    <th>{{form.s_invoice_number(placeholder=fin.s_invoice_number)}}</th>
-                                    {%if fin.s_inv_date%}
-                                    <th>{{form.s_inv_date(value=fin.s_inv_date.strftime('%Y-%m-%d'))}}</th>
+                                    {%if fin.s_inv_amount%}
+                                    <th>{{form.s_inv_amount(value=fin.s_inv_amount)}}</th>
                                     {%else%}
-                                    <th>{{form.s_inv_date}}</th>
+                                    <th>{{form.s_inv_amount()}}</th>
                                     {%endif%}
-
-                                    <th>{{form.s_inv_amount(placeholder=fin.s_inv_amount)}}</th>
-                                    <th>{{form.s_inv_vat(placeholder=fin.s_inv_vat)}}</th>
+                                    <th>{{form.s_inv_vat(value=fin.s_inv_vat)}}</th>
+                                    <!-- <th>{{form.s_invoice_number(placeholder=fin.s_invoice_number)}}</th> -->
+                                    <!-- {%if fin.s_inv_date%}
+                                    <th>{{form.s_inv_date(value=fin.s_inv_date.strftime('%Y-%m-%d'))}}</th>
+                                    {%else%} -->
+                                    <!-- <th>{{form.s_inv_date}}</th>
+                                    {%endif%} -->
+                                    {%if fin.s_inv_currency%}
+                                    <th>{{form.s_inv_currency(value=fin.s_inv_currency)}}</th>
+                                    {%else%}
+                                    <th>{{form.s_inv_currency}}</th>
+                                    {%endif%}
+                                    
                     
                                 </tr>
 

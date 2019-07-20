@@ -112,6 +112,7 @@ def download_file(filename):
 
 @supp.route('/prefin', methods=['POST', 'GET'])
 def prefin():
+    transit = 7
     form = formSupplier()
   
     tora_red = request.args.get('name')
@@ -129,7 +130,15 @@ def prefin():
    
     unloading_date = request.args.get('unloading_date')
     s_inv_date = request.args.get('sinv_date')
-    print('eto form.inv.date: ')
+    s_inv_currency = request.args.get('sinv_currency')
+    s_inv_vat = request.args.get('sinv_vat')
+    print('eto form.inv.date: ' +str(s_inv_currency) )
+    if s_inv_vat==20 or s_inv_vat==0:
+        cost_with_vat = s_inv_amount+(s_inv_amount*s_inv_vat)
+    else:
+        cost_with_vat = s_inv_amount/(100-transit)
+
+
     
     request_one=Request.query.get(req_id)
     direction = request_one.direction
@@ -153,7 +162,8 @@ def prefin():
                         loading_date = pick_up_date,
                         unloading_date = unloading_date,
                         s_inv_date = s_inv_date,
-                        
+                        s_inv_currency = s_inv_currency,
+                        cost_with_vat = cost_with_vat,
                         
                         
                         )

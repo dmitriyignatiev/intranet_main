@@ -52,7 +52,7 @@ class preFin(db.Model):
     s_invoice_number = db.Column(db.String(120))
     ttn_cmr_available = db.Column(db.String(120))
     s_inv_date = db.Column(db.DateTime)
-    s_inv_amount = db.Column(db.Integer, nullable=True)
+    s_inv_amount = db.Column(db.Float, nullable=True)
     s_inv_vat = db.Column(db.Integer)
     s_inv_currency = db.Column(db.String(120))
     s_prepaid_amount = db.Column(db.Integer)
