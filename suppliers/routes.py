@@ -134,16 +134,12 @@ def prefin():
     s_inv_vat = request.args.get('sinv_vat')
     print('eto form.inv.date: ' +str(s_inv_currency) )
     if s_inv_vat=='НДС':
-        cost_with_vat = s_inv_amount+(s_inv_amount*0.2)
+        cost_with_vat = round(s_inv_amount+(s_inv_amount*0.2),2)
     elif s_inv_vat=='БЕЗ НДС':
-        cost_with_vat = s_inv_amount/0.93
+        cost_with_vat = round(s_inv_amount/0.93, 2)
     elif s_inv_vat=='НОЛЬ':
         cost_with_vat = s_inv_amount
         
-
-
-
-    
     request_one=Request.query.get(req_id)
     direction = request_one.direction
     sale = request_one.user.name
@@ -194,7 +190,7 @@ def prefin():
             newFin.unloading_date = unloading_date,
             newFin.s_inv_date = s_inv_date,
             newFin.s_inv_currency = s_inv_currency,
-            cost_with_vat = cost_with_vat,
+            newFin.cost_with_vat = cost_with_vat,
             db.session.commit()
             return jsonify({'success':'ок'})
     except exc.IntegrityError as e:
