@@ -45,15 +45,38 @@ $(document).ready(function() {
         const llc = document.querySelector("#select2-tora_red-container").innerText;
         const req_id = document.getElementsByName('id')[0].innerText;
         const date_request = document.querySelector('input#date_order_C').value;
+        const date_loading_plan = document.querySelector('input#date_loading_plan').value;
+        const date_unloading_date = $("#date_unloading_date").val();
+
+        const supplier_name = document.querySelectorAll("span")[6].innerText;
+        const status = document.getElementsByTagName('span')[12].innerText;
+        const s_invoice_number = $('#s_invoice_number').val()
+        const s_inv_amount = $('#s_inv_amount').val()
+        const s_inv_vat = $('#s_inv_vat').val()
+        const s_inv_currency = $('#s_inv_currency').val()
+        const c_inv_amount = $('#c_inv_amount').val()
+        const s_inv_date = $('#s_inv_date').val()
 
 
+        console.log(llc, req_id, date_request)
+        e.preventDefault();
 
         $.getJSON('/suppliers/prefin_change', {
-                name: llc,
-                id: req_id,
-                date: date_request,
-                type: 'POST',
-                data: '/suppliers/prefin_change',
+            name: llc,
+            id: req_id,
+            date: date_request,
+            pick_up_date: date_loading_plan,
+            unloading_date: date_unloading_date,
+            sinv_currency: s_inv_currency,
+            supp: supplier_name,
+            st: status,
+            invoice_number: s_invoice_number,
+            sinv_amount: s_inv_amount,
+            sinv_vat: s_inv_vat,
+            cinv_amount: c_inv_amount,
+            sinv_date:s_inv_date,
+            type: 'POST',
+            data: '/suppliers/prefin_change',
 
             }, function(data) {
 

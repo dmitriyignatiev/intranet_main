@@ -137,8 +137,8 @@ def prefin():
         cost_with_vat = s_inv_amount+(s_inv_amount*0.2)
     elif s_inv_vat=='БЕЗ НДС':
         cost_with_vat = s_inv_amount/0.93
-    else:
-        cost_with_vat = cost_with_vat
+    elif s_inv_vat=='НОЛЬ':
+        cost_with_vat = s_inv_amount
         
 
 
@@ -154,9 +154,11 @@ def prefin():
     try:
         if not preFin.query.filter_by(req_id=req_id).first():
             print(tora_red + str(req_id) + ' ' + str(date_request)+''+str(supplier_name) + ''+ str(direction) + str(status_of_request))
-            newFin = preFin(tora_red=tora_red, req_id=req_id, 
+            newFin = preFin(tora_red=tora_red, 
+                        req_id=req_id, 
                         customer_order_date=customer_order_date,
-                        direction=direction, sale=sale,
+                        direction=direction, 
+                        sale=sale,
                         status_of_request=status_of_request,
                         s_invoice_number=s_invoice_number,
                         s_inv_amount=s_inv_amount,
@@ -176,33 +178,103 @@ def prefin():
             db.session.commit()
             return jsonify({'success':'данные успешно внесены в базу'})
         else:
-            print(date_request)
-            return jsonify({'not':'в базе уже есть запись с таким ID'})
+            newFin=preFin.query.filter_by(req_id=req_id).first()
+            newFin.tora_red = tora_red,
+            newFin.req_id=req_id,
+            newFin.customer_order_date=customer_order_date,
+            newFin.direction=direction, 
+            newFin.sale=sale,
+            newFin.status_of_request=status_of_request,
+            newFin.s_invoice_number=s_invoice_number,
+            newFin.s_inv_amount=s_inv_amount,
+            newFin.s_inv_vat = s_inv_vat,
+            newFin.c_inv_amount=c_inv_amount,
+            newFin.supplier_id = supplier_id.id,
+            newFin.loading_date = pick_up_date,
+            newFin.unloading_date = unloading_date,
+            newFin.s_inv_date = s_inv_date,
+            newFin.s_inv_currency = s_inv_currency,
+            cost_with_vat = cost_with_vat,
+            db.session.commit()
+            return jsonify({'success':'ок'})
     except exc.IntegrityError as e:
         return jsonify({'not':'в базе уже есть запись с таким ID'})
    
 
-@supp.route('/prefin_change', methods=['POST', 'GET'])
-def prefin_change():
-    print(request.args)
-    lls = request.args.get('name')
-    req_id = request.args.get('id')
-    date_request = request.args.get('date')
-    date_request=datetime.strptime(date_request, '%Y-%m-%d')
-    request_one=Request.query.get(req_id)
-    newFin=preFin.query.filter_by(req_id=req_id).first()
+# @supp.route('/prefin_change', methods=['POST', 'GET'])
+# def prefin_change():
+#     form = formSupplier()
+  
+#     tora_red = request.args.get('name')
+#     req_id = request.args.get('id')
+#     date_request = request.args.get('date')
+#     customer_order_date=datetime.strptime(date_request, '%Y-%m-%d')
+#     supplier_name=request.args.get('supp')
+#     status_of_request = request.args.get('st')
+#     s_invoice_number = request.args.get('invoice_number')
+#     s_inv_amount =float(request.args.get('sinv_amount'))
+#     s_inv_vat = request.args.get('sinv_vat')
+#     c_inv_amount=request.args.get('cinv_amount')
+#     supplier_id = Supplier.query.filter(Supplier.llc_name==supplier_name).first()
+#     pick_up_date = request.args.get('pick_up_date')
+   
+#     unloading_date = request.args.get('unloading_date')
+#     s_inv_date = request.args.get('sinv_date')
+#     s_inv_currency = request.args.get('sinv_currency')
+#     s_inv_vat = request.args.get('sinv_vat')
+#     print('eto form.inv.date: ' +str(s_inv_currency) )
+#     if s_inv_vat=='НДС':
+#         cost_with_vat = s_inv_amount+(s_inv_amount*0.2)
+#     elif s_inv_vat=='БЕЗ НДС':
+#         cost_with_vat = s_inv_amount/0.93
+#     else:
+#         cost_with_vat = cost_with_vat
+        
+
+
+
     
-    try:
-        if  newFin:
-            print(lls + str(req_id) + ' ' + str(date_request))
-            newFin.date_request = date_request
-            db.session.commit()
-            return jsonify({'success':'данные успешно изменены'})
-        else:
-            print(date_request)
-            return jsonify({'not':'не удалось изменить данные'})
-    except exc.IntegrityError:
-        return jsonify({'not':'не удалось изменить данные'})
+#     request_one=Request.query.get(req_id)
+#     direction = request_one.direction
+#     sale = request_one.user.name
+#     customer = request_one.customer.name
+#     s_inv_vat = s_inv_vat
+#     print('eto' +str(s_inv_vat))
+
+
+
+    
+  
+    
+#     request_one=Request.query.get(req_id)
+#     newFin=preFin.query.filter_by(req_id=req_id).first()
+    
+#     try:
+#         if  newFin:
+#             print(lls + str(req_id) + ' ' + str(date_request))
+#             newFin.tora_red = tora_red,
+#             newFin.req_id=req_id,
+#             newFin.customer_order_date=customer_order_date,
+#             newFin.direction=direction, 
+#             newFin.sale=sale,
+#             newFin.status_of_request=status_of_request,
+#             newFin.s_invoice_number=s_invoice_number,
+#             newFin.s_inv_amount=s_inv_amount,
+#             newFin.s_inv_vat = s_inv_vat,
+#             newFin.c_inv_amount=c_inv_amount,
+#             newFin.supplier_id = supplier_id.id,
+#             newFin.loading_date = pick_up_date,
+#             newFin.unloading_date = unloading_date,
+#             newFin.s_inv_date = s_inv_date,
+#             newFin.s_inv_currency = s_inv_currency,
+#             cost_with_vat = cost_with_vat,
+#             db.session.commit()
+#             return jsonify({'success':'данные успешно изменены'})
+#         else:
+#             print(date_request)
+#             return jsonify({'not':'не удалось изменить данные'})
+#     except exc.IntegrityError:
+#         return jsonify({'not':'не удалось изменить данные'})
 
 
     
