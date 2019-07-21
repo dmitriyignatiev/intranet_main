@@ -11,6 +11,10 @@
 
 {% block navbar %}
 <div class="container-full">
+  <button id='test'>Test</button>
+<script>
+alert('hi')
+</script>
    <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
 
         <h15><a class="navbar-brand" href="{{url_for('index')}}">Главная</a></h15>
@@ -41,8 +45,6 @@
 <body>
 
   {%block content%}
-
-  <div class="container-full">
 
 <h1>Hi {{current_user.name}}  </h1>
     <h7>Количество запросов без цены: {{ req_cost}}</h7><p></p>

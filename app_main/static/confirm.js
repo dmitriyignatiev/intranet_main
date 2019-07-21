@@ -1,6 +1,6 @@
 
 $(function(){
-
+    $('#cust').select2();
    
    
         $('a#submit').bind('click', function() {

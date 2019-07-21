@@ -1,0 +1,117 @@
+{%extends 'base.html'%} {%block head%} {{super()}}
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.js">
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" /> {%endblock%} {%block content%}
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
+
+
+<form>
+    <input type="text" placeholder="наименование поставщика" id='supp_name' name=name>
+    <input type='text' placeholder='ati номер' id='ATI' , name='ati'>
+    <input type='text' placeholder='телефон' id='phone' , name='phone'>
+    <input type='text' placeholder='имя контакта' id='orginal' , name='name'>
+    <button type="submit" class="btn btn-default" id='submit'>Записать в базу</button>
+</form>
+
+<div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
+<div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
+<div class>
+    <script src="{{url_for('.static', filename='supp.js')}}"></script>
+    <script src="{{url_for('.static', filename='add.js')}}"></script>
+
+    <div id='content'>
+
+
+        <div id="successAlert" class="alert alert-success" role="alert" style="display:none;">
+
+        </div>
+        <div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;">
+
+        </div>
+
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Действия</th>
+                    <th scope="col">ТОРА или РЭД</th>
+                    <th scope="col">Наименование подрядчика</th>
+                    <th scope="col">Статус</th>
+                    <th scope="col">Direction</th>
+                    <th scope="col">#</th>
+
+                    <th scope="col">Продавец</th>
+                    <th scope="col">Закупщик</th>
+                    <th scope="col">Клиент</th>
+
+                    <th scope="col">№ заявки с клиентом</th>
+                    <th scope="col">дата заявки</th>
+                    <th scope="col">Необходимая Грузоподъемность</th>
+                    <th scope="col">место загрузки</th>
+
+
+                    <th scope="col">когда загрузка</th>
+                    <th scope="col">место выгрузки</th>
+                    <th scope="col">когда выгрузка</th>
+                    
+
+                    <!-- <th scope="col">№ счета от подрядчика</th>
+                    <th scope="col">дата счета</th> -->
+                    <th scope="col">Кост от подрядчика, БЕЗ НДС</th>
+                    <th scope="col">Размер НДС</th>
+                    
+                    <th scope="col">валюта счета Подрядчика</th>
+                    <th scope="col">КОСТ Подрядчика с НДС</th>
+                    <th scope="col">Продажа на клиента</th>
+
+
+                </tr>
+                <tbody>
+                    <tr>
+
+                        <th>
+                          
+
+                                                        <p></p>
+
+
+                            <form id='my_form_id' action="{{url_for('supp.upload')}}" method="post" enctype="multipart/form-data" name='dedwed'>
+                                <div>
+                                    <label for="file"></label>
+                                    <input type="file" id="file" name="file" multiple>
+                                </div>
+                                <div>
+                                    <button>Submit</button>
+                                </div>
+                            </form>
+                            <p>ТН, ТТН</p>
+                            {%for d in docs%}
+                            <p><a href="{{url_for('supp.download_file', filename=d.path)}}">{{d.path}}</a></p>
+                            {%endfor%}
+
+                            <p> Заявка от клиента или другие доки от продавца, см ниже:</p>
+                            {%for d in z_doc%}
+                            <p><a href="{{url_for('download_file', filename=d.path)}}">{{d.path}}</a>
+                                <p>{%endfor%}
+                                        {{ form.csrf_token()         }}
+                                    <th name='tora_red'>{{form.tora_red}}</th>
+                                    {%if fin.supplier_id%}
+                                    <th name='name'>{{form.name(value=fin.supplier.llc_name)}}</th>
+                                    {%else%}
+                                    <th name='name'>{{form.name}}</th>
+                                    {%endif%}
+                                    <th>{{form.status}}</th>
+                                    <th name='direction'>{{fin.direction}}</th>
+                                    <th name='id'>{{fin.id}}</th>
+                                    
+
+            </div>
+          
+
+
+
+
+            {%endblock%} {%block scripts%} {%endblock%}

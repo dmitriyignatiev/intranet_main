@@ -30,7 +30,7 @@ class formSupplier(FlaskForm):
     c_inv_amount = IntegerField('Сумма счета на клиента')
     c_inv_currency = SelectField('Валюта', choices=[('RUR', 'RUR'), ('EUR', 'EUR'), ('USD', 'USD')])
     c_inv_amount = IntegerField('Сумма счета на клиента')
-    
+
 
     photo = FileField()
     status=SelectField('СТАТУС', choices=[
@@ -38,4 +38,8 @@ class formSupplier(FlaskForm):
         ('В ПУТИ', 'В ПУТИ'),
         ('ДОСТАВЛЕН', 'ДОСТАВЛЕН')], validators=[DataRequired()])
     submit = SubmitField('Подтвердить')
+
+
+class PochtaForm(FlaskForm):
+    pass
 
