@@ -20,14 +20,17 @@ class Supplier(db.Model):
     date = db.Column(db.DateTime, default=datetime.utcnow)
     finance = db.Column(db.Integer, db.ForeignKey('finance.id'))
     pay = db.Column(db.Integer, db.ForeignKey('paid.id'))
-    prefin = db.relationship('preFin', backref='supplier', lazy='dynamic')
+    prefin = db.relationship('Prefin', backref='supplier', lazy='dynamic')
 
 class newSup(db.Model):
     id = db.Column (db.Integer, primary_key=True)
     name = db.Column (db.String (240))
     path = db.Column(db.String(1000))
 
-class preFin(db.Model):
+
+
+class Prefin(db.Model):
+
     id = db.Column (db.Integer, primary_key=True)
     tora_red = db.Column(db.String(120))
     supplier_name = db.Column (db.String (240))
@@ -53,7 +56,7 @@ class preFin(db.Model):
     ttn_cmr_available = db.Column(db.String(120))
     s_inv_date = db.Column(db.DateTime)
     s_inv_amount = db.Column(db.Float, nullable=True)
-    s_inv_vat = db.Column(db.Integer)
+    s_inv_vat = db.Column(db.Text)
     s_inv_currency = db.Column(db.String(120))
     s_prepaid_amount = db.Column(db.Integer)
     s_prepaid_data = db.Column(db.DateTime)
@@ -107,6 +110,21 @@ class preFin(db.Model):
     blank_option_6 = db.Column(db.String(120))
     supplier_id = db.Column(db.Integer, db.ForeignKey('supplier.id'))
     vat = db.Column(db.Integer)
+    pochta = db.relationship('Pochta', backref='fin', lazy='dynamic')
+    pochta_full_cost = db.Column(db.Integer)
+
+    def pochta_cost(self):
+        summ = 0
+        for p in self.pochta.all():
+            summ +=p.cost
+            self.pochta_full_cost = summ 
+            db.session.commit()
+        return summ
+
+        
+    
+   
+    
 
     
     
@@ -115,6 +133,27 @@ class Documents(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     req_id = db.Column(db.Integer)
     path = db.Column(db.Text)
+
+class Pochta(db.Model):
+
+    __tablename__='pochta'
+    id = db.Column(db.Integer, primary_key=True)
+    track_number = db.Column(db.String(500))
+    cost = db.Column(db.Integer)
+    fin_id = db.Column(db.Integer, db.ForeignKey('prefin.id'))
+
+
+class Parent(db.Model):
+    
+    id = db.Column(db.Integer, primary_key=True) 
+    children = db.relationship("Child")
+
+class Child(db.Model):
+    
+    id = db.Column(db.Integer, primary_key=True)
+    parent_id = db.Column(db.Integer, db.ForeignKey('parent.id'))
+
+
 
 
 

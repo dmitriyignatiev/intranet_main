@@ -2,11 +2,12 @@ from flask import render_template, request, \
     jsonify, redirect, flash, \
         send_from_directory, url_for, send_file, session, make_response, g
 from suppliers import supp
-from .models import Supplier, preFin, Documents
+from .models import Supplier, Prefin, Documents
 from app_main.models import *
 from app_main import db, app
 from .forms import *
 from sqlalchemy import exc
+from sqlalchemy import desc
 
 
 
@@ -19,7 +20,7 @@ def add_supplier(id):
     
     req = Request.query.get(id)
     session['id']=req.id
-    fin = preFin.query.filter(preFin.req_id==session['id']).first()
+    fin = Prefin.query.filter(Prefin.req_id==session['id']).first()
     docs = Documents.query.filter(Documents.req_id==session['id'])
     id = req.id
     pick_up_date = req.pick_up_date
@@ -152,9 +153,9 @@ def prefin():
     print('eto' +str(s_inv_vat))
 
     try:
-        if not preFin.query.filter_by(req_id=req_id).first():
+        if not Prefin.query.filter_by(req_id=req_id).first():
             print(tora_red + str(req_id) + ' ' + str(date_request)+''+str(supplier_name) + ''+ str(direction) + str(status_of_request))
-            newFin = preFin(tora_red=tora_red, 
+            newFin = Prefin(tora_red=tora_red, 
                         req_id=req_id, 
                         customer_order_date=customer_order_date,
                         direction=direction, 
@@ -187,7 +188,7 @@ def prefin():
             return jsonify({'success':'данные успешно внесены в базу'})
         else:
             print('customer:' + customer)
-            newFin=preFin.query.filter_by(req_id=req_id).first()
+            newFin=Prefin.query.filter_by(req_id=req_id).first()
             newFin.tora_red = tora_red,
             newFin.req_id=req_id,
             newFin.customer_order_date=customer_order_date,
@@ -221,7 +222,7 @@ def prefin():
 def prefin_change():
     form = PochtaForm()
     pass
-    finance = preFin.query.all()
+    finance = Prefin.query.order_by(desc(Prefin.id)).all()
     return render_template('finance.html', finance=finance, form=form)
 
 
