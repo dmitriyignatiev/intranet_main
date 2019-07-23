@@ -125,7 +125,7 @@ def prefin():
     s_invoice_number = request.args.get('invoice_number')
     s_inv_amount =float(request.args.get('sinv_amount'))
     s_inv_vat = request.args.get('sinv_vat')
-    c_inv_amount=request.args.get('cinv_amount')
+    c_inv_amount=int(request.args.get('cinv_amount'))
     supplier_id = Supplier.query.filter(Supplier.llc_name==supplier_name).first()
     pick_up_date = request.args.get('pick_up_date')
    
@@ -148,9 +148,11 @@ def prefin():
     buyer = request_one.users[0].name
     loading_place = request_one.org
     unloading_place  = request_one.dest
-
+    
     s_inv_vat = s_inv_vat
-    print('eto' +str(s_inv_vat))
+
+    profit = cost_with_vat - c_inv_amount
+    print('eto' + str(profit))
 
     try:
         if not Prefin.query.filter_by(req_id=req_id).first():
@@ -172,14 +174,14 @@ def prefin():
                         s_invoice_number=s_invoice_number,
                         s_inv_amount=s_inv_amount,
                         s_inv_vat = s_inv_vat,
-                        c_inv_amount=c_inv_amount,
+                        c_inv_amount=int(c_inv_amount),
                         supplier_id = supplier_id.id,
                         loading_date = pick_up_date,
                         unloading_date = unloading_date,
                         s_inv_date = s_inv_date,
                         s_inv_currency = s_inv_currency,
                         cost_with_vat = cost_with_vat,
-                        
+                        profit = c_inv_amount-cost_with_vat
                         
                         )
             request_one.complete_fin=1
@@ -205,26 +207,30 @@ def prefin():
             newFin.s_invoice_number=s_invoice_number,
             newFin.s_inv_amount=s_inv_amount,
             newFin.s_inv_vat = s_inv_vat,
-            newFin.c_inv_amount=c_inv_amount,
+            newFin.c_inv_amount=int(c_inv_amount),
             newFin.supplier_id = supplier_id.id,
             newFin.loading_date = pick_up_date,
             newFin.unloading_date = unloading_date,
             newFin.s_inv_date = s_inv_date,
             newFin.s_inv_currency = s_inv_currency,
             newFin.cost_with_vat = cost_with_vat,
+            newFin.profit = c_inv_amount- cost_with_vat
             db.session.commit()
             return jsonify({'success':'ок'})
     except exc.IntegrityError as e:
         return jsonify({'not':'в базе уже есть запись с таким ID'})
    
-
 @supp.route('/prefin_change', methods=['POST', 'GET'])
 def prefin_change():
-    form = PochtaForm()
-    pass
-    finance = Prefin.query.order_by(desc(Prefin.id)).all()
-    return render_template('finance.html', finance=finance, form=form)
+    finance = Prefin.query.filter(Prefin.buyer==current_user.name).order_by(desc(Prefin.id)).all()
+    return render_template('finance.html', finance=finance, form=formSupplier())
 
+@supp.route('/prefin_change_id/<int:id>', methods=['POST', 'GET'])
+def prefin_change_id(id):
+    fin = Prefin.query.get(id)
+
+
+    return render_template('finance_change.html', fin=fin, form=formSupplier())
 
     
 

@@ -94,12 +94,12 @@
      
          
   
-{%for fin in finance%} 
+
       <tr>
     
 
    
-                <td><a href="{{url_for('.prefin_change_id', id=fin.id)}}"><button>Подробнее</button></td>
+                <td><button id='submit'>Записать изменения</button></td>
                 <td>{{fin.id}}</td>
                 <td>{{fin.tora_red}}</td>
                 <td>{{fin.direction}}</td>
@@ -114,11 +114,19 @@
                 <td>{{fin.unloading_date}}</td>
                 <td>{{fin.supplier_name}}</td>
                
-                <td>{{fin.s_invoice_number}}
-                    
+                {%if fin.s_invoice_nubmer%}
+                <td>{{fin.s_invoice_number}}</td>
+                {%else%}
+                <td>{{form.s_invoice_number(placeholder='Введите номер счета')}}</td>
+                {%endif%}
+
+  
                 
-                
+                {%if fin.s_inv_date%}
                 <td>{{fin.s_inv_date}}</td>
+                {%else%}
+                <td>{{form.s_inv_date}}</td>
+                {%endif%}
                           
                 <td>{{fin.s_inv_amount}}</td>
                 <td>{{fin.s_inv_vat}}</td>
@@ -128,7 +136,7 @@
                 <td>{{fin.profit}}</td>
 
            
-          {%endfor%}
+         
         </tr>
         </table>
   </table>  
@@ -138,6 +146,9 @@
  
   <script src = "{{url_for('static', filename='app.js')}}"></script>
   <script src = "{{url_for('static', filename='app_1.js')}}"></script>
+
+
+  
   <script>
     
       function exportTableToExcel( tableID, filename = ''){

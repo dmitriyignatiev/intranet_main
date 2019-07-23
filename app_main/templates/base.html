@@ -39,6 +39,10 @@
        {%if current_user.id==5 or current_user.id==21%}
        <h15><a class="navbar-brand" href="{{url_for('pipeline')}}">Pipeline</a></h15>
        {%endif%}
+       
+       {%if current_user.role=='buyer'%}
+       <h15><a class="navbar-brand" href="{{url_for('supp.prefin_change')}}">Finance</a></h15>
+       {%endif%}
 
         {%if current_user.user_email=='abruhanova@rosexport.su'%}
          <h15><a class="navbar-brand" href="{{url_for('employees')}}">Информация по сотрудникам</a></h15>
