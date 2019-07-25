@@ -25,9 +25,11 @@
 </head>
 <body>
 
+        
+
 
  {%block content%}
- 
+ <script src="{{url_for('.static', filename='add_o.js')}}"></script> 
  
 <form action="POST" id="post">
     <input type="text" name="customer", placeholder="название клиента" id="name">
@@ -46,12 +48,10 @@
       <th>Юр лицо</th>
   </thead>
   <tr>
-   <form method="POST" id="form">
-      <td><input type="text" placeholder="nubmer" name="number" id='number'></td>
-      <td><input type="text" placeholder='Юр лицо' name="legal" id="legal"></td>
-      <td><button type="submit">Действие</button></td>
-  </form>
-  <button id='add'>add</button>
+   <form method="post" id="form" action=''>
+     
+ 
+  
 
  
   </tr>
@@ -81,9 +81,13 @@
             <th>Место выгрузки</th>
             <th>Дата выгрузки</th>
             <th>Перевозчик</th>
+            <th>Сумма счета от Постащика</th>
+
             <th>Номер счета от поставщика</th>
             <th>Дата счета от Постащика</th>
-            <th>Сумма счета от Постащика</th>
+            <th>Дата когда нужно заплатить поставщику</th>
+            
+            
             <th>Размер НДС</th>
             <th>Валюта счета</th>
             <th>Размер предоплаты</th>
@@ -98,9 +102,10 @@
       <tr>
     
 
-   
-                <td><button id='submit'>Записать изменения</button></td>
-                <td>{{fin.id}}</td>
+            
+                
+                <td>{{form.submit()}}</td>
+                <td id='fin_id'>{{fin.id}}</td>
                 <td>{{fin.tora_red}}</td>
                 <td>{{fin.direction}}</td>
                 <td id="sale">{{fin.sale}}</td>
@@ -113,22 +118,27 @@
                 <td>{{fin.unloading_place}}</td>
                 <td>{{fin.unloading_date}}</td>
                 <td>{{fin.supplier_name}}</td>
-               
-                {%if fin.s_invoice_nubmer%}
-                <td>{{fin.s_invoice_number}}</td>
+                <td>{{fin.s_inv_amount}}</td>
+                {% if fin.s_invoice_number%}
+                <td>{{form.s_invoice_number(value=fin.s_invoice_number)}}</td>
                 {%else%}
-                <td>{{form.s_invoice_number(placeholder='Введите номер счета')}}</td>
+                <td>{{form.s_invoice_number}}</td>
                 {%endif%}
 
   
                 
                 {%if fin.s_inv_date%}
-                <td>{{fin.s_inv_date}}</td>
+                <td>{{form.s_inv_date(value=fin.s_inv_date.strftime('%Y-%m-%d'))}}</td>
                 {%else%}
                 <td>{{form.s_inv_date}}</td>
                 {%endif%}
+                {%if fin.s_inv_date_to_pay%}
+                <td>{{form.s_inv_das_inv_date_to_pay(value=fin.s_inv_date_to_pay.strftime('%Y-%m-%d'))}}</td>
+                {%else%}
+                <td>{{form.s_inv_das_inv_date_to_pay}}</td>
+                {%endif%}
                           
-                <td>{{fin.s_inv_amount}}</td>
+                
                 <td>{{fin.s_inv_vat}}</td>
                 <td>{{fin.s_inv_currency}}</td>
                 <td>{{fin.s_prepaid_amount}}</td>
@@ -140,13 +150,14 @@
         </tr>
         </table>
   </table>  
+</form>
  
 
  
  
   <script src = "{{url_for('static', filename='app.js')}}"></script>
   <script src = "{{url_for('static', filename='app_1.js')}}"></script>
-
+ 
 
   
   <script>
@@ -182,12 +193,26 @@
             downloadLink.click();
             window.open('data:application/vnd.ms-excel,' + encodeURIComponent(table[0].outerHTML));
         }
-    } 
+    }; 
 
+
+
+
+
+   
   
   </script>
-{%endblock%}
+
+
+
 
 
 </body>
+
+
 </html>
+
+{%endblock%}
+    {%block scripts%} 
+    
+    {%endblock%}

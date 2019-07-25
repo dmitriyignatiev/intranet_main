@@ -24,6 +24,7 @@ class formSupplier(FlaskForm):
     date_unloading_plan = DateField('Дата планируемой выгрузки', validators=[DataRequired()])
     s_invoice_number=StringField('Номер счета подрядчика')
     s_inv_date = DateField('ДАТА')
+    s_inv_das_inv_date_to_pay = DateField('ДАТА')
     s_inv_amount = IntegerField('Сумма счета подрячика')
     s_inv_vat = SelectField('НДС', choices=[('НДС', 'НДС'), ('БЕЗ НДС', 'БЕЗ НДС'), ('НОЛЬ', 'НОЛЬ')])
     s_inv_currency = SelectField('Валюта', choices=[('RUR', 'RUR'), ('EUR', 'EUR'), ('USD', 'USD')])

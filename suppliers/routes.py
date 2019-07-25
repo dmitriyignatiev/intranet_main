@@ -227,11 +227,26 @@ def prefin_change():
 
 @supp.route('/prefin_change_id/<int:id>', methods=['POST', 'GET'])
 def prefin_change_id(id):
+    form = formSupplier()
+    print(form)
     fin = Prefin.query.get(id)
+    print(fin.id)
+    if request.method=='POST':
+        fin.s_invoice_number =form.s_invoice_number.data
+        fin.s_inv_date = form.s_inv_date.data
+        fin.s_inv_date_to_pay = form.s_inv_das_inv_date_to_pay.data
+        print(fin.s_invoice_number)
+        db.session.commit()
+        return redirect(request.url)
+    return render_template('finance_change.html', fin=fin, form=form)
 
+@supp.route('prefin_change_s_inv', methods=['POST', 'GET'])
+def prefin_change_s_inv():
+    id = request.args.get('prefin_id')
+    preFin = Prefin.query.filter(Prefin.id==id)
+    print(preFin.id)
+    # s_inv_date = request.args.get('')
+    return jsonify({'s':'щл'})
 
-    return render_template('finance_change.html', fin=fin, form=formSupplier())
-
-    
 
 

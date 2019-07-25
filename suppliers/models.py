@@ -22,6 +22,7 @@ class Supplier(db.Model):
     pay = db.Column(db.Integer, db.ForeignKey('paid.id'))
     prefin = db.relationship('Prefin', backref='supplier', lazy='dynamic')
 
+
 class newSup(db.Model):
     id = db.Column (db.Integer, primary_key=True)
     name = db.Column (db.String (240))
@@ -112,6 +113,8 @@ class Prefin(db.Model):
     vat = db.Column(db.Integer)
     pochta = db.relationship('Pochta', backref='fin', lazy='dynamic')
     pochta_full_cost = db.Column(db.Integer)
+    s_inv_date_to_pay = db.Column(db.DateTime)
+    s_inv_date = db.Column(db.DateTime)
 
     def pochta_cost(self):
         summ = 0
