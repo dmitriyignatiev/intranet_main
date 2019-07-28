@@ -115,6 +115,11 @@ class Prefin(db.Model):
     pochta_full_cost = db.Column(db.Integer)
     s_inv_date_to_pay = db.Column(db.DateTime)
     s_inv_date = db.Column(db.DateTime)
+    #Доки
+    zayvka = db.relationship('Zayvka', backref='prefin', lazy='dynamic')
+    docs = db.relationship('Documents', backref='prefin', lazy='dynamic')
+    invs = db.relationship('Invoicesup', backref='prefin', lazy='dynamic')
+    invc = db.relationship('Invoicecust', backref='prefin', lazy='dynamic')
 
     def pochta_cost(self):
         summ = 0
@@ -129,23 +134,28 @@ class Prefin(db.Model):
    
     
 
-    
-    
 
+#Для подгрузки ТН
 class Documents(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     req_id = db.Column(db.Integer)
     path = db.Column(db.Text)
+    req_id = db.Column(db.Integer, db.ForeignKey('request.id'))
+    prefin_id = db.Column(db.Integer, db.ForeignKey('prefin.id'))
 
+#Для подрузки счета от Поставщика
 class Invoicesup(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     fin_id = db.Column(db.Integer)
     path = db.Column(db.Text)
+    prefin_id = db.Column(db.Integer, db.ForeignKey('prefin.id'))
 
+#Для подгрузки счета на клиента
 class Invoicecust(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     fin_id = db.Column(db.Integer)
     path = db.Column(db.Text)
+    prefin_id = db.Column(db.Integer, db.ForeignKey('prefin.id'))
 
 
 

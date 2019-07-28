@@ -20,6 +20,8 @@ from flask_mail import Message
 
 from flask import request, jsonify
 
+from suppliers.models import *
+
 
 @app.before_request
 def before_request():
@@ -813,11 +815,15 @@ def upload():
         os.mkdir(target)
     for file in request.files.getlist("file"):
         if file and allowed_file(file.filename):
-            print(file)
-            new_d = Zayvka(req_id=session['id'])
+            print('fin_id' + str(session['fin_id']))
+           
+            fin = Prefin.query.filter_by(id=session['fin_id']).first()
+            new_d = Zayvka(req_id=session['id'], request_id=int(session['id']), prefin_id=fin.id)
+            
             db.session.add(new_d)
+            
             db.session.commit()
-            filename=str(session['id'])+file.filename
+            filename=str(new_d.id)+file.filename 
             new_d.path=str(filename)
             db.session.commit()
 

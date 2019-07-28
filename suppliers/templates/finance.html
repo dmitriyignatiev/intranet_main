@@ -29,33 +29,13 @@
  {%block content%}
  
  
-<form action="POST" id="post">
-    <input type="text" name="customer", placeholder="название клиента" id="name">
-    <button type="submit">Записать данные</button>
-</form>
-<button id="test">testBu</button>
+
 
   
 
 <button onclick="exportTableToExcel('tblData')">Export Table Data To Excel File</button>
 
-<table class="table" id="tblnew">
-  <thead>
-      <th >Действие</th>
-      <th>№</th>
-      <th>Юр лицо</th>
-  </thead>
-  <tr>
-   <form method="POST" id="form">
-      <td><input type="text" placeholder="nubmer" name="number" id='number'></td>
-      <td><input type="text" placeholder='Юр лицо' name="legal" id="legal"></td>
-      <td><button type="submit">Действие</button></td>
-  </form>
-  <button id='add'>add</button>
 
- 
-  </tr>
-  <br>
  
   
    
@@ -68,8 +48,9 @@
       
             <th >Действие</th>
             <th>№</th>
-           
+           {%if current_user.role !='sale'%}
             <th>Юр лицо</th>
+            {%endif%}
             <th >Направление</th>
             <th>Продавец</th>
             <th>Закупшик</th>
@@ -80,7 +61,9 @@
             <th>Характер груза</th>
             <th>Место выгрузки</th>
             <th>Дата выгрузки</th>
+            {%if current_user.role!='sale'%}
             <th>Перевозчик</th>
+            {%endif%}
             <th>Номер счета от поставщика</th>
             <th>Дата счета от Постащика</th>
             <th>Сумма счета от Постащика</th>
@@ -93,8 +76,10 @@
              </thead>
      
          
-  
+{%if current_user.role=='buyer'%}
 {%for fin in finance%} 
+
+
       <tr>
     
 
@@ -129,6 +114,50 @@
 
            
           {%endfor%}
+
+
+         
+         
+        </tr>
+
+{% elif current_user.role=='sale' %}
+{% for  fin in finsales %}
+        <tr>
+    
+
+   
+                <td><a href="{{url_for('.prefin_change_id', id=fin.id)}}"><button>Подробнее</button></td>
+                <td>{{fin.id}}</td>
+                
+                <td>{{fin.direction}}</td>
+                <td id="sale">{{fin.sale}}</td>
+                <td>{{fin.buyer}}</td>
+                <td>{{fin.customer_name}}</td>
+                <td>{{fin.req_id}}</td>
+                <td>{{fin.customer_order_date}}</td>
+                <td>{{fin.loading_place}}</td>
+                <td>{{fin.cargo_character}}</td>
+                <td>{{fin.unloading_place}}</td>
+                <td>{{fin.unloading_date}}</td>
+                
+               
+                <td>{{fin.s_invoice_number}}
+                    
+                
+                
+                <td>{{fin.s_inv_date}}</td>
+                          
+                <td>{{fin.s_inv_amount}}</td>
+                <td>{{fin.s_inv_vat}}</td>
+                <td>{{fin.s_inv_currency}}</td>
+                <td>{{fin.s_prepaid_amount}}</td>
+                <td>{{fin.cost_with_vat}}</td>
+                <td>{{fin.profit}}</td>
+
+           
+                {%endfor%}
+                {%endif%}
+         
         </tr>
         </table>
   </table>  

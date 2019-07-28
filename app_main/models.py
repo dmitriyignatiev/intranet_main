@@ -4,6 +4,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import UserMixin
 from datetime import datetime
 
+
 subs = db.Table('subs',
                 db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
                 db.Column('request_id', db.Integer, db.ForeignKey('request.id'))
@@ -129,6 +130,9 @@ class Request (db.Model):
     nonactf_buyer = db.Column(db.Integer)
     test_new = db.Column(db.Integer)
     complete_fin = db.Column(db.Integer)
+
+    docs = db.relationship('Documents', backref='request', lazy='dynamic')
+    zayvka = db.relationship('Zayvka', backref='request', lazy='dynamic')
     
 
     
@@ -341,7 +345,8 @@ class Zayvka(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     req_id = db.Column(db.Integer)
     path = db.Column(db.Text)
-
+    request_id = db.Column(db.Integer, db.ForeignKey('request.id'))
+    prefin_id = db.Column(db.Integer, db.ForeignKey('prefin.id'))
 
 
 

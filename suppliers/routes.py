@@ -223,7 +223,8 @@ def prefin():
 @supp.route('/prefin_change', methods=['POST', 'GET'])
 def prefin_change():
     finance = Prefin.query.filter(Prefin.buyer==current_user.name).order_by(desc(Prefin.id)).all()
-    return render_template('finance.html', finance=finance, form=formSupplier())
+    finsales = Prefin.query.filter_by(sale=current_user.name).all()
+    return render_template('finance.html', finance=finance, form=formSupplier(), finsales=finsales)
 
 @supp.route('/prefin_change_id/<int:id>', methods=['POST', 'GET'])
 def prefin_change_id(id):
@@ -232,6 +233,8 @@ def prefin_change_id(id):
     fin = Prefin.query.get(id)
     session['fin_id'] = fin.id
     invoices = Invoicesup.query.filter(Invoicesup.fin_id==fin.id).all()
+    req = Request.query.filter_by(id=fin.req_id).first()
+    print('pre fin' + str(req.id))
 
     print('session: ' + str(session['fin_id']))
 
@@ -242,7 +245,7 @@ def prefin_change_id(id):
         print(fin.s_invoice_number)
         db.session.commit()
         return redirect(request.url)
-    return render_template('finance_change.html', fin=fin, form=form, invoices=invoices)
+    return render_template('finance_change.html', fin=fin, form=form, invoices=invoices, req=req)
 
 #подгрузка счета
 @supp.route('/upload_invoice', methods=['POST', 'GET'])
@@ -274,6 +277,11 @@ def upload_invoice():
 def download_file_s_inv(filename):
     return send_from_directory(os.path.join(APP_ROOT, 'invoice/'),
                                filename, as_attachment=True)
+
+
+
+
+
 
 
 
