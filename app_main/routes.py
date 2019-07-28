@@ -824,7 +824,7 @@ def upload():
             destination = "/".join([target, filename])
             print(destination)
             file.save(destination)
-            return jsonify({'success':'файлы успешно сохранены'}, docs=docs)
+            return jsonify({'success':'файлы успешно сохранены'})
         else:
             return jsonify({'success':'файлы запрещен к загрузке'})
     

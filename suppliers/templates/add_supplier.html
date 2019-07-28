@@ -105,8 +105,12 @@
                             {%for d in z_doc%}
                             <p><a href="{{url_for('download_file', filename=d.path)}}">{{d.path}}</a>
                                 <p>{%endfor%}
-                                        {{ form.csrf_token()         }}
+                                        {{ form.csrf_token()}}
+                                        {%if fin.tora_red %}
+                                    <th name='tora_red'>{{form.tora_red(value=fin.tora_red)}}</th>
+                                    {%else%}
                                     <th name='tora_red'>{{form.tora_red}}</th>
+                                    {%endif%}
                                     {%if fin.supplier_id%}
                                     <th name='name'>{{form.name(value=fin.supplier.llc_name)}}</th>
                                     {%else%}

@@ -137,6 +137,18 @@ class Documents(db.Model):
     req_id = db.Column(db.Integer)
     path = db.Column(db.Text)
 
+class Invoicesup(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    fin_id = db.Column(db.Integer)
+    path = db.Column(db.Text)
+
+class Invoicecust(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    fin_id = db.Column(db.Integer)
+    path = db.Column(db.Text)
+
+
+
 class Pochta(db.Model):
 
     __tablename__='pochta'

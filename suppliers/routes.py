@@ -230,7 +230,11 @@ def prefin_change_id(id):
     form = formSupplier()
     print(form)
     fin = Prefin.query.get(id)
-    print(fin.id)
+    session['fin_id'] = fin.id
+    invoices = Invoicesup.query.filter(Invoicesup.fin_id==fin.id).all()
+
+    print('session: ' + str(session['fin_id']))
+
     if request.method=='POST':
         fin.s_invoice_number =form.s_invoice_number.data
         fin.s_inv_date = form.s_inv_date.data
@@ -238,15 +242,40 @@ def prefin_change_id(id):
         print(fin.s_invoice_number)
         db.session.commit()
         return redirect(request.url)
-    return render_template('finance_change.html', fin=fin, form=form)
+    return render_template('finance_change.html', fin=fin, form=form, invoices=invoices)
 
-@supp.route('prefin_change_s_inv', methods=['POST', 'GET'])
-def prefin_change_s_inv():
-    id = request.args.get('prefin_id')
-    preFin = Prefin.query.filter(Prefin.id==id)
-    print(preFin.id)
-    # s_inv_date = request.args.get('')
-    return jsonify({'s':'щл'})
+#подгрузка счета
+@supp.route('/upload_invoice', methods=['POST', 'GET'])
+def upload_invoice():
+    target = os.path.join(APP_ROOT, 'invoice/')
+    fin_id = request.args.get('find')
+    print('ds' + str(session['fin_id']))
+    if not os.path.isdir(target):
+        os.mkdir(target)
+    for file in request.files.getlist("file"):
+        if file and allowed_file(file.filename):
+            print(file)
+            new_d = Invoicesup(fin_id=session['fin_id'])
+            db.session.add(new_d)
+            db.session.commit()
+            filename=str('Счет поставщика') +' ' +  str(session['fin_id']) +' '  +  file.filename
+            new_d.path=str(filename)
+            db.session.commit()
+
+            destination = "/".join([target, filename])
+            print(destination)
+            file.save(destination)
+            return jsonify({'success':'файлы успешно сохранены'})
+        else:
+            return jsonify({'success':'файлы запрещен к загрузке'})
+
+
+@supp.route('/download_s_inv/<path:filename>', methods=['GET'])
+def download_file_s_inv(filename):
+    return send_from_directory(os.path.join(APP_ROOT, 'invoice/'),
+                               filename, as_attachment=True)
+
+
 
 
 
