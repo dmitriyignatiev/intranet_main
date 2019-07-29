@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{%block head%} {{super()}}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" /> {%endblock%}
+    
+    
+   
+    
+
+</head>
+<body>
+
+
+ {%block content%}
+ 
+ 
+
+
+  
+
+<button onclick="exportTableToExcel('tblData')">Export Table Data To Excel File</button>
+
+
+ 
+  
+   
+</table>
+<div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
+<div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
+    
+      <table class="table" id="tblData">
+        <thead>
+      
+            <th >Действие</th>
+            <th>№</th>
+           {%if current_user.role !='sale'%}
+            <th>Юр лицо</th>
+            {%endif%}
+            <th >Направление</th>
+            <th>Продавец</th>
+            <th>Закупшик</th>
+            <th>Название клиента</th>
+            <th>№ заявки</th>
+            <th>Дата заявки с клиентом</th>
+            <th>Место загрузки</th>
+            <th>Характер груза</th>
+            <th>Место выгрузки</th>
+            <th>Дата выгрузки</th>
+            {%if current_user.role!='sale'%}
+            <th>Перевозчик</th>
+            {%endif%}
+            <th>Номер счета от поставщика</th>
+            <th>Дата счета от Постащика</th>
+            <th>Сумма счета от Постащика</th>
+            <th>Размер НДС</th>
+            <th>Валюта счета</th>
+            <th>Размер предоплаты</th>
+            <th>Кост для нас</th>
+            <th>Профит</th>
+             </tr>
+             </thead>
+     
+         
+
+{%for fin in finance%} 
+
+
+      <tr>
+    
+
+   
+                <td><a href="{{url_for('.prefin_change_id', id=fin.id)}}"><button>Подробнее</button></td>
+                <td>{{fin.id}}</td>
+                <td>{{fin.tora_red}}</td>
+                <td>{{fin.direction}}</td>
+                <td id="sale">{{fin.sale}}</td>
+                <td>{{fin.buyer}}</td>
+                <td>{{fin.customer_name}}</td>
+                <td>{{fin.req_id}}</td>
+                <td>{{fin.customer_order_date}}</td>
+                <td>{{fin.loading_place}}</td>
+                <td>{{fin.cargo_character}}</td>
+                <td>{{fin.unloading_place}}</td>
+                <td>{{fin.unloading_date}}</td>
+                <td>{{fin.supplier_name}}</td>
+               
+                <td>{{fin.s_invoice_number}}
+                    
+                
+                
+                <td>{{fin.s_inv_date}}</td>
+                          
+                <td>{{fin.s_inv_amount}}</td>
+                <td>{{fin.s_inv_vat}}</td>
+                <td>{{fin.s_inv_currency}}</td>
+                <td>{{fin.s_prepaid_amount}}</td>
+                <td>{{fin.cost_with_vat}}</td>
+                <td>{{fin.profit}}</td>
+
+           
+          {%endfor%}
+
+
+         
+         
+        </tr>
+
+
+             
+        </tr>
+        </table>
+  </table>  
+ 
+
+ 
+ 
+  <script src = "{{url_for('static', filename='app.js')}}"></script>
+  <script src = "{{url_for('static', filename='app_1.js')}}"></script>
+  <script>
+    
+      function exportTableToExcel( tableID, filename = ''){
+       
+        var downloadLink;
+        var dataType = 'application/vnd.ms-excel';
+        var tableSelect = document.getElementById(tableID);
+        var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+        
+        // Specify file name
+        filename = filename?filename+'.xls':'excel_data.xls';
+        
+        // Create download link element
+        downloadLink = document.createElement("a");
+        
+        document.body.appendChild(downloadLink);
+        
+        if(navigator.msSaveOrOpenBlob){
+            var blob = new Blob(['\ufeff', tableHTML], {
+                type: dataType
+            });
+            navigator.msSaveOrOpenBlob( blob, filename);
+        }else{
+            // Create a link to the file
+            downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+        
+            // Setting the file name
+            downloadLink.download = filename;
+            
+            //triggering the function
+            downloadLink.click();
+            window.open('data:application/vnd.ms-excel,' + encodeURIComponent(table[0].outerHTML));
+        }
+    } 
+
+  
+  </script>
+{%endblock%}
+
+
+</body>
+</html>

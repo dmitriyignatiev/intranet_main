@@ -233,7 +233,10 @@ def prefin_change_id(id):
     fin = Prefin.query.get(id)
     session['fin_id'] = fin.id
     invoices = Invoicesup.query.filter(Invoicesup.fin_id==fin.id).all()
+    invoicec = Invoicecust.query.filter(Invoicecust.fin_id==fin.id).all()
+
     req = Request.query.filter_by(id=fin.req_id).first()
+    tn = Documents.query.filter_by(req_id=req.id).all()
     print('pre fin' + str(req.id))
 
     print('session: ' + str(session['fin_id']))
@@ -245,38 +248,80 @@ def prefin_change_id(id):
         print(fin.s_invoice_number)
         db.session.commit()
         return redirect(request.url)
-    return render_template('finance_change.html', fin=fin, form=form, invoices=invoices, req=req)
+    return render_template('finance_change.html', fin=fin, form=form, invoices=invoices, req=req, invoicec=invoicec, tn=tn)
 
-#подгрузка счета
+#подгрузка счета подрядчика
 @supp.route('/upload_invoice', methods=['POST', 'GET'])
 def upload_invoice():
-    target = os.path.join(APP_ROOT, 'invoice/')
-    fin_id = request.args.get('find')
-    print('ds' + str(session['fin_id']))
-    if not os.path.isdir(target):
-        os.mkdir(target)
-    for file in request.files.getlist("file"):
-        if file and allowed_file(file.filename):
-            print(file)
-            new_d = Invoicesup(fin_id=session['fin_id'])
-            db.session.add(new_d)
-            db.session.commit()
-            filename=str('Счет поставщика') +' ' +  str(session['fin_id']) +' '  +  file.filename
-            new_d.path=str(filename)
-            db.session.commit()
+    if current_user.role=='buyer':
+        target = os.path.join(APP_ROOT, 'invoice/')
+        fin_id = request.args.get('find')
+        print('ds' + str(session['fin_id']))
+        if not os.path.isdir(target):
+            os.mkdir(target)
+        for file in request.files.getlist("file"):
+            if file and allowed_file(file.filename):
+                print(file)
+                new_d = Invoicesup(fin_id=session['fin_id'])
+                db.session.add(new_d)
+                db.session.commit()
+                filename=str('Счет поставщика') +' ' +  str(session['fin_id']) +' '  +  file.filename
+                new_d.path=str(filename)
+                db.session.commit()
 
-            destination = "/".join([target, filename])
-            print(destination)
-            file.save(destination)
-            return jsonify({'success':'файлы успешно сохранены'})
-        else:
-            return jsonify({'success':'файлы запрещен к загрузке'})
-
+                destination = "/".join([target, filename])
+                print(destination)
+                file.save(destination)
+                return jsonify({'success':'файлы успешно сохранены'})
+            else:
+                return jsonify({'success':'файлы запрещен к загрузке'})
+   
 
 @supp.route('/download_s_inv/<path:filename>', methods=['GET'])
 def download_file_s_inv(filename):
-    return send_from_directory(os.path.join(APP_ROOT, 'invoice/'),
-                               filename, as_attachment=True)
+        return send_from_directory(os.path.join(APP_ROOT, 'invoice/'),
+                                filename, as_attachment=True)
+
+@supp.route('/download_c_inv/<path:filename>', methods=['GET'])
+def download_file_c_inv(filename):
+    return send_from_directory(os.path.join(APP_ROOT, 'invoice_c/'),
+                                filename, as_attachment=True)
+        
+
+
+
+@supp.route('/account', methods=['POST', 'GET'])
+def account():
+    finance = Prefin.query.all()
+    return render_template('account.html', finance=finance)
+
+
+#подгрузка счета для клиента
+@supp.route('/upload_invoice_c', methods=['POST', 'GET'])
+def upload_invoice_c():
+        target = os.path.join(APP_ROOT, 'invoice_c/')
+        fin_id = request.args.get('find')
+        print('ds' + str(session['fin_id']))
+        if not os.path.isdir(target):
+            os.mkdir(target)
+        for file in request.files.getlist("file"):
+            if file and allowed_file(file.filename):
+                print(file)
+                new_d = Invoicecust(fin_id=session['fin_id'])
+                db.session.add(new_d)
+                db.session.commit()
+                filename=str('Счет ') +' ' +  str(session['fin_id']) +' '  +  file.filename
+                new_d.path=str(filename)
+                db.session.commit()
+
+                destination = "/".join([target, filename])
+                print(destination)
+                file.save(destination)
+                return jsonify({'success':'файлы успешно сохранены'})
+            else:
+                return jsonify({'success':'файлы запрещен к загрузке'})
+
+
 
 
 
