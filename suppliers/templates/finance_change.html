@@ -57,14 +57,31 @@
                             {%for inv in invoices%}
                             <p><a href="{{url_for('supp.download_file_s_inv', filename=inv.path)}}">{{inv.path}}</a></p>
                             {%endfor%}
+                            {%for d in docs%}
+                            <p> <a href="{{url_for('supp.download_file', filename=d.path)}}">{{d.path}}</a>
+                            </p>
+                            {%endfor%}
                             <th>{%for inv in invoicec%}
                                     <p><a href="{{url_for('supp.download_file_c_inv', filename=inv.path)}}">{{inv.path}}</a></p>
                                 {%endfor%}
+                              
                                 </th>
-                        {%else%}
+                         {%elif current_user.role=='sale'%}
+                            {%for d in docs%}
+                            <p> <a href="{{url_for('supp.download_file', filename=d.path)}}">{{d.path}}</a>
+                            </p>
+                            {%endfor%}
+
+                           
+                            
+                            
+
+                        
 
                         <th>
-                            
+                            {%for inv in invoicec%}
+                            <p><a href="{{url_for('supp.download_file_c_inv', filename=inv.path)}}">{{inv.path}}</a></p>
+                           {%endfor%}
                         </th>
                         {%endif%}
 

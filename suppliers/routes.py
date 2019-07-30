@@ -236,6 +236,7 @@ def prefin_change_id(id):
     invoicec = Invoicecust.query.filter(Invoicecust.fin_id==fin.id).all()
 
     req = Request.query.filter_by(id=fin.req_id).first()
+    docs = Documents.query.filter(Documents.req_id==req.id).all()
     tn = Documents.query.filter_by(req_id=req.id).all()
     print('pre fin' + str(req.id))
 
@@ -248,7 +249,7 @@ def prefin_change_id(id):
         print(fin.s_invoice_number)
         db.session.commit()
         return redirect(request.url)
-    return render_template('finance_change.html', fin=fin, form=form, invoices=invoices, req=req, invoicec=invoicec, tn=tn)
+    return render_template('finance_change.html', fin=fin, form=form, invoices=invoices, req=req, invoicec=invoicec, tn=tn, docs=docs)
 
 #подгрузка счета подрядчика
 @supp.route('/upload_invoice', methods=['POST', 'GET'])
