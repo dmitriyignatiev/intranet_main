@@ -11,7 +11,7 @@ from app_main.models import db, User, Request, Posts, Costs, Status, \
     Direction, Agreement, Customer, Agg_number, Who_number,\
     Truck_opt, Truck, Quantity, Ttn, Customer_base, subs, Finance, Paid, Zayvka
         
-from suppliers.models import Supplier, newSup, Prefin, Documents, Pochta, Child, Parent, Invoicesup
+from suppliers.models import Supplier, newSup, Prefin, Documents, Pochta, Child, Parent, Invoicesup, Tn
 
 
 fin = Finance.query.get(44)
@@ -33,7 +33,8 @@ def make_shell_context():
             'Child': Child,
             'Parent': Parent,
             'Invoicesup':Invoicesup,
-            'Zayvka':Zayvka
+            'Zayvka':Zayvka,
+            'Tn':Tn,
             }
 
 

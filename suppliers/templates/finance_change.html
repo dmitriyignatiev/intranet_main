@@ -4,6 +4,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+        {{ dropzone.load_css() }}
+        {{ dropzone.style('border: 2px dashed #0087F7; margin: 10px 0 10px; min-height: 50px; min-width: 50px;') }}
     <meta charset="UTF-8">
     <title>Title</title>
 
@@ -16,19 +18,24 @@
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.js">
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" /> {%endblock%}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" /> 
     
     
-   
+
     
 
 </head>
+{%endblock%}
 <body>
-
+       
         
 
 
  {%block content%}
+
+ 
+
+ 
  <script src="{{url_for('.static', filename='add_o.js')}}"></script> 
  
 
@@ -44,16 +51,33 @@
     <thead>
         <tr>
             
-            <th>Файлы от поставщика</th>
+            <th>ТН</th>
+            <th>Файлы от поставщика
+
+                   
+            </th>
             <th>Файлы от Бухгалтерии</th>
             <th>Файлы от Клиента</th>
          </tr>
         </thead>
              <tbody>
                  <tr>
-                    
+                    <th scope="row">Тест
+
+                        {%for i in ttn%}
+                            {{i.id}}
+                        {%endfor%}
+                            {{ dropzone.create('supp.upload_s') }}
+                            {{ dropzone.load_js() }}
+                            {{ dropzone.config(redirect_url=url_for('supp.prefin_change')) }}
+                            
+                          
+                         
+
+                    </th>
                      <th scope="row">
-                         {%if current_user.role!='sale'%}
+                         
+                         
                             {%for inv in invoices%}
                             <p><a href="{{url_for('supp.download_file_s_inv', filename=inv.path)}}">{{inv.path}}</a></p>
                             {%endfor%}
@@ -61,12 +85,18 @@
                             <p> <a href="{{url_for('supp.download_file', filename=d.path)}}">{{d.path}}</a>
                             </p>
                             {%endfor%}
+                            {%if current_user.role!='sale'%}
+                         {{ dropzone.create('supp.upload_s') }}
+                         <button id="upload">Upload</button>
+                         
+                         {{ dropzone.load_js() }}
+                         {{ dropzone.config() }}
                             <th>{%for inv in invoicec%}
                                     <p><a href="{{url_for('supp.download_file_c_inv', filename=inv.path)}}">{{inv.path}}</a></p>
                                 {%endfor%}
                               
                                 </th>
-                         {%elif current_user.role=='sale'%}
+                            {%elif current_user.role=='sale'%}
                             {%for d in docs%}
                             <p> <a href="{{url_for('supp.download_file', filename=d.path)}}">{{d.path}}</a>
                             </p>
@@ -108,8 +138,6 @@
              </tbody>
 </table>
 
-
-    
 
    
 
@@ -180,6 +208,7 @@
                                 <button>Submit</button>
                             </div>
                             </form>
+                        
                             {%elif current_user.role == 'sale' %}
                             <form id='form_invoice' action="{{url_for('upload')}}" method="post" enctype="multipart/form-data">
                        
@@ -264,9 +293,7 @@
         </table>
   </table>  
 </form>
- 
 
- 
  
   <script src = "{{url_for('static', filename='app.js')}}"></script>
   <script src = "{{url_for('static', filename='app_1.js')}}"></script>

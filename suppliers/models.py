@@ -143,6 +143,13 @@ class Documents(db.Model):
     req_id = db.Column(db.Integer, db.ForeignKey('request.id'))
     prefin_id = db.Column(db.Integer, db.ForeignKey('prefin.id'))
 
+class Tn(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    req_id = db.Column(db.Integer)
+    path = db.Column(db.Text)
+    req_id = db.Column(db.Integer, db.ForeignKey('request.id'))
+    prefin_id = db.Column(db.Integer, db.ForeignKey('prefin.id'))
+
 #Для подрузки счета от Поставщика
 class Invoicesup(db.Model):
     id = db.Column(db.Integer, primary_key=True)

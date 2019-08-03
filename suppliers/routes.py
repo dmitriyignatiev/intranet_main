@@ -2,12 +2,14 @@ from flask import render_template, request, \
     jsonify, redirect, flash, \
         send_from_directory, url_for, send_file, session, make_response, g
 from suppliers import supp
-from .models import Supplier, Prefin, Documents
+from .models import Supplier, Prefin, Documents, Tn 
 from app_main.models import *
 from app_main import db, app
 from .forms import *
 from sqlalchemy import exc
 from sqlalchemy import desc
+
+
 
 
 
@@ -224,32 +226,36 @@ def prefin():
 def prefin_change():
     finance = Prefin.query.filter(Prefin.buyer==current_user.name).order_by(desc(Prefin.id)).all()
     finsales = Prefin.query.filter_by(sale=current_user.name).all()
+    tn = Tn.query.all()
     return render_template('finance.html', finance=finance, form=formSupplier(), finsales=finsales)
 
-@supp.route('/prefin_change_id/<int:id>', methods=['POST', 'GET'])
-def prefin_change_id(id):
-    form = formSupplier()
-    print(form)
-    fin = Prefin.query.get(id)
-    session['fin_id'] = fin.id
-    invoices = Invoicesup.query.filter(Invoicesup.fin_id==fin.id).all()
-    invoicec = Invoicecust.query.filter(Invoicecust.fin_id==fin.id).all()
 
-    req = Request.query.filter_by(id=fin.req_id).first()
-    docs = Documents.query.filter(Documents.req_id==req.id).all()
-    tn = Documents.query.filter_by(req_id=req.id).all()
-    print('pre fin' + str(req.id))
+# @supp.route('/prefin_change_id/<int:id>', methods=['POST', 'GET'])
+# def prefin_change_id(id):
+#     form = formSupplier()
+#     form_n = UploadForm()
+#     ttn = Tn.query.filter(Tn.prefin_id==int(session['fin_id'])).all()
+#     print(form)
+#     fin = Prefin.query.get(id)
+#     session['fin_id'] = fin.id
+#     invoices = Invoicesup.query.filter(Invoicesup.fin_id==fin.id).all()
+#     invoicec = Invoicecust.query.filter(Invoicecust.fin_id==fin.id).all()
 
-    print('session: ' + str(session['fin_id']))
+#     req = Request.query.filter_by(id=fin.req_id).first()
+#     docs = Documents.query.filter(Documents.req_id==req.id).all()
+#     tn = Documents.query.filter_by(req_id=req.id).all()
+#     print('pre fin' + str(req.id))
 
-    if request.method=='POST':
-        fin.s_invoice_number =form.s_invoice_number.data
-        fin.s_inv_date = form.s_inv_date.data
-        fin.s_inv_date_to_pay = form.s_inv_das_inv_date_to_pay.data
-        print(fin.s_invoice_number)
-        db.session.commit()
-        return redirect(request.url)
-    return render_template('finance_change.html', fin=fin, form=form, invoices=invoices, req=req, invoicec=invoicec, tn=tn, docs=docs)
+#     print('session: ' + str(session['fin_id']))
+
+#     if request.method=='POST':
+#         fin.s_invoice_number =form.s_invoice_number.data
+#         fin.s_inv_date = form.s_inv_date.data
+#         fin.s_inv_date_to_pay = form.s_inv_das_inv_date_to_pay.data
+#         print(fin.s_invoice_number)
+#         db.session.commit()
+#         return redirect(request.url)
+#     return render_template('finance_change.html', fin=fin, form=form, invoices=invoices, req=req, invoicec=invoicec, tn=tn, docs=docs, form_n=form_n, ttn=ttn)
 
 #подгрузка счета подрядчика
 @supp.route('/upload_invoice', methods=['POST', 'GET'])
@@ -322,14 +328,103 @@ def upload_invoice_c():
             else:
                 return jsonify({'success':'файлы запрещен к загрузке'})
 
+# @supp.route('/upload_tn', methods=['POST', 'GET'])
+# def upload_tn():
+#         target = os.path.join(APP_ROOT, 'TN/')
+#         fin_id = request.args.get('find')
+#         print('ds' + str(session['fin_id']))
+#         if not os.path.isdir(target):
+#             os.mkdir(target)
+#         for file in request.files.getlist("file"):
+#             if file and allowed_file(file.filename):
+#                 print(file)
+#                 new_d = Invoicecust(fin_id=session['fin_id'])
+#                 db.session.add(new_d)
+#                 db.session.commit()
+#                 filename=str('Счет ') +' ' +  str(session['fin_id']) +' '  +  file.filename
+#                 new_d.path=str(filename)
+#                 db.session.commit()
+
+#                 destination = "/".join([target, filename])
+#                 print(destination)
+#                 file.save(destination)
+#                 return jsonify({'success':'файлы успешно сохранены'})
+#             else:
+#                 return jsonify({'success':'файлы запрещен к загрузке'})
+#         return render_template('finance_change.html')
 
 
 
 
 
+import config
+
+import glob
 
 
+@supp.route('/upload_tn', methods=['POST', 'GET'])
+def upload_tn():
+    target = os.path.join(APP_ROOT, 'TN/')
+    print('glob' + glob.glob(target))
+    
+    if not os.path.isdir(target):
+         os.mkdir(target)
+    if request.method == 'POST':
+        
+        
+        f = request.files.get('file')
+        f.filename = 'ТН#' + str(session['fin_id']) + ' ' + str(f.filename)
+        t = Tn(prefin_id=session['fin_id'], path = f.filename)
+        db.session.add(t)
+       
+       
+        db.session.commit()
+        print(session['fin_id'])
+       
+        
+        
+        
 
 
+        destination = "/".join([target, f.filename])
 
+        print('eto dest: ' + str(destination))
+        if not f.filename in APP_ROOT:
+            f.save(destination)
+        else:
+            print('No')
+    return render_template('test.html')
+
+@supp.route('/prefin_change_id_test/<int:id>', methods=['POST', 'GET'])
+def prefin_change_id_test(id):
+    form = formSupplier()
+    form_n = UploadForm()
+    ttn = Tn.query.filter(Tn.prefin_id==int(session['fin_id'])).all()
+    print(form)
+    fin = Prefin.query.get(id)
+    session['fin_id'] = fin.id
+    invoices = Invoicesup.query.filter(Invoicesup.fin_id==fin.id).all()
+    invoicec = Invoicecust.query.filter(Invoicecust.fin_id==fin.id).all()
+
+    req = Request.query.filter_by(id=fin.req_id).first()
+    docs = Documents.query.filter(Documents.req_id==req.id).all()
+    tn = Documents.query.filter_by(req_id=req.id).all()
+    print('pre fin' + str(req.id))
+
+    print('session: ' + str(session['fin_id']))
+
+    if request.method=='POST':
+        fin.s_invoice_number =form.s_invoice_number.data
+        fin.s_inv_date = form.s_inv_date.data
+        fin.s_inv_date_to_pay = form.s_inv_das_inv_date_to_pay.data
+        print(fin.s_invoice_number)
+        db.session.commit()
+        return redirect(request.url)
+    return render_template('finance_change_test.html', fin=fin, form=form, invoices=invoices, req=req, invoicec=invoicec, tn=tn, docs=docs, form_n=form_n, ttn=ttn)
+
+
+@supp.route('/download_file_s_tn/<path:filename>', methods=['GET'])
+def download_file_s_tn(filename):
+        return send_from_directory(os.path.join(APP_ROOT, 'TN/'),
+                                filename, as_attachment=True)
 
