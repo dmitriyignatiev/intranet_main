@@ -163,6 +163,7 @@ class Invoicecust(db.Model):
     fin_id = db.Column(db.Integer)
     path = db.Column(db.Text)
     prefin_id = db.Column(db.Integer, db.ForeignKey('prefin.id'))
+    req_id = db.Column(db.Integer, db.ForeignKey('request.id'))
 
 
 

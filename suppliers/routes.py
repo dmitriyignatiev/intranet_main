@@ -230,32 +230,6 @@ def prefin_change():
     return render_template('finance.html', finance=finance, form=formSupplier(), finsales=finsales)
 
 
-# @supp.route('/prefin_change_id/<int:id>', methods=['POST', 'GET'])
-# def prefin_change_id(id):
-#     form = formSupplier()
-#     form_n = UploadForm()
-#     ttn = Tn.query.filter(Tn.prefin_id==int(session['fin_id'])).all()
-#     print(form)
-#     fin = Prefin.query.get(id)
-#     session['fin_id'] = fin.id
-#     invoices = Invoicesup.query.filter(Invoicesup.fin_id==fin.id).all()
-#     invoicec = Invoicecust.query.filter(Invoicecust.fin_id==fin.id).all()
-
-#     req = Request.query.filter_by(id=fin.req_id).first()
-#     docs = Documents.query.filter(Documents.req_id==req.id).all()
-#     tn = Documents.query.filter_by(req_id=req.id).all()
-#     print('pre fin' + str(req.id))
-
-#     print('session: ' + str(session['fin_id']))
-
-#     if request.method=='POST':
-#         fin.s_invoice_number =form.s_invoice_number.data
-#         fin.s_inv_date = form.s_inv_date.data
-#         fin.s_inv_date_to_pay = form.s_inv_das_inv_date_to_pay.data
-#         print(fin.s_invoice_number)
-#         db.session.commit()
-#         return redirect(request.url)
-#     return render_template('finance_change.html', fin=fin, form=form, invoices=invoices, req=req, invoicec=invoicec, tn=tn, docs=docs, form_n=form_n, ttn=ttn)
 
 #подгрузка счета подрядчика
 @supp.route('/upload_invoice', methods=['POST', 'GET'])
@@ -289,11 +263,7 @@ def download_file_s_inv(filename):
         return send_from_directory(os.path.join(APP_ROOT, 'invoice/'),
                                 filename, as_attachment=True)
 
-@supp.route('/download_c_inv/<path:filename>', methods=['GET'])
-def download_file_c_inv(filename):
-    return send_from_directory(os.path.join(APP_ROOT, 'invoice_c/'),
-                                filename, as_attachment=True)
-        
+
 
 
 
@@ -328,90 +298,95 @@ def upload_invoice_c():
             else:
                 return jsonify({'success':'файлы запрещен к загрузке'})
 
-# @supp.route('/upload_tn', methods=['POST', 'GET'])
-# def upload_tn():
-#         target = os.path.join(APP_ROOT, 'TN/')
-#         fin_id = request.args.get('find')
-#         print('ds' + str(session['fin_id']))
-#         if not os.path.isdir(target):
-#             os.mkdir(target)
-#         for file in request.files.getlist("file"):
-#             if file and allowed_file(file.filename):
-#                 print(file)
-#                 new_d = Invoicecust(fin_id=session['fin_id'])
-#                 db.session.add(new_d)
-#                 db.session.commit()
-#                 filename=str('Счет ') +' ' +  str(session['fin_id']) +' '  +  file.filename
-#                 new_d.path=str(filename)
-#                 db.session.commit()
-
-#                 destination = "/".join([target, filename])
-#                 print(destination)
-#                 file.save(destination)
-#                 return jsonify({'success':'файлы успешно сохранены'})
-#             else:
-#                 return jsonify({'success':'файлы запрещен к загрузке'})
-#         return render_template('finance_change.html')
 
 
 
 
-
-import config
-
-import glob
 
 
 @supp.route('/upload_tn', methods=['POST', 'GET'])
 def upload_tn():
     target = os.path.join(APP_ROOT, 'TN/')
-    print('glob' + glob.glob(target))
-    
     if not os.path.isdir(target):
          os.mkdir(target)
     if request.method == 'POST':
-        
-        
         f = request.files.get('file')
         f.filename = 'ТН#' + str(session['fin_id']) + ' ' + str(f.filename)
+       
+        
         t = Tn(prefin_id=session['fin_id'], path = f.filename)
         db.session.add(t)
-       
-       
+        fin = Prefin.query.get(t.prefin_id)
+        t.req_id = fin.req_id
         db.session.commit()
         print(session['fin_id'])
-       
-        
-        
-        
-
-
         destination = "/".join([target, f.filename])
-
         print('eto dest: ' + str(destination))
-        if not f.filename in APP_ROOT:
-            f.save(destination)
-        else:
-            print('No')
-    return render_template('test.html')
+        f.save(destination)
+    return redirect (url_for('supp.prefin_change_id_test', id=int(session['fin_id'])))
+
+#маршрут для заугрзки доков от поставщика (счет, документы, договора)
+@supp.route('/upload_s_docs', methods=['POST', 'GET'])
+def upload_s_docs():
+    target = os.path.join(APP_ROOT, 's_docs/')
+    if not os.path.isdir(target):
+         os.mkdir(target)
+    if request.method == 'POST':
+        f = request.files.get('file')
+        f.filename = 'документ#' + str(session['fin_id']) + ' ' + str(f.filename)
+        docs = Documents(prefin_id=session['fin_id'], path = f.filename)
+        db.session.add(docs)
+        fin = Prefin.query.get(docs.prefin_id)
+        docs.req_id = fin.req_id
+        db.session.commit()
+        print(session['fin_id'])
+        destination = "/".join([target, f.filename])
+        print('eto dest: ' + str(destination))
+        f.save(destination)
+    return redirect (url_for('supp.prefin_change_id_test', id=int(session['fin_id'])))
+
+@supp.route('/upload_с_invoice', methods=['POST', 'GET'])
+def upload_с_invoice():
+    target = os.path.join(APP_ROOT, 'c_inv/')
+    if not os.path.isdir(target):
+         os.mkdir(target)
+    if request.method == 'POST':
+        f = request.files.get('file')
+        f.filename = 'документ#' + str(session['fin_id']) + ' ' + str(f.filename)
+        invoice = Invoicecust(prefin_id=session['fin_id'], path = f.filename)
+        db.session.add(invoice)
+        fin = Prefin.query.get(invoice.prefin_id)
+        invoice.req_id = fin.req_id
+        db.session.commit()
+        print(session['fin_id'])
+        destination = "/".join([target, f.filename])
+        print('eto dest: ' + str(destination))
+        f.save(destination)
+    return redirect (url_for('supp.prefin_change_id_test', id=int(session['fin_id'])))
 
 @supp.route('/prefin_change_id_test/<int:id>', methods=['POST', 'GET'])
 def prefin_change_id_test(id):
     form = formSupplier()
     form_n = UploadForm()
-    ttn = Tn.query.filter(Tn.prefin_id==int(session['fin_id'])).all()
+    # 
+    
     print(form)
     fin = Prefin.query.get(id)
     session['fin_id'] = fin.id
     invoices = Invoicesup.query.filter(Invoicesup.fin_id==fin.id).all()
-    invoicec = Invoicecust.query.filter(Invoicecust.fin_id==fin.id).all()
+    invoicec = Invoicecust.query.all()
 
     req = Request.query.filter_by(id=fin.req_id).first()
     docs = Documents.query.filter(Documents.req_id==req.id).all()
     tn = Documents.query.filter_by(req_id=req.id).all()
+    ttn = Tn.query.filter(Tn.prefin_id==int(session['fin_id'])).all()
+    zayavka = Zayvka.query.filter_by(req_id=req.id).all()
+
     print('pre fin' + str(req.id))
 
     print('session: ' + str(session['fin_id']))
+
+   
 
     if request.method=='POST':
         fin.s_invoice_number =form.s_invoice_number.data
@@ -420,7 +395,7 @@ def prefin_change_id_test(id):
         print(fin.s_invoice_number)
         db.session.commit()
         return redirect(request.url)
-    return render_template('finance_change_test.html', fin=fin, form=form, invoices=invoices, req=req, invoicec=invoicec, tn=tn, docs=docs, form_n=form_n, ttn=ttn)
+    return render_template('finance_change_test.html', fin=fin, form=form, invoices=invoices, req=req, invoicec=invoicec, tn=tn, docs=docs, form_n=form_n, ttn=ttn, zayavka=zayavka)
 
 
 @supp.route('/download_file_s_tn/<path:filename>', methods=['GET'])
@@ -428,3 +403,12 @@ def download_file_s_tn(filename):
         return send_from_directory(os.path.join(APP_ROOT, 'TN/'),
                                 filename, as_attachment=True)
 
+@supp.route('/download_s_docs/<path:filename>', methods=['GET'])
+def download_s_docs(filename):
+        return send_from_directory(os.path.join(APP_ROOT, 's_docs/'),
+                                filename, as_attachment=True)
+
+@supp.route('/download_c_inv/<path:filename>', methods=['GET'])
+def download_c_inv(filename):
+        return send_from_directory(os.path.join(APP_ROOT, 'c_inv/'),
+                                filename, as_attachment=True)

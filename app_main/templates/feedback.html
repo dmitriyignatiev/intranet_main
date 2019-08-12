@@ -64,10 +64,16 @@
                         </form>
     </div>
     <div>
-        <button id='q'>q</button></div>
-    {%for d in docs %}
+    <h6>ТН, ТТН</h6>
+    {%for d in tn %}
+    <p><a href="{{url_for('supp.download_file_s_tn', filename=d.path)}}">{{d.path}}</a></p>
+    {%endfor%}
+
+    <h6>Заявка от клиента</h6>
+    {%for d in z_doc %}
     <p><a href="{{url_for('download_file', filename=d.path)}}">{{d.path}}</a></p>
     {%endfor%}
+
 
 
 

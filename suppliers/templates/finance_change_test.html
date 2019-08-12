@@ -2,33 +2,29 @@
 {%block head%} {{super()}}
 <head>
 
-      
+       
+    
+    {{ dropzone.load_css() }}
+    {{ dropzone.style('border: 2px dashed #0087F7; margin: 10px 0 10px; min-height: 50px; min-width: 50px;') }}
        
 </head>
 <title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-  
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-        <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.js">
-        </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" /> 
-</title>
+       
+        
+    </title>
 {%endblock%}
 {%block content%}
-<body>
-  
-</body>
-  {{ dropzone.load_css() }}
-        {{ dropzone.style('border: 2px dashed #0087F7; margin: 10px 0 10px; min-height: 50px; min-width: 50px;') }}
+
+<div>
+
+ 
 <table class="table table-sm">
         <thead>
             <tr>
                 
-                <th>ТН</th>
-                <th>Файлы от поставщика
+                <th>ТН/ТТН
+                </th>
+                <th>Файлы от поставщика(Счет, договор заявка и другие)
     
                        
                 </th>
@@ -39,56 +35,66 @@
                  <tbody>
                      <tr>
                         <th scope="row">
-    
-                            
+                            {%if current_user.role!='sale' and current_user.role!='account'%}
+      
                                 {{ dropzone.create('supp.upload_tn') }}
                                 {{ dropzone.load_js() }}
                                 {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id)) }}
-                                
+                            {%endif%}
+                                <form action="">
                               {%for i in ttn%}
                                {%if i.prefin_id == fin.id%}
                                <p><a href="{{url_for('supp.download_file_s_tn', filename=i.path)}}">{{i.path}}</a>
                                </p> 
                                {%endif%}
                             {%endfor%}
-                             
+                             </form>
     
                         </th>
-                         <rd scope="row">
-
-                                {{ dropzone.create('supp.upload_tn') }}
+                         <th scope="row">
+                            {%if current_user.role!='sale' and current_user.role!='account'%}
+                                {{ dropzone.create('supp.upload_s_docs') }}
                                 {{ dropzone.load_js() }}
                                 {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id)) }}
-                         </rd>
+                            {%endif%}
+                                <form action="">
+                                        {%for i in docs%}
+                                         {%if i.prefin_id == fin.id%}
+                                         <p><a href="{{url_for('supp.download_s_docs', filename=i.path)}}">{{i.path}}</a>
+                                         </p> 
+                                         {%endif%}
+                                      {%endfor%}
+                                       </form>
+                                
+                                    </th>
+                                    
                                 <th>
-                                        {{ dropzone.create('supp.upload_tn') }}
+                                   {%if current_user.role!=sale and current_user.role!='buyer'%}
+                                        {{ dropzone.create('supp.upload_с_invoice') }}
                                         {{ dropzone.load_js() }}
                                         {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id)) }}
+                                    {%endif%}
                                         {%for inv in invoicec%}
-                                        <p><a href="{{url_for('supp.download_file_c_inv', filename=inv.path)}}">{{inv.path}}</a></p>
-                                       {%endfor%}
+                                        {%if inv.prefin_id == fin.id%}
+                                        <p><a href="{{url_for('supp.download_c_inv', filename=inv.path)}}">{{inv.path}}</a></p>
+                                       {%endif%}
+                                        {%endfor%}
                                        
                                     </th>
                                   
-            
-                                        {%if fin.zayvka%}
-            
-                                        <th>{%for  doc in req.zayvka%}
-                                               <p><a href="{{url_for('download_file', filename=doc.path)}}">{{doc.path}}</a></p>
-                                            {%endfor%}
-                                            
-                                       
-                                         {%else%}
-                                            
-                                            {%for doc in fin.zayvka%}
+                                    <th>
+                                        {%for doc in zayavka%}
+                                                    
+                                                <p><a href="{{url_for('download_file', filename=doc.path)}}">{{doc.path}}</a></p>
                                                 
-                                            <p><a href="{{url_for('download_file', filename=doc.path)}}">{{doc.path}}</a></p>
+                                         {%endfor%}
+
+                                    </th>
+                                    
                                             
-                                            {%endfor%}
-                                           {%endif%}
-                                        </th>
-                                        
-            
+                                         
+                                       
+                     
                                  </th>
                              </tr>
                          </tbody>
@@ -202,55 +208,18 @@
                     </table>
               </table>  
             </form>
+        </div>
             
              
-              <script src = "{{url_for('static', filename='app.js')}}"></script>
-              <script src = "{{url_for('static', filename='app_1.js')}}"></script>
+             
              
             
               
-              <script>
-                
-                  function exportTableToExcel( tableID, filename = ''){
-                   
-                    var downloadLink;
-                    var dataType = 'application/vnd.ms-excel';
-                    var tableSelect = document.getElementById(tableID);
-                    var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
-                    
-                    // Specify file name
-                    filename = filename?filename+'.xls':'excel_data.xls';
-                    
-                    // Create download link element
-                    downloadLink = document.createElement("a");
-                    
-                    document.body.appendChild(downloadLink);
-                    
-                    if(navigator.msSaveOrOpenBlob){
-                        var blob = new Blob(['\ufeff', tableHTML], {
-                            type: dataType
-                        });
-                        navigator.msSaveOrOpenBlob( blob, filename);
-                    }else{
-                        // Create a link to the file
-                        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
-                    
-                        // Setting the file name
-                        downloadLink.download = filename;
-                        
-                        //triggering the function
-                        downloadLink.click();
-                        window.open('data:application/vnd.ms-excel,' + encodeURIComponent(table[0].outerHTML));
-                    }
-                }; 
-            
-            
-            
+             
             
             
                
-              
-              </script>
+         
             
             
             
@@ -262,6 +231,8 @@
             </html>
             
             {%endblock%}
-                {%block scripts%} 
-                
+                {%block scripts%} {{super()}}
+
+               
+               
                 {%endblock%}

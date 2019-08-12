@@ -326,6 +326,7 @@ def request_with_cost():
 @app.route('/feedback/<int:id>', methods=['GET', 'POST'])
 def feedback(id):
     req = Request.query.get(id)
+    tn = Tn.query.filter_by(req_id=req.id)
     session['id']=id
     docs = Zayvka.query.filter(Zayvka.req_id==session['id'])
     user = User.query.get(current_user.id)
@@ -333,7 +334,7 @@ def feedback(id):
     form = FeedBack()
     form_for_buyer = formForBuyer()
     z_id = session['id']
-    z_doc = Zayvka.query.filter(Zayvka.req_id==z_id).first()
+    z_doc = Zayvka.query.filter(Zayvka.req_id==z_id).all()
     print(z_id)
 
     if form.validate_on_submit():
@@ -419,7 +420,7 @@ def feedback(id):
 
 
         return redirect(url_for('feedback', id=id))
-    return render_template('feedback.html', form=form, req=req, user=user, posts=posts, z_doc=z_doc, docs=docs)
+    return render_template('feedback.html', form=form, req=req, user=user, posts=posts, z_doc=z_doc, docs=docs, tn=tn)
 
 @app.route('/recive_order', methods = ['POST', 'GET'])
 def recieve_order():
@@ -815,10 +816,10 @@ def upload():
         os.mkdir(target)
     for file in request.files.getlist("file"):
         if file and allowed_file(file.filename):
-            print('fin_id' + str(session['fin_id']))
            
-            fin = Prefin.query.filter_by(id=session['fin_id']).first()
-            new_d = Zayvka(req_id=session['id'], request_id=int(session['id']), prefin_id=fin.id)
+           
+            
+            new_d = Zayvka(req_id=session['id'], request_id=int(session['id']))
             
             db.session.add(new_d)
             
