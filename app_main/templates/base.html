@@ -40,7 +40,7 @@
        <h15><a class="navbar-brand" href="{{url_for('pipeline')}}">Pipeline</a></h15>
        {%endif%}
        
-       {%if current_user.role=='buyer'%}
+       {%if current_user.role=='buyer' or current_user.role=='sale' or current_user.role=='account'%}
        <h15><a class="navbar-brand" href="{{url_for('supp.prefin_change')}}">Finance</a></h15>
        {%endif%}
 

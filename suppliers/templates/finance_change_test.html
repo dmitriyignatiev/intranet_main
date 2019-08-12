@@ -69,7 +69,7 @@
                                     </th>
                                     
                                 <th>
-                                   {%if current_user.role!=sale and current_user.role!='buyer'%}
+                                    {%if current_user.role!='sale' and current_user.role!='buyer'%}
                                         {{ dropzone.create('supp.upload_с_invoice') }}
                                         {{ dropzone.load_js() }}
                                         {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id)) }}

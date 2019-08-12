@@ -225,9 +225,10 @@ def prefin():
 @supp.route('/prefin_change', methods=['POST', 'GET'])
 def prefin_change():
     finance = Prefin.query.filter(Prefin.buyer==current_user.name).order_by(desc(Prefin.id)).all()
+    finance_acc = Prefin.query.order_by(desc(Prefin.id)).all()
     finsales = Prefin.query.filter_by(sale=current_user.name).all()
     tn = Tn.query.all()
-    return render_template('finance.html', finance=finance, form=formSupplier(), finsales=finsales)
+    return render_template('finance.html', finance=finance, form=formSupplier(), finsales=finsales, finance_acc=finance_acc)
 
 
 
