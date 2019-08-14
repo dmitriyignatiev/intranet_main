@@ -28,7 +28,7 @@
 
  {%block content%}
  
- 
+ <p>{{finance_acc|length}}</p>
 
 
   
@@ -37,12 +37,7 @@
 
 {%if current_user.role == 'account'%}
 <a href="{{url_for('supp.need_inv')}}"><button>Выставить счета</button></a>
-{%endif%}
- 
-{%if current_user.role == 'sale'%}
-<a href="{{url_for('supp.send_invc')}}"><button>Новые счета[Неотправленные]</button></a>
-{%endif%}
- 
+{%endif%} 
   
    
 </table>
@@ -81,94 +76,17 @@
              </tr>
              </thead>
      
-         
-{%if current_user.role=='buyer'%}
-{%for fin in finance%} 
 
-
-
-      <tr>
-    
-
-   
-                <td><a href="{{url_for('.prefin_change_id_test', id=fin.id)}}"><button>Подробнее</button></td>
-                <td>{{fin.id}}</td>
-                <td>{{fin.tora_red}}</td>
-                <td>{{fin.direction}}</td>
-                <td id="sale">{{fin.sale}}</td>
-                <td>{{fin.buyer}}</td>
-                <td>{{fin.customer_name}}</td>
-                <td>{{fin.req_id}}</td>
-                <td>{{fin.customer_order_date}}</td>
-                <td>{{fin.loading_place}}</td>
-                <td>{{fin.cargo_character}}</td>
-                <td>{{fin.unloading_place}}</td>
-                <td>{{fin.unloading_date}}</td>
-                <td>{{fin.supplier_name}}</td>
-               
-                <td>{{fin.s_invoice_number}}
-                    
-                
-                
-                <td>{{fin.s_inv_date}}</td>
-                          
-                <td>{{fin.s_inv_amount}}</td>
-                <td>{{fin.s_inv_vat}}</td>
-                <td>{{fin.s_inv_currency}}</td>
-                <td>{{fin.s_prepaid_amount}}</td>
-                <td>{{fin.cost_with_vat}}</td>
-                <td>{{fin.profit}}</td>
-
-           
-          {%endfor%}
-
-
-         
-         
-        </tr>
-
-{% elif current_user.role=='sale' %}
-{% for  fin in finsales %}
-        <tr>
-    
-
-   
-                <td><a href="{{url_for('.prefin_change_id_test', id=fin.id)}}"><button>Подробнее</button></td>
-                <td>{{fin.id}}</td>
-                
-                <td>{{fin.direction}}</td>
-                <td id="sale">{{fin.sale}}</td>
-                <td>{{fin.buyer}}</td>
-                <td>{{fin.customer_name}}</td>
-                <td>{{fin.req_id}}</td>
-                <td>{{fin.customer_order_date}}</td>
-                <td>{{fin.loading_place}}</td>
-                <td>{{fin.cargo_character}}</td>
-                <td>{{fin.unloading_place}}</td>
-                <td>{{fin.unloading_date}}</td>
-                
-               
-                <td>{{fin.s_invoice_number}}
-                    
-                
-                
-                <td>{{fin.s_inv_date}}</td>
-                          
-                <td>{{fin.s_inv_amount}}</td>
-                <td>{{fin.s_inv_vat}}</td>
-                <td>{{fin.s_inv_currency}}</td>
-                <td>{{fin.s_prepaid_amount}}</td>
-                <td>{{fin.cost_with_vat}}</td>
-                <td>{{fin.profit}}</td>
-
-           
-                {%endfor%}
-                {%endif%}
-         
-        </tr>
 
         {% if current_user.role=='account' %}
+             
                 {% for  fin in finance_acc %}
+               {%if fin.tn_doc.first() and not fin.invc.first() and %}
+              
+               
+             
+               
+               
         <tr>
     
 
@@ -200,9 +118,11 @@
                 <td>{{fin.s_prepaid_amount}}</td>
                 <td>{{fin.cost_with_vat}}</td>
                 <td>{{fin.profit}}</td>
-
-           
+                   
+                    
+                    {%endif%}
                 {%endfor%}
+                
                 {%endif%}
          
         </tr>

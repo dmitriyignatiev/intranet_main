@@ -5,6 +5,8 @@ from flask_login import UserMixin
 from datetime import datetime
 
 
+
+
 subs = db.Table('subs',
                 db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
                 db.Column('request_id', db.Integer, db.ForeignKey('request.id'))
@@ -82,6 +84,8 @@ def load_user(id):
 
 
 class Request (db.Model):
+
+    
 
     id = db.Column (db.Integer, primary_key=True)
     org = db.Column (db.String (120))

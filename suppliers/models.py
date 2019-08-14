@@ -32,6 +32,8 @@ class newSup(db.Model):
 
 class Prefin(db.Model):
 
+    
+
     id = db.Column (db.Integer, primary_key=True)
     tora_red = db.Column(db.String(120))
     supplier_name = db.Column (db.String (240))
@@ -120,6 +122,7 @@ class Prefin(db.Model):
     docs = db.relationship('Documents', backref='prefin', lazy='dynamic')
     invs = db.relationship('Invoicesup', backref='prefin', lazy='dynamic')
     invc = db.relationship('Invoicecust', backref='prefin', lazy='dynamic')
+    tn_doc = db.relationship('Tn', backref='prefin', lazy='dynamic')
 
     def pochta_cost(self):
         summ = 0

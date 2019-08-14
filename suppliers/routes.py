@@ -413,3 +413,21 @@ def download_s_docs(filename):
 def download_c_inv(filename):
         return send_from_directory(os.path.join(APP_ROOT, 'c_inv/'),
                                 filename, as_attachment=True)
+
+#для выставлении счетов бухгалтерией
+@supp.route('/need_inv', methods=['POST', 'GET'])
+def need_inv():
+    finance = Prefin.query.filter(Prefin.buyer==current_user.name).order_by(desc(Prefin.id)).all()
+    finance_acc = Prefin.query.order_by(desc(Prefin.id)).all()   
+    finsales = Prefin.query.filter_by(sale=current_user.name).all()
+    tn = Tn.query.all()
+    return render_template('need_inv.html', finance=finance, form=formSupplier(), finsales=finsales, finance_acc=finance_acc, tn=tn)
+
+#для отправки счетов клиентам
+@supp.route('/send_invc', methods=['POST', 'GET'])
+def send_invc():
+    finance = Prefin.query.filter(Prefin.buyer==current_user.name).order_by(desc(Prefin.id)).all()
+    finance_acc = Prefin.query.order_by(desc(Prefin.id)).all()   
+    finsales = Prefin.query.filter_by(sale=current_user.name).all()
+    tn = Tn.query.all()
+    return render_template('send_invc.html', finance=finance, form=formSupplier(), finsales=finsales, finance_acc=finance_acc, tn=tn)
