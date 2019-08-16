@@ -35,6 +35,7 @@ class formSupplier(FlaskForm):
     c_inv_amount = IntegerField('Сумма счета на клиента с НДС')
     c_inv_currency = SelectField('Валюта', choices=[('RUR', 'RUR'), ('EUR', 'EUR'), ('USD', 'USD')])
     c_inv_amount = IntegerField('Сумма счета на клиента')
+    c_inv_plan_pay = DateField('ДАТА')
     
 
     photo = FileField()

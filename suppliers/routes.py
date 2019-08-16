@@ -9,6 +9,8 @@ from .forms import *
 from sqlalchemy import exc
 from sqlalchemy import desc
 
+import datetime
+
 
 
 
@@ -429,16 +431,26 @@ def prefin_change_id_test(id):
 
     print('session: ' + str(session['fin_id']))
 
+    c_plan_day = req.customer.payment_day
+    
+    
    
 
     if request.method=='POST':
         fin.s_invoice_number =form.s_invoice_number.data
         fin.s_inv_date = form.s_inv_date.data
         fin.s_inv_date_to_pay = form.s_inv_das_inv_date_to_pay.data
+        fin.c_inv_number=form.c_inv_number.data
+        fin.c_invoice_date=form.c_invoice_date.data
+        if fin.c_invoice_date:
+            fin.c_inv_plan_pay = fin.c_invoice_date + datetime.timedelta(days=c_plan_day)
+        else:
+            fin.c_inv_plan_pay=form.c_inv_plan_pay.data
+
         print(fin.s_invoice_number)
         db.session.commit()
         return redirect(request.url)
-    return render_template('finance_change_test.html', fin=fin, form=form, invoices=invoices, req=req, invoicec=invoicec, tn=tn, docs=docs, form_n=form_n, ttn=ttn, zayavka=zayavka)
+    return render_template('finance_change_test.html', fin=fin, form=form, invoices=invoices, req=req, invoicec=invoicec, tn=tn, docs=docs, form_n=form_n, ttn=ttn, zayavka=zayavka )
 
 
 

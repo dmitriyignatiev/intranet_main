@@ -124,14 +124,20 @@
                         <th>Место выгрузки</th>
                         <th>Дата выгрузки</th>
                         <th>Перевозчик</th>
+                        
+                        {%if current_user.role=='buyer'%}
                         <th>Сумма счета от Постащика</th>
-            
                         <th>Номер счета от поставщика</th>
                         <th>Дата счета от Постащика</th>
                         <th>Дата когда нужно заплатить поставщику</th>
-                        
-                        
                         <th>Размер НДС</th>
+                        {%endif%}
+
+                        {%if current_user.role=='account'%}
+                        <th>Номер счета на клиента</th>
+                        <th>Дата счета на клиента</th>
+                        <th>Дедлайн по оплате</th>
+                        {%endif%}
                         <th>Валюта счета</th>
                         <th>Размер предоплаты</th>
                         <th>Кост для нас</th>
@@ -176,29 +182,64 @@
                             <td>{{fin.cargo_character}}</td>
                             <td>{{fin.unloading_place}}</td>
                             <td>{{fin.unloading_date}}</td>
-                            <td>{{fin.supplier_name}}</td>
-                            <td>{{fin.s_inv_amount}}</td>
-                            {% if fin.s_invoice_number%}
-                            <td>{{form.s_invoice_number(value=fin.s_invoice_number)}}</td>
-                            {%else%}
-                            <td>{{form.s_invoice_number}}</td>
+                            <td>{{fin.supplier_name}}</td> 
+
+                            {%if current_user.role == 'buyer'%}
+                                <td>{{fin.s_inv_amount}}</td>
+                                {% if fin.s_invoice_number%}
+                                <td>{{form.s_invoice_number(value=fin.s_invoice_number)}}</td>
+                                {%else%}
+                                <td>{{form.s_invoice_number}}</td>
+                                {%endif%}                        
+                                {%if fin.s_inv_date%}
+                                <td>{{form.s_inv_date(value=fin.s_inv_date.strftime('%Y-%m-%d'))}}</td>
+                                {%else%}
+                                <td>{{form.s_inv_date}}</td>
+                                {%endif%}
+                                {%if fin.s_inv_date_to_pay%}
+                                <td>{{form.s_inv_das_inv_date_to_pay(value=fin.s_inv_date_to_pay.strftime('%Y-%m-%d'))}}</td>
+                                {%else%}
+                                <td>{{form.s_inv_das_inv_date_to_pay}}</td>
+                                {%endif%}
+                                <td>{{fin.s_inv_vat}}</td>
                             {%endif%}
-            
-              
+
+                            {% if current_user.role == 'account' %}
+                            {%if fin.c_inv_number%}
+                            <th bgcolor="green">{{form.c_inv_number(value=fin.c_inv_number)}}</th>
+                            {%else%}
+                            <th  bgcolor="green">{{form.c_inv_number}}</th>
+                            {%endif%}
+                            {%if fin.c_invoice_date%}
+                            <th  bgcolor="yellow">{{form.c_invoice_date(value=fin.c_invoice_date.strftime('%Y-%m-%d'))}}</th>
+                            {%else%}
+                            <th bgcolor="yellow">{{form.c_invoice_date}}</th>
+                            {%endif%}
+                            {%if fin.c_inv_plan_pay%}
+                           
+                                        <th  bgcolor="red">
+                                            
+                                                {{form.c_inv_plan_pay(value=fin.c_inv_plan_pay.strftime('%Y-%m-%d'))}}</th>
+                                          
+
+                              
+
                             
-                            {%if fin.s_inv_date%}
-                            <td>{{form.s_inv_date(value=fin.s_inv_date.strftime('%Y-%m-%d'))}}</td>
-                            {%else%}
-                            <td>{{form.s_inv_date}}</td>
-                            {%endif%}
-                            {%if fin.s_inv_date_to_pay%}
-                            <td>{{form.s_inv_das_inv_date_to_pay(value=fin.s_inv_date_to_pay.strftime('%Y-%m-%d'))}}</td>
-                            {%else%}
-                            <td>{{form.s_inv_das_inv_date_to_pay}}</td>
-                            {%endif%}
-                                      
                             
-                            <td>{{fin.s_inv_vat}}</td>
+                            {%else%}
+                            <th bgcolor="red">{{form.c_inv_plan_pay}}</th>
+                            {%endif%}
+
+
+
+                        
+
+                            
+                            {% endif %}
+
+
+
+
                             <td>{{fin.s_inv_currency}}</td>
                             <td>{{fin.s_prepaid_amount}}</td>
                             <td>{{fin.cost_with_vat}}</td>
