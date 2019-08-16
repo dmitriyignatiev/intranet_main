@@ -41,8 +41,16 @@ def add_supplier(id):
 
     date = req.pick_up_date
     form=formSupplier()
+    form.tora_red.data = fin.tora_red
+    if fin.supplier_name:
+        form.name.data = fin.supplier_name
     
+    
+
+    
+
     if form.validate_on_submit():
+        
         choose_supp = form.name.data
         name = choose_supp.llc_name
     return render_template('add_supplier.html', form=form, req=req, date=date, docs=docs, fin=fin, z_doc=z_doc)
@@ -123,7 +131,7 @@ def prefin():
     tora_red = request.args.get('name')
     req_id = request.args.get('id')
     date_request = request.args.get('date')
-    customer_order_date=datetime.strptime(date_request, '%Y-%m-%d')
+    customer_order_date=datetime.datetime.strptime(date_request, '%Y-%m-%d')
     supplier_name=request.args.get('supp')
     status_of_request = request.args.get('st')
     s_invoice_number = request.args.get('invoice_number')

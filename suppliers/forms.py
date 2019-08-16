@@ -45,6 +45,9 @@ class formSupplier(FlaskForm):
         ('ДОСТАВЛЕН', 'ДОСТАВЛЕН')], validators=[DataRequired()])
     submit = SubmitField('Подтвердить')
 
+   
+
+
 
 class PochtaForm(FlaskForm):
     pass
