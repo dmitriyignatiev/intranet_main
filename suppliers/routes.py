@@ -187,9 +187,18 @@ def prefin():
                         
                         )
             request_one.complete_fin=1
-            db.session.add(newFin)
-            db.session.commit()
-            return jsonify({'success':'данные успешно внесены в базу'})
+            if request_one.zayvka.first():
+                newFin.zayvka.append(request_one.zayvka.first())
+                db.session.add(newFin)
+                db.session.commit()
+                
+                return jsonify({'success':'данные успешно внесены в базу'})
+            else:
+                db.session.add(newFin)
+                db.session.commit()
+                return jsonify({'success':'данные успешно внесены в базу но без заявки'})
+                
+           
         else:
             print('customer:' + customer)
             newFin=Prefin.query.filter_by(req_id=req_id).first()
@@ -217,6 +226,10 @@ def prefin():
             newFin.s_inv_currency = s_inv_currency,
             newFin.cost_with_vat = cost_with_vat,
             newFin.profit = c_inv_amount- cost_with_vat
+            if request_one.zayvka.first():
+                newFin.zayvka.append(request_one.zayvka.first())
+                db.session.add(newFin)
+                db.session.commit()
             db.session.commit()
             return jsonify({'success':'ок'})
     except exc.IntegrityError as e:
@@ -250,7 +263,6 @@ def upload_invoice():
                 filename=str('Счет поставщика') +' ' +  str(session['fin_id']) +' '  +  file.filename
                 new_d.path=str(filename)
                 db.session.commit()
-
                 destination = "/".join([target, filename])
                 print(destination)
                 file.save(destination)
@@ -298,6 +310,36 @@ def upload_invoice_c():
                 return jsonify({'success':'файлы успешно сохранены'})
             else:
                 return jsonify({'success':'файлы запрещен к загрузке'})
+
+
+#для подгрузки заявки продавцами
+@supp.route('/zayavka_if_buyer', methods=['POST', 'GET'])
+def zayavka_if_buyer():
+    target = os.path.join(APP_ROOT, 'zayavka_if_buyer/')
+    if not os.path.isdir(target):
+         os.mkdir(target)
+    if request.method == 'POST':
+        f = request.files.get('file')
+        f.filename = 'Заявка#' + str(session['id']) + ' ' + str(f.filename)
+       
+        
+        t = Zayvka(req_id=session['id'], path = f.filename)
+        db.session.add(t)
+        req = Request.query.get(session['id'])
+        print('eto req_id :' + str(req.id))
+        t.req_id = req.id
+        t.request_id = req.id
+        db.session.commit()
+        
+        destination = "/".join([target, f.filename])
+        print('eto dest: ' + str(destination))
+        f.save(destination)
+    return redirect (url_for('feedback', id=int(session['id'])))
+
+@supp.route('/download_z_if_b/<path:filename>', methods=['GET'])
+def download_z_if_b(filename):
+        return send_from_directory(os.path.join(APP_ROOT, 'zayavka_if_buyer/'),
+                                filename, as_attachment=True)
 
 
 
@@ -397,6 +439,9 @@ def prefin_change_id_test(id):
         db.session.commit()
         return redirect(request.url)
     return render_template('finance_change_test.html', fin=fin, form=form, invoices=invoices, req=req, invoicec=invoicec, tn=tn, docs=docs, form_n=form_n, ttn=ttn, zayavka=zayavka)
+
+
+
 
 
 @supp.route('/download_file_s_tn/<path:filename>', methods=['GET'])

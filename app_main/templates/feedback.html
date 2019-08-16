@@ -1,9 +1,22 @@
 {%extends 'base.html'%}
 
+
+
+{%block head%} {{super()}}
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+
+       
+    
+    {{ dropzone.load_css() }}
+    {{ dropzone.style('border: 2px dashed #0087F7; margin: 10px 0 10px; min-height: 50px; min-width: 50px;') }}
+       
 </head>
+<title>
+       
+        
+    </title>
+{%endblock%}
+
 
 <body>
 
@@ -54,6 +67,7 @@
                         {%if current_user.role !='sale' %}
                         <a href="{{ url_for('re_direct', id=req.id) }}"><button type="button" class="btn btn-info btn-sm" > Перенаправить</button></a>
                         <a href="{{ url_for('cost', id=req.id) }}"><button type="button" class="btn btn-info btn-sm">Указать стоимость</button></a> {%endif%}
+                       {%if current_user.role != 'buyer'%}
                         <form id='my_form_id' action="{{url_for('upload')}}" method="post" enctype="multipart/form-data" name='dedwed'>
                             <div>
                                 <label for="file"></label>
@@ -62,6 +76,7 @@
 
                             </div>
                         </form>
+                        {%endif%}
     </div>
     <div>
     <h6>ТН, ТТН</h6>
@@ -69,10 +84,27 @@
     <p><a href="{{url_for('supp.download_file_s_tn', filename=d.path)}}">{{d.path}}</a></p>
     {%endfor%}
 
+    {%if current_user.role != 'buyer'%}
     <h6>Заявка от клиента</h6>
     {%for d in z_doc %}
     <p><a href="{{url_for('download_file', filename=d.path)}}">{{d.path}}</a></p>
     {%endfor%}
+    {%endif%}
+
+
+
+    {%if current_user.role=='buyer' and req.user.name==current_user.name%}
+    <h6>Заявка от клиента</h6>
+    {%for d in z_doc %}
+    <p><a href="{{url_for('supp.download_z_if_b', filename=d.path)}}">{{d.path}}</a></p>
+    {%endfor%}
+
+    {{ dropzone.create('supp.zayavka_if_buyer') }}
+    {{ dropzone.load_js() }}
+    {{ dropzone.config() }}
+
+    {%endif%}
+
 
 
 

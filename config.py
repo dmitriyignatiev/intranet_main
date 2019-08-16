@@ -9,8 +9,8 @@ class Config(object):
 
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 465
-    MAIL_USERNAME = 'redmessageinfo@gmail.com'
-    MAIL_PASSWORD = '******'
+    MAIL_USERNAME = 'Dmitriy.Ignatiev83@gmail.com'
+    MAIL_PASSWORD = 'rosexport'
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
     UPLOADED_PATH = 'intranet_main\app_main\templates\agreements'

@@ -124,6 +124,8 @@ class Prefin(db.Model):
     invc = db.relationship('Invoicecust', backref='prefin', lazy='dynamic')
     tn_doc = db.relationship('Tn', backref='prefin', lazy='dynamic')
 
+    
+
     def pochta_cost(self):
         summ = 0
         for p in self.pochta.all():

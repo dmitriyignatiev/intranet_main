@@ -81,7 +81,7 @@
         {% if current_user.role=='account' %}
              
                 {% for  fin in finance_acc %}
-               {%if fin.tn_doc.first() and not fin.invc.first() and %}
+               {%if fin.tn_doc.first() and not fin.invc.first() and fin.zayvka.first()%}
               
                
              
