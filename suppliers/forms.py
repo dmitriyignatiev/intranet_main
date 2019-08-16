@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, FileField, PasswordField, BooleanField, SubmitField, IntegerField, TextAreaField, SelectField
+from wtforms import StringField,TextField, FileField, PasswordField, BooleanField, SubmitField, IntegerField, TextAreaField, SelectField
 from wtforms.validators import DataRequired
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from app_main.models import User, Direction, Who_number, Customer, Truck, Quantity, Truck_opt, Ttn, Customer_base
@@ -28,10 +28,14 @@ class formSupplier(FlaskForm):
     s_inv_amount = IntegerField('Сумма счета подрячика')
     s_inv_vat = SelectField('НДС', choices=[('НДС', 'НДС'), ('БЕЗ НДС', 'БЕЗ НДС'), ('НОЛЬ', 'НОЛЬ')])
     s_inv_currency = SelectField('Валюта', choices=[('RUR', 'RUR'), ('EUR', 'EUR'), ('USD', 'USD')])
-    c_inv_amount = IntegerField('Сумма счета на клиента')
+    
+    ##на клиента
+    c_inv_number = TextField('Номер счета на клиента')
+    c_invoice_date = DateField('ДАТА')
+    c_inv_amount = IntegerField('Сумма счета на клиента с НДС')
     c_inv_currency = SelectField('Валюта', choices=[('RUR', 'RUR'), ('EUR', 'EUR'), ('USD', 'USD')])
     c_inv_amount = IntegerField('Сумма счета на клиента')
-
+    
 
     photo = FileField()
     status=SelectField('СТАТУС', choices=[
