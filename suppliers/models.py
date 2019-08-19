@@ -32,8 +32,6 @@ class newSup(db.Model):
 
 class Prefin(db.Model):
 
-    
-
     id = db.Column (db.Integer, primary_key=True)
     tora_red = db.Column(db.String(120))
     supplier_name = db.Column (db.String (240))

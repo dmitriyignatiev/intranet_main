@@ -48,32 +48,38 @@ def add_supplier(id):
         form.name.data = fin.supplier_name
         form.status.data = fin.status_of_request
 
-    
-    
-
-    
-
-    if form.validate_on_submit():
-        
-        choose_supp = form.name.data
-        name = choose_supp.llc_name
     return render_template('add_supplier.html', form=form, req=req, date=date, docs=docs, fin=fin, z_doc=z_doc)
 
 @supp.route('/add_supplier_to_db', methods=['POST', 'GET'])
 def add_supplier_to_db():
 
-    form=formSupplier()
+    form=Supplier()
     name = request.args.get('name')
-    print(name)
-    new_supp = Supplier.query.filter_by(llc_name=name).first()
-    if new_supp:
-         return jsonify({'error': 'поставщик уже есть в базе данных'})
+    form_inn = request.args.get('inn')
     
+    
+
+    print(name)
+    new_supp = Supplier.query.filter_by(llc_name=name).first() or Supplier.query.filter_by(inn=form_inn).first()
+    if new_supp:
+         return jsonify({'error': 'поставщик уже есть в базе данных с таким именем или с ИНН'})
+
     elif not new_supp:
-        new_supp = Supplier(llc_name=name)
+    
+        print('dewde')
+        new_supp = Supplier(llc_name=name, inn=form_inn)
         db.session.add(new_supp)
         db.session.commit()
         return jsonify({'success': 'Поставщик упешно внесен в базу данных'})
+    
+
+
+
+
+
+
+
+
 
 import os
 
@@ -131,7 +137,6 @@ def download_file(filename):
 def prefin():
     transit = int(7)
     form = formSupplier()
-  
     tora_red = request.args.get('name')
     req_id = request.args.get('id')
     date_request = request.args.get('date')
@@ -500,3 +505,17 @@ def send_invc():
     finsales = Prefin.query.filter_by(sale=current_user.name).all()
     tn = Tn.query.all()
     return render_template('send_invc.html', finance=finance, form=formSupplier(), finsales=finsales, finance_acc=finance_acc, tn=tn)
+
+
+@supp.route('/suppliers', methods=['POST', 'GET'])
+def suppliers():
+    form=formSupplier()
+    
+    suppliers = Supplier.query.all()
+    form.check_inn.choices=[(g.inn, g.inn) for g in suppliers]
+    if request.method=='POST':
+        print(form.check_inn.data)
+        
+    
+    
+    return render_template('suppliers.html', suppliers=suppliers, form=form)

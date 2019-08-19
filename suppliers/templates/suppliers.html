@@ -1,0 +1,51 @@
+ {%extends 'base.html'%} {%block head%} {{super()}}
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.js">
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" /> {%endblock%} 
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
+
+{%block content%}
+<form method='POST' action="">
+    {{ form.csrf_token }}
+    {{form.check_inn}}
+    <input type="submit" value="Go">
+    
+</form>
+ 
+
+<div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
+<div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
+<div class>
+    <script src="{{url_for('.static', filename='supp.js')}}"></script>
+    <script src="{{url_for('.static', filename='add.js')}}"></script>
+
+    <div id='content'>
+
+
+        <div id="successAlert" class="alert alert-success" role="alert" style="display:none;">
+
+        </div>
+        <div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;">
+
+        </div>
+
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Действия</th>
+                    
+                </tr>
+                <tbody>
+                    <th>Тест</th>
+                    <tr>
+
+                     
+
+
+
+
+            {%endblock%} {%block scripts%} {%endblock%}

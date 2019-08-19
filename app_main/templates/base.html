@@ -29,7 +29,9 @@
 <div class="container-full">
    <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
 
-
+        {%if current_user.role !='sale'%}
+        <h15><a class="navbar-brand" href="{{url_for('supp.suppliers')}}">Поставщики</a></h15>
+        {%endif%}
         <h15><a class="navbar-brand" href="{{url_for('index')}}">Главная</a></h15>
        <h15><a class="navbar-brand" href="{{url_for('all_customers')}}">Все клиенты</a></h15>
         <h15><a class="navbar-brand" href="{{url_for('my_customers')}}">Мои рабочие клиенты</a></h15>

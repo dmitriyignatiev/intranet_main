@@ -14,7 +14,11 @@
     <input type='text' placeholder='ati номер' id='ATI' , name='ati'>
     <input type='text' placeholder='телефон' id='phone' , name='phone'>
     <input type='text' placeholder='имя контакта' id='orginal' , name='name'>
+    {{form.inn(placeholder='ИНН')}}
+    {{form.check_inn}}
+
     <button type="submit" class="btn btn-default" id='submit'>Записать в базу</button>
+
 </form>
 
 <div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>

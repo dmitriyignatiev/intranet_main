@@ -1,3 +1,5 @@
+
+jQuery(function($) {
 $(function() {
     $(document).ready(function() {
 
@@ -7,6 +9,7 @@ $(function() {
         $('#status').select2();
         $('#s_inv_currency').select2();
         $('#s_inv_vat').select2();
+        $('#check_inn').select2();
         
         
 
@@ -20,6 +23,7 @@ $(function() {
 
         $.getJSON('/suppliers/add_supplier_to_db', {
             name: $('input[name="name"]').val(),
+            inn: $('#inn').val(),
             type: 'POST',
             data: '/suppliers/add_supplier_to_db',
 
@@ -75,4 +79,5 @@ $(function() {
         // });
     });
     return false;
+});
 });
