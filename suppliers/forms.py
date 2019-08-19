@@ -17,7 +17,9 @@ def choice_supp():
     return Supplier.query
 
 class formSupplier(FlaskForm):
-    name = QuerySelectField('Поставщик', query_factory=choice_supp, get_label='llc_name')
+    # name = QuerySelectField('Поставщик', query_factory=choice_supp, get_label='llc_name')
+    name = SelectField('Имя', coerce=str)
+    inn = SelectField('INN',coerce=str )
     tora_red = SelectField('ТОРА или РЭД', choices=[('Тора', 'Тора'), ('РЭД', 'РЭД')], validators=[DataRequired()])
     date_order_C = DateField('Дата заявки с клиентом', validators=[DataRequired()], default=datetime.today())
     date_loading_plan = DateField('Дата загрузки', validators=[DataRequired()])

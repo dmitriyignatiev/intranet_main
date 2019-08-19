@@ -38,12 +38,16 @@ def add_supplier(id):
 
     new_id = session['id']
     print(new_id, pick_up_date)
-
+    
     date = req.pick_up_date
     form=formSupplier()
-    form.tora_red.data = fin.tora_red
-    if fin.supplier_name:
+    form.name.choices = [(g.llc_name, g.llc_name) for g in Supplier.query.order_by('llc_name')]
+
+    if fin:
+        form.tora_red.data = fin.tora_red
         form.name.data = fin.supplier_name
+        form.status.data = fin.status_of_request
+
     
     
 
