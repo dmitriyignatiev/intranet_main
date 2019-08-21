@@ -506,16 +506,39 @@ def send_invc():
     tn = Tn.query.all()
     return render_template('send_invc.html', finance=finance, form=formSupplier(), finsales=finsales, finance_acc=finance_acc, tn=tn)
 
+import matplotlib.pyplot as plt
+import pandas as pd
+import qgrid
 
 @supp.route('/suppliers', methods=['POST', 'GET'])
 def suppliers():
     form=formSupplier()
+
+    suppliers = db.session.query(Prefin.supplier_name, Prefin.sale, db.func.sum(Prefin.s_inv_amount)).group_by(Prefin.supplier_name, Prefin.sale).all()
+
+    df = pd.DataFrame(suppliers, columns=['supplier_name',  'sale','cost' ])
+    df = df.set_index('supplier_name')
     
-    suppliers = Supplier.query.all()
-    form.check_inn.choices=[(g.inn, g.inn) for g in suppliers]
+    supp = db.session.query(Prefin.supplier_name, Prefin.sale, db.func.sum(Prefin.s_inv_amount)).group_by(Prefin.supplier_name, Prefin.sale).\
+        filter_by(supplier_name='test2').all()
+    dfone = pd.DataFrame(supp, columns=['supplier_name',  'sale','cost' ])
+    dfone = dfone.set_index('supplier_name')
+   
+
+    all = Supplier.query.all()
+    form.check_inn.choices=[(g.inn, g.inn) for g in all]
+    form.name.choices = [(g.llc_name, g.llc_name) for g in all]
+    supplier = Supplier.query.filter(Supplier.llc_name==form.name.data).first()
+
     if request.method=='POST':
-        print(form.check_inn.data)
+        supplier = Supplier.query.filter(Supplier.llc_name==form.name.data).first()
+
+
+    
         
     
     
-    return render_template('suppliers.html', suppliers=suppliers, form=form)
+    return render_template('suppliers.html', suppliers=suppliers, form=form, tables=[df.to_html(classes='data')],\
+         titles=df.columns.values, tb=[dfone.to_html(classes='data')], tit = dfone.columns.values, all=all,\
+             supplier=supplier
+             )

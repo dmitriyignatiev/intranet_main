@@ -9,13 +9,7 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
 
 {%block content%}
-<form method='POST' action="">
-    {{ form.csrf_token }}
-    {{form.check_inn}}
-    <input type="submit" value="Go">
-    
-</form>
- 
+
 
 <div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
 <div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
@@ -23,29 +17,73 @@
     <script src="{{url_for('.static', filename='supp.js')}}"></script>
     <script src="{{url_for('.static', filename='add.js')}}"></script>
 
-    <div id='content'>
-
+    
 
         <div id="successAlert" class="alert alert-success" role="alert" style="display:none;">
 
         </div>
         <div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;">
 
-        </div>
+
+        </div> 
+        <form action=""  method="POST">
+               {{form.check_inn.label()}}
+                 {{form.check_inn}}
+                {{form.name.label()}} 
+                {{form.name(value='')}}
+                <input type="submit" value="выбрать">
+        </form>
+
+        <div id='content'>
+
+           
 
         <table class="table table-sm">
-            <thead>
+            
+             <thead>
+               
                 <tr>
-                    <th>Действия</th>
-                    
-                </tr>
-                <tbody>
-                    <th>Тест</th>
-                    <tr>
+                
+            <th>Действие</th>
+            <th>id</th>
+            <th>Наименование поставщика</th>
+                
+    
+            </tr>
+        {%if request.method !='POST'%}
+            
+            {%for supp in all %} 
+            <tbody>
+                <th><a href="{{url_for('supp.new')}}"><button >  Подробнее</button></a></th>
+                <th>{{supp.id}}</th>
+                <th>{{supp.llc_name}}</th>
+               
+            </tbody> 
+            {%endfor%}
+        
+        {%else%}
+        
+        <tbody>
+            <th><button>Подробнее</button></th>
+            <th>{{supplier.id}}</th>
+            <th>{{supplier.llc_name}}</th>
+           
+        </tbody> 
+        
 
-                     
+        {%endif%}
+
+        
 
 
+        </table>
+    </div>
+            
+            
+      
+       
 
+       
+      
 
             {%endblock%} {%block scripts%} {%endblock%}

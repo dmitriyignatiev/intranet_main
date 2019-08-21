@@ -10,6 +10,7 @@ $(function() {
         $('#s_inv_currency').select2();
         $('#s_inv_vat').select2();
         $('#check_inn').select2();
+        $('#inn').select2();
         
         
 
