@@ -7,7 +7,7 @@ from app_main.models import *
 from app_main import db, app
 from .forms import *
 from sqlalchemy import exc
-from sqlalchemy import desc
+from sqlalchemy import desc, or_
 
 import datetime
 
@@ -42,7 +42,8 @@ def add_supplier(id):
     date = req.pick_up_date
     form=formSupplier()
     form.name.choices = [(g.llc_name, g.llc_name) for g in Supplier.query.order_by('llc_name')]
-
+    
+    
     if fin:
         form.tora_red.data = fin.tora_red
         form.name.data = fin.supplier_name
@@ -528,17 +529,12 @@ def suppliers():
     all = Supplier.query.all()
     form.check_inn.choices=[(g.inn, g.inn) for g in all]
     form.name.choices = [(g.llc_name, g.llc_name) for g in all]
-    supplier = Supplier.query.filter(Supplier.llc_name==form.name.data).first()
-
+    
+    supplier = Supplier.query.filter(Supplier.inn==form.inn.data).first()
+  
     if request.method=='POST':
-        supplier = Supplier.query.filter(Supplier.llc_name==form.name.data).first()
-
-
-    
-        
-    
+        supplier = Supplier.query.filter(or_(Supplier.inn==form.check_inn.data, Supplier.llc_name==form.name.data)).first()
     
     return render_template('suppliers.html', suppliers=suppliers, form=form, tables=[df.to_html(classes='data')],\
          titles=df.columns.values, tb=[dfone.to_html(classes='data')], tit = dfone.columns.values, all=all,\
-             supplier=supplier
-             )
+             supplier=supplier)
