@@ -11,10 +11,18 @@ $(function() {
         $('#s_inv_vat').select2();
         $('#check_inn').select2();
         $('#inn').select2();
+        $('#s_n_all_invoices').select2();
         
         
 
     });
+
+   let x=  $('#s_n_all_invoices')
+    
+    x.onchange = function(){
+       
+        console.log('it is')
+    };
 
 
 

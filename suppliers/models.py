@@ -21,6 +21,28 @@ class Supplier(db.Model):
     finance = db.Column(db.Integer, db.ForeignKey('finance.id'))
     pay = db.Column(db.Integer, db.ForeignKey('paid.id'))
     prefin = db.relationship('Prefin', backref='supplier', lazy='dynamic')
+    supp_payment = db.relationship('Supp_payment', backref='supp_payment')
+
+    def total_cost(self):
+        total_summ = 0;
+        for i in self.supp_payment:
+            total_summ += i.s_inv_amount
+        return total_summ
+    
+    
+
+#класс где мы будем разносить оплаты перевозчикам
+class Supp_payment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    s_inv_number = db.Column(db.String(120))
+    s_invoice_date = db.Column(db.DateTime)
+    s_inv_amount = db.Column(db.Integer)
+    s_inv_currency = db.Column(db.String(120))
+    s_inv_pay_day = db.Column(db.DateTime)
+    s_payment_summ = db.Column(db.Integer)
+    bank = db.Column(db.String(240))
+    tora_red = db.Column(db.String(240))
+    supplier_id = db.Column(db.Integer, db.ForeignKey('supplier.id')) 
 
 
 class newSup(db.Model):
@@ -121,6 +143,7 @@ class Prefin(db.Model):
     invs = db.relationship('Invoicesup', backref='prefin', lazy='dynamic')
     invc = db.relationship('Invoicecust', backref='prefin', lazy='dynamic')
     tn_doc = db.relationship('Tn', backref='prefin', lazy='dynamic')
+
 
        
 

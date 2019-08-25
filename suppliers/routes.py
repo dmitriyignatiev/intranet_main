@@ -2,7 +2,7 @@ from flask import render_template, request, \
     jsonify, redirect, flash, \
         send_from_directory, url_for, send_file, session, make_response, g
 from suppliers import supp
-from .models import Supplier, Prefin, Documents, Tn 
+from .models import Supplier, Prefin, Documents, Tn, Supp_payment 
 from app_main.models import *
 from app_main import db, app
 from .forms import *
@@ -466,6 +466,12 @@ def prefin_change_id_test(id):
             fin.c_inv_plan_pay=form.c_inv_plan_pay.data
 
         print(fin.s_invoice_number)
+        supp_payment = Supp_payment(s_inv_number=form.s_invoice_number.data,
+                                    s_invoice_date=form.s_inv_date.data,
+                                    s_inv_amount=fin.s_inv_amount,
+                                    s_inv_pay_day=form.s_inv_das_inv_date_to_pay.data,
+                                    supplier_id=fin.supplier_id)
+        db.session.add(supp_payment)                            
         db.session.commit()
         return redirect(request.url)
     return render_template('finance_change_test.html', fin=fin, form=form, invoices=invoices, req=req, invoicec=invoicec, tn=tn, docs=docs, form_n=form_n, ttn=ttn, zayavka=zayavka )
@@ -524,17 +530,26 @@ def suppliers():
         filter_by(supplier_name='test2').all()
     dfone = pd.DataFrame(supp, columns=['supplier_name',  'sale','cost' ])
     dfone = dfone.set_index('supplier_name')
-   
-
+    
     all = Supplier.query.all()
     form.check_inn.choices=[(g.inn, g.inn) for g in all]
     form.name.choices = [(g.llc_name, g.llc_name) for g in all]
+    supplier = Supplier.query.filter(or_(Supplier.inn==form.check_inn.data, Supplier.llc_name==form.name.data)).first()
     
-    supplier = Supplier.query.filter(Supplier.inn==form.inn.data).first()
-  
+    supp_payment = Supp_payment.query.filter(Supp_payment.supplier_id == supplier.id).all()
+
+    form.s_n_all_invoices.choices =[(g.s_inv_number, g.s_inv_number) for g in supp_payment]
+
+   
+    
+
     if request.method=='POST':
         supplier = Supplier.query.filter(or_(Supplier.inn==form.check_inn.data, Supplier.llc_name==form.name.data)).first()
-    
+        supp_payment = Supp_payment.query.filter(Supp_payment.supplier_id == supplier.id).all()
+        form.s_n_all_invoices.choices =[(g.s_inv_number, g.s_inv_number) for g in supp_payment]
+
     return render_template('suppliers.html', suppliers=suppliers, form=form, tables=[df.to_html(classes='data')],\
          titles=df.columns.values, tb=[dfone.to_html(classes='data')], tit = dfone.columns.values, all=all,\
-             supplier=supplier)
+             supplier=supplier, 
+             supp_payment=supp_payment, 
+            )

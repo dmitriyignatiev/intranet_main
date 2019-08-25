@@ -28,7 +28,9 @@
         </div> 
         <form action=""  method="POST">
                {{form.check_inn.label()}}
-                 {{form.check_inn}}
+              
+                {{form.check_inn}}
+           
                 {{form.name.label()}} 
                 {{form.name}}
                 <input type="submit" value="выбрать">
@@ -48,9 +50,12 @@
                 <th>id</th>
                 <th>Наименование поставщика</th>
                 <th>ИНН</th>
-                <th>Количество перевозок</th>
                 <th>Номера перевозок</th>
+                <th>Количество перевозок</th>
+                
                 <th>Счета</th>
+                <th>Номера счетов</th>
+                <th>Сумма счета</th>
 
               
               {%else%}
@@ -69,6 +74,7 @@
                 <th><a href="{{url_for('supp.new')}}"><button >  Подробнее</button></a></th>
                 <th>{{supp.id}}</th>
                 <th>{{supp.llc_name}}</th>
+                
                 <th>{{supp.inn}}</th>
                
                
@@ -82,37 +88,40 @@
             <th>{{supplier.id}}</th>
             <th>{{supplier.llc_name}}</th>
             <th>{{supplier.inn}}</th>
-                
-            <th>{{supplier.prefin.all()|length}}
             <th>
                 {%for s in supplier.prefin.all()%}
-                <p>{{s.id}}</p>
-            {%endfor%}</th>
-            <th>
+                    <p>{{s.id}}</p>
+                {%endfor%}</th>
+                  
+            <th>{{supplier.prefin.all()|length}}</th>
+           <th>
             {%for fin in supplier.prefin.all()%}
                 {%for path in fin.docs.all()%}
                 <p>
                 <a href="{{url_for('supp.download_s_docs', filename=path.path)}}">{{path.path}}</a></p>
                 {%endfor%}
             {%endfor%}
+        </th>
 
             <th>
-                {%for fin in supplier.prefin.all()%}
-                    
-                    <p>{{fin.s_inv_amount}}</p>
+               
+
+                    {%for fin in supplier.prefin.all()%}
+                        <p>{{fin.s_invoice_number}}</p>
                     {%endfor%}
                
             </th>
             <th>
                     {%for fin in supplier.prefin.all()%}
-                        
-                        <p>{{fin.s_invoice_number}}</p>
-                        {%endfor%}
+                    
+                    <p>{{fin.s_inv_amount}}</p>
+                    {%endfor%}
                    
                 </th>
 
             </th>
 
+        
             
                 
            
@@ -124,11 +133,45 @@
 
         {%endif%}
 
-        
+        </div>
 
 
         </table>
+
+    <div id='content'>
+
+            <table class="table table-sm">
+            
+                    <thead>
+                      
+                       <tr>
+                     {%if request.method=='POST'%}  
+                       
+                       <th>Действие</th>
+                       <th>Номера счета поставщика</th>
+                       <th>Сумма счета</th>
+                       <th>Дата оплаты</th>
+                       <th>Сумма оплаты</th>
+                       <th>Остается долг</th>
+                    
+                     {%endif%} 
+           
+                   </tr></thead>
+
+                   <tbody>
+                        <th><button>Подтвердить</button></th>
+                        <th>{{form.s_n_all_invoices}}</th>
+                    </tbody>
+
+
+                    </table>
+                    
+
+
+    
     </div>
+    
+    
             
             
       

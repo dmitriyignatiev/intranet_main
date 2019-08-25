@@ -21,17 +21,24 @@ class formSupplier(FlaskForm):
     name = SelectField('Имя', coerce=str)
     inn = StringField('INN', validators=[DataRequired()])
     check_inn = SelectField('INN', coerce=str)
-    tora_red = SelectField('ТОРА или РЭД', choices=[('Тора', 'Тора'), ('РЭД', 'РЭД')], validators=[DataRequired()])
+    tora_red = SelectField('ТОРА или РЭД', choices=[('Тора', 'Тора'), ('РЭД', 'РЭД'), ('Гунвор', 'Гунвор')], validators=[DataRequired()])
     date_order_C = DateField('Дата заявки с клиентом', validators=[DataRequired()], default=datetime.today())
     date_loading_plan = DateField('Дата загрузки', validators=[DataRequired()])
     date_unloading_plan = DateField('Дата планируемой выгрузки', validators=[DataRequired()])
+    
+    #от поставщика
     s_invoice_number=StringField('Номер счета подрядчика')
+    #полный перечень счетов
+    s_n_all_invoices = SelectField('Все счета', coerce=str)
     s_inv_date = DateField('ДАТА')
     s_inv_das_inv_date_to_pay = DateField('ДАТА')
     s_inv_amount = IntegerField('Сумма счета подрячика')
     s_inv_vat = SelectField('НДС', choices=[('НДС', 'НДС'), ('БЕЗ НДС', 'БЕЗ НДС'), ('НОЛЬ', 'НОЛЬ')])
     s_inv_currency = SelectField('Валюта', choices=[('RUR', 'RUR'), ('EUR', 'EUR'), ('USD', 'USD')])
-    
+    s_inv_pay_day = DateField('ДАТА')
+    s_payment_summ = IntegerField('Сумма  оплаты')
+    bank = SelectField('Банк', choices=[('Модуль', 'Модуль'), ('Точка', 'Точка'), ('Альфа', 'Альфа'), ('УБИР', 'УБРИР')]) 
+
     ##на клиента
     c_inv_number = TextField('Номер счета на клиента')
     c_invoice_date = DateField('ДАТА')
@@ -39,6 +46,7 @@ class formSupplier(FlaskForm):
     c_inv_currency = SelectField('Валюта', choices=[('RUR', 'RUR'), ('EUR', 'EUR'), ('USD', 'USD')])
     c_inv_amount = IntegerField('Сумма счета на клиента')
     c_inv_plan_pay = DateField('ДАТА')
+   
     
 
     photo = FileField()
@@ -47,6 +55,8 @@ class formSupplier(FlaskForm):
         ('В ПУТИ', 'В ПУТИ'),
         ('ДОСТАВЛЕН', 'ДОСТАВЛЕН')], validators=[DataRequired()])
     submit = SubmitField('Подтвердить')
+
+
 
    
 
