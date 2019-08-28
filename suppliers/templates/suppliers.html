@@ -84,9 +84,10 @@
         {%else%}
         
         <tbody>
+            {%if supplier%}
             <th><button>Подробнее</button></th>
             <th>{{supplier.id}}</th>
-            <th>{{supplier.llc_name}}</th>
+            <th name='supp_name'>{{supplier.llc_name}}</th>
             <th>{{supplier.inn}}</th>
             <th>
                 {%for s in supplier.prefin.all()%}
@@ -102,6 +103,7 @@
                 {%endfor%}
             {%endfor%}
         </th>
+        
 
             <th>
                
@@ -121,7 +123,7 @@
 
             </th>
 
-        
+        {%endif%}
             
                 
            
@@ -152,15 +154,23 @@
                        <th>Сумма счета</th>
                        <th>Дата оплаты</th>
                        <th>Сумма оплаты</th>
-                       <th>Остается долг</th>
+                       <th>Остается долг по счету</th>
                     
                      {%endif%} 
            
                    </tr></thead>
 
                    <tbody>
-                        <th><button>Подтвердить</button></th>
-                        <th>{{form.s_n_all_invoices}}</th>
+                       <form method='POST' action="">
+                           <th><input type=submit></th> 
+                           {{ form.csrf_token }}
+                           
+
+                        <th class="selc" id='number' multiple="multiple">{{form.s_n_all_invoices}}</th>
+                        <th id='amount'>{{form.s_inv_amount}}</th>
+                        <th>{{form.s_inv_pay_day}}</th>
+                        <th>{{form.s_payment_summ}}</th>
+                        </form>
                     </tbody>
 
 
@@ -170,8 +180,53 @@
 
     
     </div>
+    <script>
+   
+    </script>
     
+    <script>
+        
+
+        let number = $('#number');
+        let amount = $('#s_inv_amount');
+        let a = document.getElementById('amount');
+
     
+        number.on('select2:select', function (e) {
+        var number = e.params.data;
+        console.log(number.text);
+
+        fetch('/suppliers/s_inv_number/'+ number.text).then(function(response){
+            response.json().then(function(data){
+                console.table(data);
+                let optionHTML='';
+                for (let inv of data.invoices){
+                    // optionHTML += '<option value="' + inv.id + '">' + inv.s_inv_number + '</option>';
+                    console.log(inv.s_inv_amount) 
+                    a.textContent=inv.s_inv_amount;   
+                }
+                
+            })
+          })
+
+        })
+
+
+
+
+
+
+    
+     
+   
+        
+        
+        
+
+    
+   
+
+    </script>
             
             
       
@@ -180,4 +235,7 @@
        
       
 
-            {%endblock%} {%block scripts%} {%endblock%}
+            {%endblock%} {%block scripts%} 
+            
+            
+            {%endblock%}

@@ -17,12 +17,7 @@ $(function() {
 
     });
 
-   let x=  $('#s_n_all_invoices')
     
-    x.onchange = function(){
-       
-        console.log('it is')
-    };
 
 
 
