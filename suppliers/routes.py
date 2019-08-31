@@ -7,7 +7,7 @@ from app_main.models import *
 from app_main import db, app
 from .forms import *
 from sqlalchemy import exc
-from sqlalchemy import desc, or_
+from sqlalchemy import desc, or_, and_
 
 import datetime
 
@@ -388,7 +388,7 @@ def upload_tn():
         f.save(destination)
     return redirect (url_for('supp.prefin_change_id_test', id=int(session['fin_id'])))
 
-#маршрут для заугрзки доков от поставщика (счет, документы, договора)
+#маршрут для заугрзки доков от поставщика (документы, договора)
 @supp.route('/upload_s_docs', methods=['POST', 'GET'])
 def upload_s_docs():
     target = os.path.join(APP_ROOT, 's_docs/')
@@ -407,6 +407,32 @@ def upload_s_docs():
         print('eto dest: ' + str(destination))
         f.save(destination)
     return redirect (url_for('supp.prefin_change_id_test', id=int(session['fin_id'])))
+
+
+#маршрут для подгрузки счетов от поставщика
+@supp.route('/upload_s_inv', methods=['POST', 'GET'])
+def upload_s_inv():
+    target = os.path.join(APP_ROOT, 's_invoice/')
+    if not os.path.isdir(target):
+         os.mkdir(target)
+    if request.method == 'POST':
+        f = request.files.get('file')
+        f.filename = 'сч#' + str(session['fin_id']) + ' ' + str(f.filename)
+        invs = Invoicesup(prefin_id=session['fin_id'], path = f.filename)
+        db.session.add(invs)
+        fin = Prefin.query.get(invs.prefin_id)
+        invs.req_id = fin.req_id
+        invs.supp_id = fin.supplier.id
+        db.session.commit()
+        print(session['fin_id'])
+        destination = "/".join([target, f.filename])
+        print('eto dest: ' + str(destination))
+        f.save(destination)
+    return redirect (url_for('supp.prefin_change_id_test', id=int(session['fin_id'])))
+
+
+
+
 
 @supp.route('/upload_с_invoice', methods=['POST', 'GET'])
 def upload_с_invoice():
@@ -442,6 +468,7 @@ def prefin_change_id_test(id):
     invoicec = Invoicecust.query.all()
 
     req = Request.query.filter_by(id=fin.req_id).first()
+    invs = Invoicesup.query.filter(Documents.req_id==req.id).all()
     docs = Documents.query.filter(Documents.req_id==req.id).all()
     tn = Documents.query.filter_by(req_id=req.id).all()
     ttn = Tn.query.filter(Tn.prefin_id==int(session['fin_id'])).all()
@@ -454,15 +481,29 @@ def prefin_change_id_test(id):
     c_plan_day = req.customer.payment_day
     
     
+    print('forma: ' + str(form.s_invoice_number.data))
    
+   
+    ####Доделать
+   
+    
 
+    
+       
+    
+    
     if request.method=='POST':
-        fin.s_invoice_number =form.s_invoice_number.data
         print('eto'+ str(fin.s_invoice_number))
+        
+
+        fin.s_invoice_number =form.s_invoice_number.data 
+        
+        
         fin.s_inv_date = form.s_inv_date.data
         fin.s_inv_date_to_pay = form.s_inv_das_inv_date_to_pay.data
         fin.c_inv_number=form.c_inv_number.data
         fin.c_invoice_date=form.c_invoice_date.data
+        
         if fin.c_invoice_date:
             fin.c_inv_plan_pay = fin.c_invoice_date + datetime.timedelta(days=c_plan_day)
         else:
@@ -470,23 +511,38 @@ def prefin_change_id_test(id):
 
         print(fin.s_invoice_number)
         db.session.commit()
-        supp_payment = Supp_payment(s_inv_number=fin.c_inv_number,
+   
+
+    supp_p = Supp_payment.query.filter(and_(Supp_payment.supplier_id==fin.supplier_id, 
+                                            Supp_payment.fin_id==fin.id)).first()
+
+    if supp_p:
+        supp_p.s_inv_number=fin.s_invoice_number,
+        supp_p.s_invoice_date=fin.s_inv_date,
+        supp_p.s_inv_amount=fin.s_inv_amount,
+        supp_p.day_plan_pay = fin.s_inv_date_to_pay,
+        supp_p.fin_id = fin.id,
+        db.session.commit()
+    else:
+        supp_p = Supp_payment(
                                     s_invoice_date=fin.s_inv_date,
                                     s_inv_amount=fin.s_inv_amount,
+                                    day_plan_pay = form.s_inv_das_inv_date_to_pay.data,
+                                    fin_id = fin.id,
         
         ######ДОДЕЛАТЬ!!!!!#########
 
 
                                     s_inv_pay_day=form.s_inv_das_inv_date_to_pay.data,
-                                    supplier_id=fin.supplier_id
+                                    supplier_id=fin.supplier_id,
+                                    
                                     )
    
-        db.session.add(supp_payment)                            
-    db.session.commit()
-    return render_template('finance_change_test.html', fin=fin, form=form, invoices=invoices, req=req, invoicec=invoicec, tn=tn, docs=docs, form_n=form_n, ttn=ttn, zayavka=zayavka )
+        db.session.add(supp_p)                            
+        db.session.commit()
 
-
-
+    
+    return render_template('finance_change_test.html', supp_p=supp_p, fin=fin, form=form, invoices=invoices, req=req, invoicec=invoicec, tn=tn, docs=docs, form_n=form_n, ttn=ttn, zayavka=zayavka, invs=invs )
 
 
 @supp.route('/download_file_s_tn/<path:filename>', methods=['GET'])
@@ -501,6 +557,12 @@ def download_s_docs(filename):
 
 @supp.route('/download_c_inv/<path:filename>', methods=['GET'])
 def download_c_inv(filename):
+        return send_from_directory(os.path.join(APP_ROOT, 's_invoice/'),
+                                filename, as_attachment=True)
+
+
+@supp.route('/download_s_inv/<path:filename>', methods=['GET'])
+def download_s_inv(filename):
         return send_from_directory(os.path.join(APP_ROOT, 'c_inv/'),
                                 filename, as_attachment=True)
 
@@ -528,11 +590,14 @@ import pandas as pd
 
 @supp.route('/suppliers', methods=['POST', 'GET'])
 def suppliers():
-    form=formSupplier()
-    print('eto form' + str(form.name.data))
+    formName=formSupplierName()
+    formINN = formSupplierInn()
+    
+    print('eto form' + str(formName.name.data))
+    print('eto form INN' + str(formINN.check_inn.data))
     
     
-    name = form.name.data
+    name = formName.name.data
     print('eto: ' + str(name))
     
 
@@ -540,24 +605,24 @@ def suppliers():
 
    
     
-    supp = db.session.query(Prefin.supplier_name, Prefin.sale, db.func.sum(Prefin.s_inv_amount)).group_by(Prefin.supplier_name, Prefin.sale).\
-        filter_by(supplier_name=form.name.data).all()
+    supplier = db.session.query(Prefin.supplier_name, Prefin.sale, db.func.sum(Prefin.s_inv_amount)).group_by(Prefin.supplier_name, Prefin.sale).\
+        filter_by(supplier_name=formName.name.data).all()
     
+    #### Доделать
     
     
     all = Supplier.query.all()
-    form.check_inn.choices=[(g.inn, g.inn) for g in all]
-    form.name.choices = [(g.llc_name, g.llc_name) for g in all]
-    supplier = Supplier.query.filter(or_(Supplier.inn==form.check_inn.data, Supplier.llc_name==form.name.data)).first()
-    
-    try:
-        supp_payment = Supp_payment.query.filter(Supp_payment.supplier_id == supplier.id).all()
-        form.s_n_all_invoices.choices =[(g.id, g.s_inv_number) for g in Supp_payment.query.filter_by(supplier_id=supplier.id).all()]
-    except AttributeError:
-        supp_payment = Supp_payment.query.filter(Supp_payment.supplier_id == 1).all()
-        form.s_n_all_invoices.choices =[(g.id, g.s_inv_number) for g in Supp_payment.query.filter_by(supplier_id=1).all()]
+    formName.name.choices = [(g.llc_name, g.llc_name) for g in all]
+    formINN.check_inn.choices=[(g.inn, g.inn) for g in all]
+   
+    # form.s_n_all_invoices = 
 
-    # session['supplier_name'] = supplier.llc_name
+    supp = Supplier.query.filter(or_(Supplier.llc_name==formName.name.data, Supplier.inn==formINN.check_inn.data)).first()
+
+    print('eto supp' + str(supp))
+
+   
+    
    
     
     
@@ -566,11 +631,12 @@ def suppliers():
 
     
 
-    return render_template('suppliers.html', suppliers=suppliers, form=form, \
-         all=all,\
-             supplier=supplier,
-             supp_payment=supp_payment, 
+    return render_template('suppliers.html', suppliers=suppliers, formName=formName, formINN=formINN,
+            all=all, supplier=supplier, supp=supp,
+           
             )
+
+
 
 
 #using fetch API for suppliers route above

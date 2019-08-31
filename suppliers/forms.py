@@ -57,6 +57,16 @@ class formSupplier(FlaskForm):
     submit = SubmitField('Подтвердить')
 
 
+#форма для поиска по ИНН
+class formSupplierInn(FlaskForm):
+     check_inn = SelectField('INN', coerce=str)
+     submit = SubmitField('Подтвердить')
+
+class formSupplierName(FlaskForm):
+     name = SelectField('Имя', coerce=str)
+     submit = SubmitField('Подтвердить Выбор')
+
+
 
    
 

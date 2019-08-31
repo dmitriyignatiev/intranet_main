@@ -26,15 +26,37 @@
 
 
         </div> 
-        <form action=""  method="POST">
-               {{form.check_inn.label()}}
-              
-                {{form.check_inn}}
-           
-                {{form.name.label()}} 
-                {{form.name}}
-                <input type="submit" value="выбрать">
-        </form>
+        
+
+        <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>Поиск по имени</th>
+                <th>Поиск по ИНН</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            <th>
+                    <form action=""  method="POST">
+                            {{ formName.csrf_token }}
+                            {{formName.name.label()}}  {{formName.name}}
+                            <input type="submit">
+                    </form>
+            
+            </th>
+            <th>
+                    <form action=""  method="POST">
+                            {{ formINN.csrf_token }}
+                            {{formINN.check_inn.label()}}  {{formINN.check_inn}}
+                            <input type="submit">
+                    </form>
+
+            </th>
+        </tbody>
+        </table>
+       
+        
 
         <div id='content'>
 
@@ -45,8 +67,8 @@
              <thead>
                
                 <tr>
-              {%if request.method=='POST'%}  
-                <th>Действие</th>
+            
+                
                 <th>id</th>
                 <th>Наименование поставщика</th>
                 <th>ИНН</th>
@@ -58,125 +80,31 @@
                 <th>Сумма счета</th>
 
               
-              {%else%}
-
-              <th>Действие</th>
-              <th>id</th>
-              <th>Наименование поставщика</th>
-                <th>ИНН</th>
-              {%endif%} 
+          
     
             </tr>
-        {%if request.method !='POST'%}
-            
-            {%for supp in all %} 
+
             <tbody>
-                <th><a href="{{url_for('supp.new')}}"><button >  Подробнее</button></a></th>
                 <th>{{supp.id}}</th>
                 <th>{{supp.llc_name}}</th>
-                
                 <th>{{supp.inn}}</th>
-               
-               
-            </tbody> 
-            {%endfor%}
-        
-        {%else%}
-        
-        <tbody>
-            {%if supplier%}
-            <th><button>Подробнее</button></th>
-            <th>{{supplier.id}}</th>
-            <th name='supp_name'>{{supplier.llc_name}}</th>
-            <th>{{supplier.inn}}</th>
-            <th>
-                {%for s in supplier.prefin.all()%}
-                    <p>{{s.id}}</p>
-                {%endfor%}</th>
-                  
-            <th>{{supplier.prefin.all()|length}}</th>
-           <th>
-            {%for fin in supplier.prefin.all()%}
-                {%for path in fin.docs.all()%}
-                <p>
-                <a href="{{url_for('supp.download_s_docs', filename=path.path)}}">{{path.path}}</a></p>
-                {%endfor%}
-            {%endfor%}
-        </th>
-        
-
-            <th>
-               
-
-                    {%for fin in supplier.prefin.all()%}
-                        <p>{{fin.s_invoice_number}}</p>
-                    {%endfor%}
-               
-            </th>
-            <th>
-                    {%for fin in supplier.prefin.all()%}
+                <th>{%for i in supp.prefin%}<p>{{i.id}}</p>{%endfor%}</th>
+                {%if request.method=='POST'%}
+                <th>{{supp.prefin.all()|length}}</th>
+                <th>
                     
-                    <p>{{fin.s_inv_amount}}</p>
-                    {%endfor%}
-                   
+
                 </th>
-
-            </th>
-
-        {%endif%}
+                <th>
+                    {%for inv in supp.invoices_list()%}
+                 <p>{{inv}}     </p>           
+                 {%endfor%}
             
-                
-           
-           
-            
-           
-        </tbody> 
-        
+                </th>
+                {%endif%}
 
-        {%endif%}
-
-        </div>
-
-
-        </table>
-
-    <div id='content'>
-
-            <table class="table table-sm">
-            
-                    <thead>
-                      
-                       <tr>
-                     {%if request.method=='POST'%}  
-                       
-                       <th>Действие</th>
-                       <th>Номера счета поставщика</th>
-                       <th>Сумма счета</th>
-                       <th>Дата оплаты</th>
-                       <th>Сумма оплаты</th>
-                       <th>Остается долг по счету</th>
-                    
-                     {%endif%} 
-           
-                   </tr></thead>
-
-                   <tbody>
-                       <form method='POST' action="">
-                           <th><input type=submit></th> 
-                           {{ form.csrf_token }}
-                           
-
-                        <th class="selc" id='number' multiple="multiple">{{form.s_n_all_invoices}}</th>
-                        <th id='amount'>{{form.s_inv_amount}}</th>
-                        <th>{{form.s_inv_pay_day}}</th>
-                        <th>{{form.s_payment_summ}}</th>
-                        </form>
-                    </tbody>
-
-
-                    </table>
-                    
-
+            </tbody>
+      
 
     
     </div>

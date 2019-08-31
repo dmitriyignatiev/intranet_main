@@ -21,13 +21,26 @@ class Supplier(db.Model):
     finance = db.Column(db.Integer, db.ForeignKey('finance.id'))
     pay = db.Column(db.Integer, db.ForeignKey('paid.id'))
     prefin = db.relationship('Prefin', backref='supplier', lazy='dynamic')
-    supp_payment = db.relationship('Supp_payment', backref='supp_payment')
+    supp_payment = db.relationship('Supp_payment', backref='supp_payment', lazy='dynamic')
+    inv = db.relationship('Invoicesup', backref='supplier', lazy='dynamic')
 
     def total_cost(self):
         total_summ = 0;
         for i in self.supp_payment:
             total_summ += i.s_inv_amount
         return total_summ
+
+    #   показывает все номера  счетов от поставщика
+    def invoices_list(self):
+        new_list = []
+        for invoice in self.prefin:
+            print(invoice.s_invoice_number)
+            new_list.append(invoice.s_invoice_number)
+        return new_list
+            
+        
+
+   
     
     
 
@@ -43,7 +56,8 @@ class Supp_payment(db.Model):
     bank = db.Column(db.String(240))
     tora_red = db.Column(db.String(240))
     supplier_id = db.Column(db.Integer, db.ForeignKey('supplier.id')) 
-
+    fin_id = db.Column(db.Integer, db.ForeignKey('prefin.id'))
+    day_plan_pay = db.Column(db.DateTime)
 
 class newSup(db.Model):
     id = db.Column (db.Integer, primary_key=True)
@@ -138,10 +152,10 @@ class Prefin(db.Model):
     s_inv_date_to_pay = db.Column(db.DateTime)
     s_inv_date = db.Column(db.DateTime)
     #Доки
-    zayvka = db.relationship('Zayvka', backref='prefin', lazy='dynamic')
-    docs = db.relationship('Documents', backref='prefin', lazy='dynamic')
-    invs = db.relationship('Invoicesup', backref='prefin', lazy='dynamic')
-    invc = db.relationship('Invoicecust', backref='prefin', lazy='dynamic')
+    zayvka = db.relationship('Zayvka', backref='prefin_z', lazy='dynamic')
+    docs = db.relationship('Documents', backref='prefin_docs', lazy='dynamic')
+    invs = db.relationship('Invoicesup', backref='prefin_invs', lazy='dynamic')
+    invc = db.relationship('Invoicecust', backref='prefin_invc', lazy='dynamic')
     tn_doc = db.relationship('Tn', backref='prefin', lazy='dynamic')
 
 
@@ -182,7 +196,8 @@ class Invoicesup(db.Model):
     fin_id = db.Column(db.Integer)
     path = db.Column(db.Text)
     prefin_id = db.Column(db.Integer, db.ForeignKey('prefin.id'))
-
+    req_id = db.Column(db.Integer, db.ForeignKey('request.id'))
+    supp_id = db.Column(db.Integer, db.ForeignKey('supplier.id'))
 #Для подгрузки счета на клиента
 class Invoicecust(db.Model):
     id = db.Column(db.Integer, primary_key=True)

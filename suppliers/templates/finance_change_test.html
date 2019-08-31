@@ -22,12 +22,9 @@
         <thead>
             <tr>
                 
-                <th>ТН/ТТН
-                </th>
-                <th>Файлы от поставщика(Счет, договор заявка и другие)
-    
-                       
-                </th>
+                <th>ТН/ТТН</th>
+                <th>Счет от поставщика</th>
+                <th>Файлы от поставщика(договор заявка и другие)</th>
                 <th>Файлы от Бухгалтерии</th>
                 <th>Файлы от Клиента</th>
              </tr>
@@ -50,6 +47,29 @@
                             {%endfor%}
                              </form>
     
+                        </th>
+                       
+                        <th>
+
+                                {%if current_user.role!='sale' and current_user.role!='account'%}
+      
+                                {{ dropzone.create('supp.upload_s_inv') }}
+                                {{ dropzone.load_js() }}
+                                {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id)) }}
+                            {%endif%}
+                               
+                            <form action="">
+                                    {%for i in invs%}
+                                     {%if i.prefin_id == fin.id%}
+                                     <p><a href="{{url_for('supp.download_s_inv', filename=i.path)}}">{{i.path}}</a>
+                                     </p> 
+                                     {%endif%}
+                                  {%endfor%}
+                                   </form>    
+                            
+
+
+
                         </th>
                          <th scope="row">
                             {%if current_user.role!='sale' and current_user.role!='account'%}
@@ -186,20 +206,20 @@
 
                             {%if current_user.role == 'buyer'%}
                                 <td>{{fin.s_inv_amount}}</td>
-                                {% if fin.s_invoice_number%}
-                                <td>{{form.s_invoice_number(value=fin.s_invoice_number)}}</td>
-                                {%else%}
-                                <td>{{form.s_invoice_number}}</td>
-                                {%endif%}                        
+                               
+                                
+                                
+                                <td bgcolor="green">{{form.s_invoice_number(value=fin.s_invoice_number)}}</td>
+                                                        
                                 {%if fin.s_inv_date%}
-                                <td>{{form.s_inv_date(value=fin.s_inv_date.strftime('%Y-%m-%d'))}}</td>
+                                <td bgcolor="yellow">{{form.s_inv_date(value=fin.s_inv_date.strftime('%Y-%m-%d'))}}</td>
                                 {%else%}
-                                <td>{{form.s_inv_date}}</td>
+                                <td bgcolor="yellow">{{form.s_inv_date}}</td>
                                 {%endif%}
                                 {%if fin.s_inv_date_to_pay%}
-                                <td>{{form.s_inv_das_inv_date_to_pay(value=fin.s_inv_date_to_pay.strftime('%Y-%m-%d'))}}</td>
+                                <td bgcolor="red">{{form.s_inv_das_inv_date_to_pay(value=fin.s_inv_date_to_pay.strftime('%Y-%m-%d'))}}</td>
                                 {%else%}
-                                <td>{{form.s_inv_das_inv_date_to_pay}}</td>
+                                <td bgcolor="red">{{form.s_inv_das_inv_date_to_pay}}</td>
                                 {%endif%}
                                 <td>{{fin.s_inv_vat}}</td>
                             {%endif%}
