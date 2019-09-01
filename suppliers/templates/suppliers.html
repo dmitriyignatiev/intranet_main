@@ -89,7 +89,7 @@
                 <th>{{supp.llc_name}}</th>
                 <th>{{supp.inn}}</th>
                 <th>{%for i in supp.prefin%}<p>{{i.id}}</p>{%endfor%}</th>
-                {%if request.method=='POST'%}
+                {%if supp%}
                 <th>{{supp.prefin.all()|length}}</th>
                 <th>
                     {%for inv in supp.prefin%}
@@ -123,11 +123,37 @@
                 {%endif%}
 
             </tbody>
-      
+      {%if supp%}
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>Действие</th>
+                <th>номера счета</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            <th>
+               <button id="write">Записать</button>
+            </th>
+            
+            <th>{{formInv.supp_all_invoices}}</th>
+            
+           
+        </tbody>
 
+
+    </table>
+    {%endif%}
+            
     
     </div>
     <script>
+        ///доделать
+        const b = document.getElementById("write")
+        b.addEventListener('click', function(){
+            alert('work')
+        })
    
     </script>
     

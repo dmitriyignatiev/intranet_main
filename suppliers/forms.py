@@ -66,6 +66,12 @@ class formSupplierName(FlaskForm):
      name = SelectField('Имя', coerce=str)
      submit = SubmitField('Подтвердить Выбор')
 
+class formSupplierInv(FlaskForm):
+    supp_all_invoices = SelectField('Все счета', coerce=str)
+    summ_pay = IntegerField('сумма платежа')
+    transit = StringField('через кого платим')
+    date_payment = DateField('Дата платежа')
+    submit = SubmitField('Подтвердить Выбор')
 
 
    

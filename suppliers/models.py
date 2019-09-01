@@ -42,7 +42,7 @@ class Supplier(db.Model):
     def invoice_amount_list(self):
         new_list=[]
         for invoice in self.prefin:
-            
+
             new_list.append(invoice.s_inv_amount)
         return new_list
 
@@ -53,6 +53,8 @@ class Supplier(db.Model):
             for path in fin.invs:
                 new_list.append(path.path)
         return new_list
+
+    
 
             
         

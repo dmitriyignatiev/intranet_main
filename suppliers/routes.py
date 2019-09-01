@@ -592,6 +592,7 @@ import pandas as pd
 def suppliers():
     formName=formSupplierName()
     formINN = formSupplierInn()
+    formInv = formSupplierInv()
     
     print('eto form' + str(formName.name.data))
     print('eto form INN' + str(formINN.check_inn.data))
@@ -614,25 +615,20 @@ def suppliers():
     all = Supplier.query.all()
     formName.name.choices = [(g.llc_name, g.llc_name) for g in all]
     formINN.check_inn.choices=[(g.inn, g.inn) for g in all]
-   
-    # form.s_n_all_invoices = 
+    
+
 
     supp = Supplier.query.filter(or_(Supplier.llc_name==formName.name.data, Supplier.inn==formINN.check_inn.data)).first()
-
+    
+    if supp:
+        try:
+            formInv.supp_all_invoices.choices = [(g.id, g.s_inv_number) for g in Supp_payment.query.filter_by(supplier_id=supp.id).all()]
+        except AttributeError:
+            formInv.supp_all_invoices.choices = [(g.id, g.s_inv_number) for g in Supp_payment.query.all()]
     print('eto supp' + str(supp))
 
-   
-    
-   
-    
-    
-    
-   
-
-    
-
     return render_template('suppliers.html', suppliers=suppliers, formName=formName, formINN=formINN,
-            all=all, supplier=supplier, supp=supp,
+            all=all, supplier=supplier, supp=supp, formInv=formInv,
            
             )
 

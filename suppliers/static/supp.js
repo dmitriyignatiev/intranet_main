@@ -12,7 +12,7 @@ $(function() {
         $('#check_inn').select2();
         $('#inn').select2();
         $('#s_n_all_invoices').select2();
-        
+        $('#supp_all_invoices').select2();
         
 
     });
