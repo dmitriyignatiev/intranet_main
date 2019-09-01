@@ -64,7 +64,7 @@
                                     {%for i in invs %}
                                     {%if i.prefin_id == fin.id%}
                                      
-                                     <p><a href="{{url_for('supp.download_s_inv_s', filename=i.path)}}">{{i.path}}</a>
+                                     <p><a href="{{url_for('supp.download_s_inv', filename=i.path)}}">{{i.path}}</a>
                                      </p> 
                                      {%endif%}
                                      

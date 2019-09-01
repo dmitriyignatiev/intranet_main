@@ -293,8 +293,7 @@ def upload_invoice():
 
 @supp.route('/download_s_inv_s/<path:filename>', methods=['GET'])
 def download_s_inv_s(filename):
-        return send_from_directory(os.path.join(APP_ROOT, 'invoice/'),
-                                filename, as_attachment=True)
+        return send_from_directory(os.path.join(APP_ROOT, 'invoice/'), filename, as_attachment=True)
 
 
 
@@ -556,14 +555,14 @@ def download_s_docs(filename):
         return send_from_directory(os.path.join(APP_ROOT, 's_docs/'),
                                 filename, as_attachment=True)
 
-@supp.route('/download_c_inv/<path:filename>', methods=['GET'])
-def download_c_inv(filename):
+@supp.route('/download_s_inv/<path:filename>', methods=['GET'])
+def download_s_inv(filename):
         return send_from_directory(os.path.join(APP_ROOT, 's_invoice/'),
                                 filename, as_attachment=True)
 
 
-@supp.route('/download_s_inv/<path:filename>', methods=['GET'])
-def download_s_inv(filename):
+@supp.route('/download_c_inv/<path:filename>', methods=['GET'])
+def download_c_inv(filename):
         return send_from_directory(os.path.join(APP_ROOT, 'c_inv/'),
                                 filename, as_attachment=True)
 

@@ -92,13 +92,26 @@
                 {%if request.method=='POST'%}
                 <th>{{supp.prefin.all()|length}}</th>
                 <th>
+                    {%for inv in supp.prefin%}
+
+                        {%for invoice in supp.inv %}
+                            {%if inv.invs.all()|length > 0%}
+                          
+                            <p><a href="{{url_for('supp.download_s_inv', filename=invoice.path)}}">{{invoice.path}}</a></p>
+                            {%else%}
+                            <p>None</p>
+                            {%endif%}
+                            
                     
+                        {%endfor%}
+                    {%endfor%}
 
                 </th>
                 <th>
                     {%for inv in supp.invoices_list()%}
+                    
                  <p>{{inv}}     </p>           
-                 {%endfor%}
+                     {%endfor%}
                     
                 </th>
 
