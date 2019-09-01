@@ -32,11 +32,19 @@ class Supplier(db.Model):
 
     #   показывает все номера  счетов от поставщика
     def invoices_list(self):
-        new_list = []
+        list = []
         for invoice in self.prefin:
-            print(invoice.s_invoice_number)
-            new_list.append(invoice.s_invoice_number)
+            
+            list.append(invoice.s_invoice_number)
+        return list
+    
+    # показывает суммы счетов
+    def invoice_amount_list(self):
+        new_list=[]
+        for invoice in self.prefin:
+            new_list.append(invoice.s_inv_amount)
         return new_list
+
             
         
 

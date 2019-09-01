@@ -75,7 +75,7 @@
                 <th>Номера перевозок</th>
                 <th>Количество перевозок</th>
                 
-                <th>Счета</th>
+                <th>Ссылки на Счета</th>
                 <th>Номера счетов</th>
                 <th>Сумма счета</th>
 
@@ -99,7 +99,13 @@
                     {%for inv in supp.invoices_list()%}
                  <p>{{inv}}     </p>           
                  {%endfor%}
-            
+                    
+                </th>
+
+                <th>
+                    {%for inv in supp.invoice_amount_list()%}
+                    <p>{{inv}}</p>
+                    {%endfor%}
                 </th>
                 {%endif%}
 

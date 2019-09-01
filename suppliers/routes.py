@@ -291,8 +291,8 @@ def upload_invoice():
                 return jsonify({'success':'файлы запрещен к загрузке'})
    
 
-@supp.route('/download_s_inv/<path:filename>', methods=['GET'])
-def download_file_s_inv(filename):
+@supp.route('/download_s_inv_s/<path:filename>', methods=['GET'])
+def download_s_inv_s(filename):
         return send_from_directory(os.path.join(APP_ROOT, 'invoice/'),
                                 filename, as_attachment=True)
 
@@ -468,8 +468,9 @@ def prefin_change_id_test(id):
     invoicec = Invoicecust.query.all()
 
     req = Request.query.filter_by(id=fin.req_id).first()
-    invs = Invoicesup.query.filter(Documents.req_id==req.id).all()
+    
     docs = Documents.query.filter(Documents.req_id==req.id).all()
+    invs = Invoicesup.query.filter(Invoicesup.req_id==req.id).all()
     tn = Documents.query.filter_by(req_id=req.id).all()
     ttn = Tn.query.filter(Tn.prefin_id==int(session['fin_id'])).all()
     zayavka = Zayvka.query.filter_by(req_id=req.id).all()
@@ -530,7 +531,7 @@ def prefin_change_id_test(id):
                                     day_plan_pay = form.s_inv_das_inv_date_to_pay.data,
                                     fin_id = fin.id,
         
-        ######ДОДЕЛАТЬ!!!!!#########
+       
 
 
                                     s_inv_pay_day=form.s_inv_das_inv_date_to_pay.data,

@@ -15,6 +15,7 @@
 {%endblock%}
 {%block content%}
 
+
 <div>
 
  
@@ -46,45 +47,47 @@
                                {%endif%}
                             {%endfor%}
                              </form>
+
+                            
     
                         </th>
                        
-                        <th>
+                        <th scope="row">
 
-                                {%if current_user.role!='sale' and current_user.role!='account'%}
-      
+                            {%if current_user.role!='sale' and current_user.role!='account'%}
+                            
                                 {{ dropzone.create('supp.upload_s_inv') }}
                                 {{ dropzone.load_js() }}
                                 {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id)) }}
                             {%endif%}
                                
-                            <form action="">
-                                    {%for i in invs%}
-                                     {%if i.prefin_id == fin.id%}
-                                     <p><a href="{{url_for('supp.download_s_inv', filename=i.path)}}">{{i.path}}</a>
+                                    {%for i in invs %}
+                                    {%if i.prefin_id == fin.id%}
+                                     
+                                     <p><a href="{{url_for('supp.download_s_inv_s', filename=i.path)}}">{{i.path}}</a>
                                      </p> 
                                      {%endif%}
+                                     
                                   {%endfor%}
-                                   </form>    
-                            
 
-
-
+                           
+                                     
                         </th>
+
                          <th scope="row">
                             {%if current_user.role!='sale' and current_user.role!='account'%}
                                 {{ dropzone.create('supp.upload_s_docs') }}
                                 {{ dropzone.load_js() }}
                                 {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id)) }}
                             {%endif%}
-                                <form action="">
+                                
                                         {%for i in docs%}
                                          {%if i.prefin_id == fin.id%}
                                          <p><a href="{{url_for('supp.download_s_docs', filename=i.path)}}">{{i.path}}</a>
                                          </p> 
                                          {%endif%}
                                       {%endfor%}
-                                       </form>
+                                       
                                 
                                     </th>
                                     
