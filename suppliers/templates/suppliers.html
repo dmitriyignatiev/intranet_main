@@ -123,10 +123,18 @@
                 {%endif%}
 
             </tbody>
+            
       {%if supp%}
+
+ 
+
     <table class="table table-sm">
+
+            
+
         <thead>
             <tr>
+                
                 <th>Действие</th>
                 <th>номера счета</th>
                 <th>сумма оплаты</th>
@@ -141,7 +149,7 @@
             </th>
             
             <form action="">
-            <th name='inv_number'>{{formInv.supp_all_invoices}}</th>
+            <th name='inv_number' id='number'>{{formInv.supp_all_invoices}}</th>
             <th>{{formInv.summ_pay}}</th>
             <th>{{formInv.transit}}</th>
             <th>{{formInv.date_payment}}</th>
@@ -149,20 +157,17 @@
            
         </tbody>
 
+        
 
     </table>
     {%endif%}
             
     
     </div>
+    <div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
+    <div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
     <script>
-        ///доделать
-        // const b = document.getElementById("write")
-        // b.addEventListener('click', myFunc)
-        // function myFunc(){
-        //     alert('workd')
-
-        // }
+      
 
         $('#write').bind('click', function(e) {
         alert('ready')
@@ -171,16 +176,25 @@
         $.getJSON('/suppliers/suppliers_payments_to_db',{
             summ_amount:$('#summ_pay').val(),
             supp_payment_id:$("#supp_all_invoices").val(),
+            transit:$("#transit").val(),
+            day:$("#date_payment").val(),
             type:'POST',
             data: '/suppliers/suppliers_payments_to_db',
         }, function(data){
             console.log(data)
+           
+            $('#successAlert').text(data.success).show();
         }
         
         )
         });
    
     </script>
+
+    <p id='amount'></p>
+   
+
+    
     
     <script>
         

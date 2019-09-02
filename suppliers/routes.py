@@ -594,9 +594,11 @@ def suppliers():
     formINN = formSupplierInn()
     formInv = formSupplierInv()
     
+
+
     print('eto form' + str(formName.name.data))
     print('eto form INN' + str(formINN.check_inn.data))
-    
+   
 
     
     name = formName.name.data
@@ -621,17 +623,15 @@ def suppliers():
 
     supp = Supplier.query.filter(or_(Supplier.llc_name==formName.name.data, Supplier.inn==formINN.check_inn.data)).first()
     
-   
     
-    
-    
-
 
     if supp:
         try:
             formInv.supp_all_invoices.choices = [(g.id, g.s_inv_number) for g in Supp_payment.query.filter_by(supplier_id=supp.id).all()]
             session['supp_name'] = supp.llc_name
             formName.name.data = session['supp_name']
+            number = request.args.get('supp_payment_id')
+            print('number' + formInv.supp_all_invoices.data)
         except AttributeError:
             formInv.supp_all_invoices.choices = [(g.s_inv_number, g.s_inv_number) for g in Supp_payment.query.all()]
     print('eto supp' + str(supp))
@@ -647,18 +647,24 @@ def suppliers_payments_to_db():
     form=formSupplierInv()
     summ_amount = request.args.get('summ_amount')
     supp_payment_id = request.args.get('supp_payment_id')
+    transit = request.args.get('transit')
+    day = request.args.get('day')
+    print('day' + str(day))
     
     
     
 
     print(summ_amount)
-   
-       
+    
+    su = Supp_payment.query.get(int(supp_payment_id))
+    if su:
+        invoice_number = su.s_inv_number
+        new_payment = Invoice_payment_s(summ_pay=summ_amount, supp_payment=supp_payment_id, transit=transit, date_payment=day, s_inv_number=invoice_number)
+        db.session.add(new_payment)
+        db.session.commit()
+
         
-    new_payment = Invoice_payment_s(summ_pay=summ_amount, supp_payment=supp_payment_id)
-    db.session.add(new_payment)
-    db.session.commit()
-    return jsonify({'success': 'Поставщик упешно внесен в базу данных'})
+        return redirect(url_for('supp.suppliers'))
 
 
 
