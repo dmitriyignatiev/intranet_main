@@ -129,6 +129,9 @@
             <tr>
                 <th>Действие</th>
                 <th>номера счета</th>
+                <th>сумма оплаты</th>
+                <th>через кого платим(Транзит)</th>
+                <th>дата платежа</th>
             </tr>
         </thead>
         <tbody>
@@ -137,8 +140,12 @@
                <button id="write">Записать</button>
             </th>
             
-            <th>{{formInv.supp_all_invoices}}</th>
-            
+            <form action="">
+            <th name='inv_number'>{{formInv.supp_all_invoices}}</th>
+            <th>{{formInv.summ_pay}}</th>
+            <th>{{formInv.transit}}</th>
+            <th>{{formInv.date_payment}}</th>
+            </form>
            
         </tbody>
 
@@ -150,10 +157,28 @@
     </div>
     <script>
         ///доделать
-        const b = document.getElementById("write")
-        b.addEventListener('click', function(){
-            alert('work')
-        })
+        // const b = document.getElementById("write")
+        // b.addEventListener('click', myFunc)
+        // function myFunc(){
+        //     alert('workd')
+
+        // }
+
+        $('#write').bind('click', function(e) {
+        alert('ready')
+        e.preventDefault();
+
+        $.getJSON('/suppliers/suppliers_payments_to_db',{
+            summ_amount:$('#summ_pay').val(),
+            supp_payment_id:$("#supp_all_invoices").val(),
+            type:'POST',
+            data: '/suppliers/suppliers_payments_to_db',
+        }, function(data){
+            console.log(data)
+        }
+        
+        )
+        });
    
     </script>
     

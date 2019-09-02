@@ -64,6 +64,7 @@ class Supplier(db.Model):
     
 
 #класс где мы будем разносить оплаты перевозчикам
+#storage for all invoices
 class Supp_payment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     s_inv_number = db.Column(db.String(120))
@@ -77,6 +78,19 @@ class Supp_payment(db.Model):
     supplier_id = db.Column(db.Integer, db.ForeignKey('supplier.id')) 
     fin_id = db.Column(db.Integer, db.ForeignKey('prefin.id'))
     day_plan_pay = db.Column(db.DateTime)
+    invoice_payment = db.relationship('Invoice_payment_s', backref='supp_payment_s', lazy='dynamic')
+    
+
+#class where payments will be store many-to-one with Supp_payment
+class Invoice_payment_s(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    s_inv_number = db.Column(db.String(120))
+    summ_pay = db.Column(db.Integer)
+    transit = db.Column(db.String(120))
+    date_payment = db.Column(db.DateTime)
+    supp_payment = db.Column(db.Integer, db.ForeignKey('supp_payment.id'))
+
+
 
 class newSup(db.Model):
     id = db.Column (db.Integer, primary_key=True)

@@ -597,6 +597,7 @@ def suppliers():
     print('eto form' + str(formName.name.data))
     print('eto form INN' + str(formINN.check_inn.data))
     
+
     
     name = formName.name.data
     print('eto: ' + str(name))
@@ -620,17 +621,44 @@ def suppliers():
 
     supp = Supplier.query.filter(or_(Supplier.llc_name==formName.name.data, Supplier.inn==formINN.check_inn.data)).first()
     
+   
+    
+    
+    
+
+
     if supp:
         try:
             formInv.supp_all_invoices.choices = [(g.id, g.s_inv_number) for g in Supp_payment.query.filter_by(supplier_id=supp.id).all()]
+            session['supp_name'] = supp.llc_name
+            formName.name.data = session['supp_name']
         except AttributeError:
-            formInv.supp_all_invoices.choices = [(g.id, g.s_inv_number) for g in Supp_payment.query.all()]
+            formInv.supp_all_invoices.choices = [(g.s_inv_number, g.s_inv_number) for g in Supp_payment.query.all()]
     print('eto supp' + str(supp))
 
     return render_template('suppliers.html', suppliers=suppliers, formName=formName, formINN=formINN,
             all=all, supplier=supplier, supp=supp, formInv=formInv,
            
             )
+
+#json to save paymentto suppliers
+@supp.route('suppliers_payments_to_db', methods=['POST', 'GET'])
+def suppliers_payments_to_db():
+    form=formSupplierInv()
+    summ_amount = request.args.get('summ_amount')
+    supp_payment_id = request.args.get('supp_payment_id')
+    
+    
+    
+
+    print(summ_amount)
+   
+       
+        
+    new_payment = Invoice_payment_s(summ_pay=summ_amount, supp_payment=supp_payment_id)
+    db.session.add(new_payment)
+    db.session.commit()
+    return jsonify({'success': 'Поставщик упешно внесен в базу данных'})
 
 
 
