@@ -76,6 +76,7 @@
                 <th>Количество перевозок</th>
                 
                 <th>Ссылки на Счета</th>
+                <th>На какое юр лицо</th>
                 <th>Номера счетов</th>
                 <th>Сумма счета</th>
 
@@ -107,6 +108,11 @@
                     {%endfor%}
 
                 </th>
+            <th>
+                {%for inv in supp.prefin%}
+                <p>{{inv.tora_red}}</p>
+                {%endfor%}
+            </th>
                 <th>
                     {%for inv in supp.invoices_list()%}
                     
@@ -150,9 +156,9 @@
             
             <form action="">
             <th name='inv_number' id='number'>{{formInv.supp_all_invoices}}</th>
-            <th>{{formInv.summ_pay}}</th>
-            <th>{{formInv.transit}}</th>
-            <th>{{formInv.date_payment}}</th>
+            <th bgcolor="green">{{formInv.summ_pay}}</th>
+            <th bgcolor="red">{{formInv.transit}}</th>
+            <th bgcolor="yellow">{{formInv.date_payment}}</th>
             </form>
            
         </tbody>
@@ -170,7 +176,7 @@
       
 
         $('#write').bind('click', function(e) {
-        alert('ready')
+        
         e.preventDefault();
 
         $.getJSON('/suppliers/suppliers_payments_to_db',{
@@ -181,9 +187,19 @@
             type:'POST',
             data: '/suppliers/suppliers_payments_to_db',
         }, function(data){
-            console.log(data)
+            console.log(data.error)
+            
+            if(data.error){
+                $('#errorAlert').text(data.error).show();
+                $('#successAlert').hide();
+            }else{
+                $('#errorAlert').hide();
+                $('#successAlert').text(data.success).show();
+                window.setTimeout(function() { location.reload() }, 2000)
+            }
+            
            
-            $('#successAlert').text(data.success).show();
+            
         }
         
         )
@@ -191,56 +207,87 @@
    
     </script>
 
-    <p id='amount'></p>
-   
+    <div >
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Сумма</th>
+                    <th>Дата оплаты</th>
+                </tr>
+            </thead>
+            <tbody>
+                <th></th>
+                <th id="amount"></th>
+            </tbody>
+        </table>
+    </div>
 
-    
-    
+    <div id="div1" class='z'>
+            <p id="p1">This is a paragraph.</p>
+            <p id="p2">This is another paragraph.</p>
+    </div>
+
+   
     <script>
-        
-
-        let number = $('#number');
-        let amount = $('#s_inv_amount');
-        let a = document.getElementById('amount');
-
-    
-        number.on('select2:select', function (e) {
-        var number = e.params.data;
-        console.log(number.text);
-
-        fetch('/suppliers/s_inv_number/'+ number.text).then(function(response){
-            response.json().then(function(data){
-                console.table(data);
-                let optionHTML='';
-                for (let inv of data.invoices){
-                    // optionHTML += '<option value="' + inv.id + '">' + inv.s_inv_number + '</option>';
-                    console.log(inv.s_inv_amount) 
-                    a.textContent=inv.s_inv_amount;   
-                }
-                
-            })
-          })
-
-        })
-
-
-
-
-
-
-    
+ 
+            let number = $('#number');
+            let amount = $('#s_inv_amount');
+            let a = document.getElementById('amount');
+       
+            number.on('select2:select', function (e) {
+            var number = e.params.data;
+            myFunction();
+            
+            var arr = [];
+            console.log('arr 1: ' + arr)
+           
      
-   
+            fetch('/suppliers/s_inv_number/'+ number.text).then(function(response){
+                response.json().then(function(data){
+                    console.table(data);
+                   
+     
+                    var newDiv = document.createElement("div");
+                            newDiv.id = "div1"
+     
+                    for (let inv of data.invoices){
+                       
+                        console.log('eto number:' + number.text)
+                        arr.push(inv.s_inv_amount)
+     
+                        
+     
+     
+                        
+                        console.log('arr2 :'  + arr)
+                        // a.textContent=inv.s_inv_amount; 
+                        arr.forEach(function(item){
+     
+                        var para = document.createElement("p");
+                        var node = document.createTextNode(inv.s_inv_amount);
+                        para.appendChild(node);
+     
+     
+                        var element = document.getElementById("div1");
+                        element.appendChild(para); 
+                        console.log('eto elemetn: ' + item) 
+                    })
+                    
+                }
+              })
+            
+            })
+     
         
+        })
+     
+            
         
-        
-
+     
+        </script>
     
-   
-
-    </script>
-            
-            
+    
+    
       
        
 <!-- versio1 -->

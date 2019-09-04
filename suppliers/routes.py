@@ -627,11 +627,15 @@ def suppliers():
 
     if supp:
         try:
-            formInv.supp_all_invoices.choices = [(g.id, g.s_inv_number) for g in Supp_payment.query.filter_by(supplier_id=supp.id).all()]
+            # formInv.supp_all_invoices.choices = [(g.id, g.s_inv_number) for g in Supp_payment.query.filter_by(supplier_id=supp.id).all()]
+            formInv.supp_all_invoices.choices = [(g.id, g.s_invoice_number) for g in Prefin.query.filter_by(supplier_id=supp.id).all()]
             session['supp_name'] = supp.llc_name
             formName.name.data = session['supp_name']
             number = request.args.get('supp_payment_id')
             print('number' + formInv.supp_all_invoices.data)
+
+           
+
         except AttributeError:
             formInv.supp_all_invoices.choices = [(g.s_inv_number, g.s_inv_number) for g in Supp_payment.query.all()]
     print('eto supp' + str(supp))
@@ -657,14 +661,17 @@ def suppliers_payments_to_db():
     print(summ_amount)
     
     su = Supp_payment.query.get(int(supp_payment_id))
-    if su:
+    if su and summ_amount and transit and day:
         invoice_number = su.s_inv_number
         new_payment = Invoice_payment_s(summ_pay=summ_amount, supp_payment=supp_payment_id, transit=transit, date_payment=day, s_inv_number=invoice_number)
         db.session.add(new_payment)
         db.session.commit()
 
         
-        return redirect(url_for('supp.suppliers'))
+        return jsonify({'success': 'оплата зафиксирована'})
+    else:
+        # su = Supp_payment()
+        return jsonify({'error': 'неудачно, проверьте все ли поля заполенны для разнесения оплаты'})
 
 
 
@@ -682,5 +689,5 @@ def s_inv_number(number):
         invObj['s_inv_number']=inv.s_inv_number
         invObj['s_inv_amount'] =inv.s_inv_amount
         invoicesArray.append(invObj)
-    
+   
     return jsonify({'invoices':invoicesArray})
