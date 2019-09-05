@@ -2,6 +2,12 @@ from app_main import db
 from datetime import datetime
 from sqlalchemy.ext.hybrid import hybrid_property
 
+
+finsupp_table = db.Table('finsup',
+                     db.Column('prefin_id', db.Integer, db.ForeignKey('prefin.id')),
+                     db.Column('supp_ip', db.Integer, db.ForeignKey('supplier.id'))
+                    )
+
 class Supplier(db.Model):
     id = db.Column (db.Integer, primary_key=True)
     llc = db.Column (db.String (240))
@@ -20,7 +26,8 @@ class Supplier(db.Model):
     date = db.Column(db.DateTime, default=datetime.utcnow)
     finance = db.Column(db.Integer, db.ForeignKey('finance.id'))
     pay = db.Column(db.Integer, db.ForeignKey('paid.id'))
-    prefin = db.relationship('Prefin', backref='supplier', lazy='dynamic')
+    prefin = db.relationship('Prefin', secondary=finsupp_table,
+                                backref=db.backref('supplier', lazy='dynamic'))
     supp_payment = db.relationship('Supp_payment', backref='supp_payment', lazy='dynamic')
     inv = db.relationship('Invoicesup', backref='supplier', lazy='dynamic')
 
@@ -79,6 +86,13 @@ class Supp_payment(db.Model):
     fin_id = db.Column(db.Integer, db.ForeignKey('prefin.id'))
     day_plan_pay = db.Column(db.DateTime)
     invoice_payment = db.relationship('Invoice_payment_s', backref='supp_payment_s', lazy='dynamic')
+    
+    #возвращает значение сколько мы остаемся должны
+    def still_own(self):
+        summ = 0
+        for payment in self.invoice_payment.all():
+            summ += payment.summ_pay
+        return self.s_inv_amount - summ
     
 
 #class where payments will be store many-to-one with Supp_payment
@@ -161,17 +175,6 @@ class Prefin(db.Model):
     s_np_ati = db.Column(db.String(120))
     s_inv_part_payment_16wk = db.Column(db.Integer)
     s_inv_part_pay_issue = db.Column(db.String(120))
-    s_inv_part_payment_17wk = db.Column(db.Integer)
-    s_inv_part_payment_18wk_2019= db.Column(db.Integer)
-    s_inv_part_payment_20wk_2019 = db.Column(db.Integer)
-    s_inv_part_payment_21wk_2019 = db.Column(db.Integer)
-    s_inv_part_payment_22wk_2019 = db.Column(db.Integer)
-    s_inv_part_payment_23wk_2019 = db.Column(db.Integer)
-    s_inv_part_payment_24wk_2019 = db.Column(db.Integer)
-    s_inv_part_payment_25wk_2019 = db.Column(db.Integer)
-    s_inv_part_payment_26wk_2019 = db.Column(db.Integer)
-    s_inv_part_payment_27wk_2019= db.Column(db.Integer)
-    s_inv_part_payment_28wk_2019= db.Column(db.Integer)
     blank_option_3 = db.Column(db.String(120))
     s_inv_part_payment_29wk_2019 = db.Column(db.Integer)
     blank_option_4 = db.Column(db.String(120))

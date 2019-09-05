@@ -79,6 +79,7 @@
                 <th>На какое юр лицо</th>
                 <th>Номера счетов</th>
                 <th>Сумма счета</th>
+                <th>Остаемся должны</th>
 
               
           
@@ -91,7 +92,7 @@
                 <th>{{supp.inn}}</th>
                 <th>{%for i in supp.prefin%}<p>{{i.id}}</p>{%endfor%}</th>
                 {%if supp%}
-                <th>{{supp.prefin.all()|length}}</th>
+                <th>{{supp.prefin|length}}</th>
                 <th>
                     {%for inv in supp.prefin%}
 
@@ -126,6 +127,15 @@
                     <p>{{inv}}</p>
                     {%endfor%}
                 </th>
+                <th>
+                    {%for inv in supp.supp_payment%}
+                        <p>{{inv.still_own()}}</p>
+                        {%endfor%}
+                </th>
+
+
+
+
                 {%endif%}
 
             </tbody>
@@ -195,7 +205,8 @@
             }else{
                 $('#errorAlert').hide();
                 $('#successAlert').text(data.success).show();
-                window.setTimeout(function() { location.reload() }, 2000)
+                window.setTimeout(function() { location.reload() }, 1000)
+                
             }
             
            
@@ -211,20 +222,32 @@
         <table class="table table-sm">
             <thead>
                 <tr>
-                    <th>Сумма</th>
+                    <th>№ Счета</th>
+                    <th>Сумма оплат</th>
                     <th>Дата оплаты</th>
                 </tr>
             </thead>
             <tbody>
-                <th></th>
-                <th id="amount"></th>
+                    <th>
+                            {%for inv in  supp.supp_payment%}
+                                <p>{{inv.s_inv_number}}</p>
+                            {%endfor%}
+                        </th>
+                    
+                        <th>
+                            {%for inv in supp.supp_payment%}
+                            
+                            {%endfor%}
+                        </th>
+                
             </tbody>
         </table>
-    </div>
+    
 
-    <div id="div1" class='z'>
-            <p id="p1">This is a paragraph.</p>
-            <p id="p2">This is another paragraph.</p>
+ 
+        
+            
+
     </div>
 
    

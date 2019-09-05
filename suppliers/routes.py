@@ -19,6 +19,7 @@ import datetime
 def index():
     return render_template('app_main.base.html')
 
+
 @supp.route('/add_supplier/<int:id>', methods=['GET', 'POST'])
 def add_supplier(id):
     
@@ -190,6 +191,7 @@ def prefin():
                         unloading_place=unloading_place,
                         cargo_character = request_one.cargo_desciption,
                         supplier_name=supplier_id.llc_name,
+                    
                         
 
                         status_of_request=status_of_request,
@@ -210,12 +212,14 @@ def prefin():
             if request_one.zayvka.first():
                 newFin.zayvka.append(request_one.zayvka.first())
                 db.session.add(newFin)
+                newFin.supplier.append(supplier_id)
                 db.session.commit()
                 
                 return jsonify({'success':'данные успешно внесены в базу'})
             else:
                 db.session.add(newFin)
                 db.session.commit()
+                newFin.supplier.append(supplier_id)
                 return jsonify({'success':'данные успешно внесены в базу но без заявки'})
                 
            
@@ -248,6 +252,9 @@ def prefin():
             newFin.profit = c_inv_amount- cost_with_vat
             if request_one.zayvka.first():
                 newFin.zayvka.append(request_one.zayvka.first())
+                newFin.supplier = []
+
+                newFin.supplier.append(supplier_id)
                 db.session.add(newFin)
                 db.session.commit()
             db.session.commit()
@@ -622,13 +629,12 @@ def suppliers():
 
 
     supp = Supplier.query.filter(or_(Supplier.llc_name==formName.name.data, Supplier.inn==formINN.check_inn.data)).first()
-    
+    # supp_payment = Supp_payment.query.filter_by()
     
 
     if supp:
         try:
-            # formInv.supp_all_invoices.choices = [(g.id, g.s_inv_number) for g in Supp_payment.query.filter_by(supplier_id=supp.id).all()]
-            formInv.supp_all_invoices.choices = [(g.id, g.s_invoice_number) for g in Prefin.query.filter_by(supplier_id=supp.id).all()]
+            formInv.supp_all_invoices.choices = [(g.id, g.s_inv_number) for g in Supp_payment.query.filter_by(supplier_id=supp.id).all()]
             session['supp_name'] = supp.llc_name
             formName.name.data = session['supp_name']
             number = request.args.get('supp_payment_id')
@@ -669,8 +675,9 @@ def suppliers_payments_to_db():
 
         
         return jsonify({'success': 'оплата зафиксирована'})
+    
     else:
-        # su = Supp_payment()
+        
         return jsonify({'error': 'неудачно, проверьте все ли поля заполенны для разнесения оплаты'})
 
 
