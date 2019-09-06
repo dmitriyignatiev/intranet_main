@@ -629,7 +629,7 @@ def suppliers():
 
 
     supp = Supplier.query.filter(or_(Supplier.llc_name==formName.name.data, Supplier.inn==formINN.check_inn.data)).first()
-    # supp_payment = Supp_payment.query.filter_by()
+    # = Supp_payment.query.filter
     
 
     if supp:
@@ -659,6 +659,9 @@ def suppliers_payments_to_db():
     supp_payment_id = request.args.get('supp_payment_id')
     transit = request.args.get('transit')
     day = request.args.get('day')
+    supplier_id = request.args.get('supplier')
+    supp = Supplier.query.get(int(supplier_id))
+
     print('day' + str(day))
     
     
@@ -669,8 +672,10 @@ def suppliers_payments_to_db():
     su = Supp_payment.query.get(int(supp_payment_id))
     if su and summ_amount and transit and day:
         invoice_number = su.s_inv_number
-        new_payment = Invoice_payment_s(summ_pay=summ_amount, supp_payment=supp_payment_id, transit=transit, date_payment=day, s_inv_number=invoice_number)
+        new_payment = Invoice_payment_s(summ_pay=summ_amount, supp_payment=supp_payment_id, transit=transit, date_payment=day, s_inv_number=invoice_number, supplier_id=int(supplier_id))
         db.session.add(new_payment)
+        supp.invoice_payment.append(new_payment)
+        
         db.session.commit()
 
         

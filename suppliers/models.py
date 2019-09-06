@@ -30,6 +30,7 @@ class Supplier(db.Model):
                                 backref=db.backref('supplier', lazy='dynamic'))
     supp_payment = db.relationship('Supp_payment', backref='supp_payment', lazy='dynamic')
     inv = db.relationship('Invoicesup', backref='supplier', lazy='dynamic')
+    invoice_payment = db.relationship('Invoice_payment_s', backref='supplier', lazy='dynamic')
 
     def total_cost(self):
         total_summ = 0;
@@ -103,6 +104,7 @@ class Invoice_payment_s(db.Model):
     transit = db.Column(db.String(120))
     date_payment = db.Column(db.DateTime)
     supp_payment = db.Column(db.Integer, db.ForeignKey('supp_payment.id'))
+    supplier_id = db.Column(db.Integer, db.ForeignKey('supplier.id'))
 
 
 
