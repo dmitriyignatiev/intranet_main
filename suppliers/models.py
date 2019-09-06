@@ -87,13 +87,24 @@ class Supp_payment(db.Model):
     fin_id = db.Column(db.Integer, db.ForeignKey('prefin.id'))
     day_plan_pay = db.Column(db.DateTime)
     invoice_payment = db.relationship('Invoice_payment_s', backref='supp_payment_s', lazy='dynamic')
-    
+    invoice_path = db.relationship('Invoicesup', backref='supp_payment', lazy='dynamic')
+
+
     #возвращает значение сколько мы остаемся должны
     def still_own(self):
         summ = 0
         for payment in self.invoice_payment.all():
             summ += payment.summ_pay
         return self.s_inv_amount - summ
+
+    def invoice(self):
+        list = []
+        for path in self.invoice_path:
+            list.append(path.path)
+        return(list)
+    
+    def count_payments(self):
+        return self.invoice_payment.count()
     
 
 #class where payments will be store many-to-one with Supp_payment
@@ -236,6 +247,8 @@ class Invoicesup(db.Model):
     prefin_id = db.Column(db.Integer, db.ForeignKey('prefin.id'))
     req_id = db.Column(db.Integer, db.ForeignKey('request.id'))
     supp_id = db.Column(db.Integer, db.ForeignKey('supplier.id'))
+    supp_payment_id = db.Column(db.Integer, db.ForeignKey('supp_payment.id'))
+
 #Для подгрузки счета на клиента
 class Invoicecust(db.Model):
     id = db.Column(db.Integer, primary_key=True)

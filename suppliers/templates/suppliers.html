@@ -40,7 +40,8 @@
             <th>
                     <form action=""  method="POST">
                             {{ formName.csrf_token }}
-                            {{formName.name.label()}}  {{formName.name}}
+                            
+                            {{formName.name.label()}}{{formName.name}}
                             <input type="submit">
                     </form>
             
@@ -68,18 +69,19 @@
                
                 <tr>
             
+                        
+                <th style="display:none;">Id перевоза</th>
                 
-                <th>id</th>
-                <th>Наименование поставщика</th>
-                <th>ИНН</th>
-                <th>Номера перевозок</th>
-                <th>Количество перевозок</th>
-                
-                <th>Ссылки на Счета</th>
-                <th>На какое юр лицо</th>
-                <th>Номера счетов</th>
+                <th>Номер счета</th>
+                <th>Дата счета</th>
                 <th>Сумма счета</th>
+                <th>Номер перевозки</th>
+                <th>На кого выставлен</th>
+                
+                <th>Ссылки на счет</th>
                 <th>Остаемся должны</th>
+                <th>Дата последнего платежа</th>
+                <th>Количество платежей по счету</th>
 
               
           
@@ -87,11 +89,42 @@
             </tr>
 
             <tbody>
-                <th id='id'>{{supp.id}}</th>
+                {%for inv in invoices%}
+                <tr>
+                  
+                    <th id='id'  style="display:none;">{{inv.supplier_id}}</th>
+                   
+                    <th>{{inv.s_inv_number}}</th>
+                    <th>{{inv.s_invoice_date.strftime('%Y-%m-%d')}}</th>
+                    <th>{{inv.s_inv_amount}}</th>
+                    <th>{{inv.fin_id}}</th>
+                    <th>{{inv.tora_red}}</th>
+                    <th>
+                        {%for path in inv.invoice()%}
+                        <p><a href="{{url_for('supp.download_s_inv', filename=path)}}">{{path}}</a></p>
+                        {%endfor%}
+                         
+                    </th>
+                    <th>{{inv.still_own()}}</th>
+                    {%if inv.invoice_payment.count() > 0%}
+                    <th>{{moment(inv.invoice_payment[-1].date_payment).fromNow()}}</th>
+                    {%else%}
+                    <th>Платежей не было</th>
+                    {%endif%}
+                    <th>{{inv.count_payments()}}</th>
+                    
+                    
+                    
+                   
+           
+                {%endfor%}
+
+
+                <!-- <th id='id'>{{supp.id}}</th>
                 <th>{{supp.llc_name}}</th>
-                <th>{{supp.inn}}</th>
-                <th>{%for i in supp.prefin%}<p>{{i.id}}</p>{%endfor%}</th>
-                {%if supp%}
+                <th>{{supp.inn}}</th> -->
+                <!-- <th>{%for i in supp.prefin%}<p>{{i.id}}</p>{%endfor%}</th> -->
+                <!-- {%if supp%}
                 <th>{{supp.prefin|length}}</th>
                 <th>
                     {%for inv in supp.prefin%}
@@ -136,7 +169,7 @@
 
 
 
-                {%endif%}
+                {%endif%} -->
 
             </tbody>
             
@@ -229,7 +262,7 @@
                 </tr>
             </thead>
             <tbody>
-                {%for inv in  supp.supp_payment%}
+                {%for inv in  invoices%}
                 <tr>
                     <th>
                              
@@ -238,7 +271,7 @@
                         </th>
                     
                         <th>
-                            {%for invs in supp.invoice_payment%}
+                            {%for invs in invoice_payments%}
                             {%if invs.supp_payment == inv.id%}
                             <p>{{invs.summ_pay}}</p>
                             {%endif%}
@@ -247,7 +280,7 @@
                         </th>
 
                         <th>
-                                {%for invs in supp.invoice_payment%}
+                            {%for invs in invoice_payments%}
                                 {%if invs.supp_payment == inv.id%}
                                 <p>{{invs.date_payment}}</p>
                                 {%endif%}
@@ -334,6 +367,9 @@
       
 
             {%endblock%} {%block scripts%} 
+            {{super()}}
+    {{moment.include_moment()}}
+  {{moment.lang('ru')}}
             
             
             {%endblock%}

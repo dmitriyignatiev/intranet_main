@@ -422,13 +422,18 @@ def upload_s_inv():
     if not os.path.isdir(target):
          os.mkdir(target)
     if request.method == 'POST':
+
         f = request.files.get('file')
         f.filename = 'сч#' + str(session['fin_id']) + ' ' + str(f.filename)
         invs = Invoicesup(prefin_id=session['fin_id'], path = f.filename)
         db.session.add(invs)
         fin = Prefin.query.get(invs.prefin_id)
         invs.req_id = fin.req_id
-        invs.supp_id = fin.supplier.id
+        invs.supp_id = fin.supplier_id
+        invs.fin_id = fin.id
+        db.session.commit()
+        invoice = Supp_payment.query.filter_by(fin_id=session['fin_id']).first()
+        invoice.invoice_path.append(invs)
         db.session.commit()
         print(session['fin_id'])
         destination = "/".join([target, f.filename])
@@ -529,6 +534,7 @@ def prefin_change_id_test(id):
         supp_p.s_inv_amount=fin.s_inv_amount,
         supp_p.day_plan_pay = fin.s_inv_date_to_pay,
         supp_p.fin_id = fin.id,
+        supp_p.tora_red = fin.tora_red,
         db.session.commit()
     else:
         supp_p = Supp_payment(
@@ -625,11 +631,25 @@ def suppliers():
     all = Supplier.query.all()
     formName.name.choices = [(g.llc_name, g.llc_name) for g in all]
     formINN.check_inn.choices=[(g.inn, g.inn) for g in all]
+
+    
     
 
 
     supp = Supplier.query.filter(or_(Supplier.llc_name==formName.name.data, Supplier.inn==formINN.check_inn.data)).first()
-    # = Supp_payment.query.filter
+    
+      #все счета
+    try:
+        invoices = Supp_payment.query.filter(Supp_payment.supplier_id==supp.id).order_by(desc(Supp_payment.s_invoice_date)).all()
+       
+    #все оплаты по счетам 
+        invoice_payments = Invoice_payment_s.query.filter(Invoice_payment_s.supplier_id==supp.id).order_by(desc(Invoice_payment_s.date_payment)).all()
+    except AttributeError:
+
+
+        invoices = Supp_payment.query.order_by(Supp_payment.s_invoice_date).all()
+
+        invoice_payments = Invoice_payment_s.query.order_by(Invoice_payment_s.date_payment).all()
     
 
     if supp:
@@ -639,6 +659,7 @@ def suppliers():
             formName.name.data = session['supp_name']
             number = request.args.get('supp_payment_id')
             print('number' + formInv.supp_all_invoices.data)
+           
 
            
 
@@ -647,9 +668,7 @@ def suppliers():
     print('eto supp' + str(supp))
 
     return render_template('suppliers.html', suppliers=suppliers, formName=formName, formINN=formINN,
-            all=all, supplier=supplier, supp=supp, formInv=formInv,
-           
-            )
+            all=all, supplier=supplier, supp=supp, formInv=formInv, invoices=invoices, invoice_payments=invoice_payments) 
 
 #json to save paymentto suppliers
 @supp.route('suppliers_payments_to_db', methods=['POST', 'GET'])
@@ -674,6 +693,7 @@ def suppliers_payments_to_db():
         invoice_number = su.s_inv_number
         new_payment = Invoice_payment_s(summ_pay=summ_amount, supp_payment=supp_payment_id, transit=transit, date_payment=day, s_inv_number=invoice_number, supplier_id=int(supplier_id))
         db.session.add(new_payment)
+        
         supp.invoice_payment.append(new_payment)
         
         db.session.commit()
