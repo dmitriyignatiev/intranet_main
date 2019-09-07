@@ -63,6 +63,28 @@ class Supplier(db.Model):
         return new_list
 
     
+    # показывает сколько мы должны
+    def total_credit(self):
+        credit=0
+        for invoice in self.supp_payment:
+            credit += invoice.still_own()
+        return credit
+
+    def last_payment(self):
+        try:
+            payments_all = Invoice_payment_s.query.\
+            filter_by(supplier_id=self.id).\
+                order_by(Invoice_payment_s.date_payment.desc()).first()
+            return payments_all.date_payment.strftime("%Y-%m-%d")
+        except AttributeError:
+            return "Платежей пока не было"
+        
+            
+
+
+
+
+    
 
             
         
@@ -105,6 +127,15 @@ class Supp_payment(db.Model):
     
     def count_payments(self):
         return self.invoice_payment.count()
+
+    def last_payment(self):
+        try:
+            payments_all = Invoice_payment_s.query.\
+            filter_by(supp_payment=self.id).\
+                order_by(Invoice_payment_s.date_payment.desc()).first()
+            return payments_all.date_payment.strftime("%Y-%m-%d")
+        except AttributeError:
+            return "Платежей пока не было"
     
 
 #class where payments will be store many-to-one with Supp_payment

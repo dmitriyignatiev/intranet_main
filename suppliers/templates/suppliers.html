@@ -26,6 +26,39 @@
 
 
         </div> 
+
+        {%if supp%}
+
+        <div id="content"> 
+
+        
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Долг Итого</th>
+                            <th>Дата последнего платежа</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <th>
+                            {{supp.total_credit()}} РУБ
+                        </th>
+                        
+                      
+                        <th>
+                            {{supp.last_payment()}}
+
+                        </th>
+                        
+                        
+                        </tbody>
+                    </tbody>
+        
+        
+                </table>
+               
+        </div>
+        {%endif%}
         
 
         <table class="table table-sm">
@@ -106,11 +139,12 @@
                          
                     </th>
                     <th>{{inv.still_own()}}</th>
-                    {%if inv.invoice_payment.count() > 0%}
-                    <th>{{moment(inv.invoice_payment[-1].date_payment).fromNow()}}</th>
-                    {%else%}
-                    <th>Платежей не было</th>
-                    {%endif%}
+                    
+                    
+                    <th>{{inv.last_payment()}}</th>
+                   
+                   
+                    
                     <th>{{inv.count_payments()}}</th>
                     
                     
@@ -259,6 +293,7 @@
                     <th>№ Счета</th>
                     <th>Сумма оплат</th>
                     <th>Дата оплаты</th>
+                    <th>Через кого платим</th>
                 </tr>
             </thead>
             <tbody>
@@ -282,10 +317,20 @@
                         <th>
                             {%for invs in invoice_payments%}
                                 {%if invs.supp_payment == inv.id%}
-                                <p>{{invs.date_payment}}</p>
+                                <p>{{invs.date_payment.strftime('%Y-%m-%d')}}</p>
                                 {%endif%}
                                 {%endfor%}
                             </th>
+
+                            <th>
+                                    {%for invs in invoice_payments%}
+                                        {%if invs.supp_payment == inv.id%}
+                                        <p>{{invs.transit}}</p>
+                                        {%endif%}
+                                        {%endfor%}
+                                    </th>
+                                 
+                         
 
                 </tr>
                 {%endfor%}

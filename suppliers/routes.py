@@ -640,10 +640,10 @@ def suppliers():
     
       #все счета
     try:
-        invoices = Supp_payment.query.filter(Supp_payment.supplier_id==supp.id).order_by(desc(Supp_payment.s_invoice_date)).all()
+        invoices = Supp_payment.query.filter(Supp_payment.supplier_id==supp.id).order_by(Supp_payment.s_invoice_date.desc()).all()
        
     #все оплаты по счетам 
-        invoice_payments = Invoice_payment_s.query.filter(Invoice_payment_s.supplier_id==supp.id).order_by(desc(Invoice_payment_s.date_payment)).all()
+        invoice_payments = Invoice_payment_s.query.filter(Invoice_payment_s.supplier_id==supp.id).order_by(Invoice_payment_s.date_payment.desc()).all()
     except AttributeError:
 
 
@@ -723,3 +723,15 @@ def s_inv_number(number):
         invoicesArray.append(invObj)
    
     return jsonify({'invoices':invoicesArray})
+
+
+@supp.route('all_suppliers', methods=['GET', 'POST'])
+def all_suppliers():
+    formName=formSupplierName()
+    formINN = formSupplierInn()
+    supps = Supplier.query.all()
+    all = Supplier.query.all()
+    formName.name.choices = [(g.llc_name, g.llc_name) for g in all]
+    formINN.check_inn.choices=[(g.inn, g.inn) for g in all]
+
+    return render_template('all_suppliers.html', supps=supps, formINN=formINN, formName=formName)
