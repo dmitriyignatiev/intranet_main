@@ -299,6 +299,7 @@
                     <th>Через кого платим</th>
                     
                         <th>Удалить</th>
+                        
                 </tr>
             </thead>
             <tbody>
@@ -343,22 +344,24 @@
                                                 <p id='id'>
                                                     
                                                         <button  id='remove_payment' style="color:red"
-                                                        class="glyphicon glyphicon-remove-circle">{{invs.id}} </button></p>    
+                                                        class="glyphicon glyphicon-remove-circle">{{invs.id}}</button></p>    
                                                 
                                                 
                                                 </p>
-                                            </div>
+
+                                            
                                                 {%endif%}
                                                 {%endfor%}
-                                            </th>   
-                         
+                                            </th>  
+                                         
+                         </div>
 
                 </tr>
                 {%endfor%}
             </tbody>
         </table>
     
-        <p id="demo">dsc</p>
+        
  
         
             
@@ -368,34 +371,33 @@
     <script>
             function myFunction(event ) {
               var x = event.target;
-              number = x.innerHTML;
-              console.log(number)
-              document.getElementById("demo").innerHTML = "Triggered by a " + x.innerHTML + " element";
+              let list = []
+             
+              
+              
+              console.log(list[0])
 
-              $.getJSON('/suppliers/remove_payment/'+number,{
-            id:number,
-            
-            type:'POST',
-            data: '/suppliers/remove_payment/id',
-        }, function(data){
-            console.log(data.error)
-            
-            if(data.error){
-                $('#errorAlert').text(data.error).show();
-                $('#successAlert').hide();
-            }else{
-                $('#errorAlert').hide();
-                $('#successAlert').text(data.success).show();
-                window.setTimeout(function() { location.reload() }, 1000)
-                
-            }
-            
-           
-            
-        }
-    }
-}
+              list.push(x.innerHTML)
+              console.log(list[0])
+
+              $.getJSON('/suppliers/remove_payment/'+list[0],{
+              id:list[0],
+              type: 'POST',
+              data:'/suppliers/all_suppliers'
+            //   data: '/suppliers/remove_payment/' + id
+              }, function(data){
+                  console.log(data)
+                  window.location.reload()
+
+              }
               )
+            
+
+              
+
+            
+    }
+
 
 
             

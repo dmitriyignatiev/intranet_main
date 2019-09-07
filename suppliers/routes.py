@@ -741,11 +741,12 @@ def all_suppliers():
 @supp.route('/remove_payment/<int:id>', methods=['POST', 'GET'])
 def remove_payment(id):
     id = request.args.get('id')
-    if request.method=='POST':
+    if request.method=='GET':
+        print('eto:' + str(id))
         payment = Invoice_payment_s.query.get(id)
         if payment:
             db.session.delete(payment)
             db.session.commit()
-            return jsonify({'seccuess_remove': 'Запись удалена'})
-            
+            return jsonify({'success_remove': 'Запись удалена'})
+        
         
