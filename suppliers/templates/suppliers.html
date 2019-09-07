@@ -105,6 +105,7 @@
                         
                 <th style="display:none;">Id перевоза</th>
                 
+                
                 <th>Номер счета</th>
                 <th>Дата счета</th>
                 <th>Сумма счета</th>
@@ -116,6 +117,7 @@
                 <th>Дата последнего платежа</th>
                 <th>Количество платежей по счету</th>
 
+
               
           
     
@@ -126,6 +128,7 @@
                 <tr>
                   
                     <th id='id'  style="display:none;">{{inv.supplier_id}}</th>
+                    
                    
                     <th>{{inv.s_inv_number}}</th>
                     <th>{{inv.s_invoice_date.strftime('%Y-%m-%d')}}</th>
@@ -294,11 +297,14 @@
                     <th>Сумма оплат</th>
                     <th>Дата оплаты</th>
                     <th>Через кого платим</th>
+                    
+                        <th>Удалить</th>
                 </tr>
             </thead>
             <tbody>
                 {%for inv in  invoices%}
                 <tr>
+                   
                     <th>
                              
                                 {{inv.s_inv_number}}
@@ -329,7 +335,22 @@
                                         {%endif%}
                                         {%endfor%}
                                     </th>
-                                 
+                                
+                                    <th>
+                                            {%for invs in invoice_payments%}
+                                                {%if invs.supp_payment == inv.id%}
+                                            <div id='r' onclick="myFunction(event)">
+                                                <p id='id'>
+                                                    
+                                                        <button  id='remove_payment' style="color:red"
+                                                        class="glyphicon glyphicon-remove-circle">{{invs.id}} </button></p>    
+                                                
+                                                
+                                                </p>
+                                            </div>
+                                                {%endif%}
+                                                {%endfor%}
+                                            </th>   
                          
 
                 </tr>
@@ -337,12 +358,66 @@
             </tbody>
         </table>
     
-
+        <p id="demo">dsc</p>
  
         
             
 
     </div>
+
+    <script>
+            function myFunction(event ) {
+              var x = event.target;
+              number = x.innerHTML;
+              console.log(number)
+              document.getElementById("demo").innerHTML = "Triggered by a " + x.innerHTML + " element";
+
+              $.getJSON('/suppliers/remove_payment/'+number,{
+            id:number,
+            
+            type:'POST',
+            data: '/suppliers/remove_payment/id',
+        }, function(data){
+            console.log(data.error)
+            
+            if(data.error){
+                $('#errorAlert').text(data.error).show();
+                $('#successAlert').hide();
+            }else{
+                $('#errorAlert').hide();
+                $('#successAlert').text(data.success).show();
+                window.setTimeout(function() { location.reload() }, 1000)
+                
+            }
+            
+           
+            
+        }
+    }
+}
+              )
+
+
+            
+
+        
+            </script>
+            
+   
+
+    <script>
+    
+    $("button#remove_payment").bind('click', function(e){
+        let id = $("p#id").html();
+        
+        console.log(id);
+        e.preventDefault();
+
+        
+
+    })
+
+    </script>
 
    
     <script>

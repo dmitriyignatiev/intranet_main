@@ -735,3 +735,17 @@ def all_suppliers():
     formINN.check_inn.choices=[(g.inn, g.inn) for g in all]
 
     return render_template('all_suppliers.html', supps=supps, formINN=formINN, formName=formName)
+
+
+#удаление записи об оплате
+@supp.route('/remove_payment/<int:id>', methods=['POST', 'GET'])
+def remove_payment(id):
+    id = request.args.get('id')
+    if request.method=='POST':
+        payment = Invoice_payment_s.query.get(id)
+        if payment:
+            db.session.delete(payment)
+            db.session.commit()
+            return jsonify({'seccuess_remove': 'Запись удалена'})
+            
+        
