@@ -225,6 +225,7 @@
                 <th>номера счета</th>
                 <th>сумма оплаты</th>
                 <th>через кого платим(Транзит)</th>
+                <th>Коммисия</th>
                 <th>дата платежа</th>
             </tr>
         </thead>
@@ -235,10 +236,11 @@
             </th>
             
             <form action="">
-            <th name='inv_number' id='number'>{{formInv.supp_all_invoices}}</th>
-            <th bgcolor="green">{{formInv.summ_pay}}</th>
-            <th bgcolor="red">{{formInv.transit}}</th>
-            <th bgcolor="yellow">{{formInv.date_payment}}</th>
+            <th bgcolor ='#A5B3BA' name='inv_number' id='number'>{{formInv.supp_all_invoices}}</th>
+            <th bgcolor="#A5BAAF">{{formInv.summ_pay}}</th>
+            <th bgcolor="#A7AEC9">{{formInv.transit}}</th>
+            <th bgcolor='#B16F61'>{{formInv.commision}}</th>
+            <th bgcolor="#D4EFDF ">{{formInv.date_payment}}</th>
             </form>
            
         </tbody>
@@ -264,6 +266,7 @@
             summ_amount:$('#summ_pay').val(),
             supp_payment_id:$("#supp_all_invoices").val(),
             transit:$("#transit").val(),
+            commision:$("#commision").val(),
             day:$("#date_payment").val(),
             type:'POST',
             data: '/suppliers/suppliers_payments_to_db',
@@ -370,6 +373,11 @@
 
     <script>
             function myFunction(event ) {
+
+                if (confirm("Подтверждаете удаление?")){
+
+
+                
               var x = event.target;
               let list = []
              
@@ -384,7 +392,7 @@
               id:list[0],
               type: 'POST',
               data:'/suppliers/all_suppliers'
-            //   data: '/suppliers/remove_payment/' + id
+              
               }, function(data){
                   console.log(data)
                   window.location.reload()
@@ -392,11 +400,20 @@
               }
               )
             
+        
+        }else{
+
+            return false;
+
+
+    }
+}
 
               
 
             
-    }
+            
+        
 
 
 

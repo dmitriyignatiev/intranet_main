@@ -147,6 +147,20 @@ class Invoice_payment_s(db.Model):
     date_payment = db.Column(db.DateTime)
     supp_payment = db.Column(db.Integer, db.ForeignKey('supp_payment.id'))
     supplier_id = db.Column(db.Integer, db.ForeignKey('supplier.id'))
+    commision = db.Column(db.Float)
+    cost_for_us = db.Column(db.Float)
+
+    
+    def cost_for_us(self):
+        if self.commision:
+            self.cost_for_us=self.summ_pay/self.commision
+            return self.cost_for_us
+        else:
+            return False
+
+
+
+   
 
 
 

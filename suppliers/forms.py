@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField,TextField, FileField, PasswordField, BooleanField, SubmitField, IntegerField, TextAreaField, SelectField
+from wtforms import StringField,TextField, \
+    FloatField, FileField, PasswordField, BooleanField, SubmitField, IntegerField, TextAreaField, SelectField
 from wtforms.validators import DataRequired
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from app_main.models import User, Direction, Who_number, Customer, Truck, Quantity, Truck_opt, Ttn, Customer_base
@@ -70,6 +71,9 @@ class formSupplierInv(FlaskForm):
     supp_all_invoices = SelectField('Все счета', coerce=str)
     summ_pay = IntegerField('сумма платежа')
     transit = StringField('через кого платим')
+    commision = SelectField('коммисия транзитера', choices=[
+      (2, 2), (2.5,2.5)], validators=[DataRequired()]
+    )
     date_payment = DateField('Дата платежа')
     submit = SubmitField('Подтвердить Выбор')
 

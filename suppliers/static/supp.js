@@ -3,16 +3,17 @@ jQuery(function($) {
 $(function() {
     $(document).ready(function() {
 
-        $('#name').select2();
-        $('#tora_red').select2();
-        $('#type_of_truck').select2();
-        $('#status').select2();
-        $('#s_inv_currency').select2();
-        $('#s_inv_vat').select2();
-        $('#check_inn').select2();
-        $('#inn').select2();
-        $('#s_n_all_invoices').select2();
-        $('#supp_all_invoices').select2();
+        $('#name').select2({width:'100%'});
+        $('#tora_red').select2({width:'100%'});
+        $('#type_of_truck').select2({width:'100%'});
+        $('#status').select2({width:'100%'});
+        $('#s_inv_currency').select2({width:'100%'});
+        $('#s_inv_vat').select2({width:'100%'});
+        $('#check_inn').select2({width:'100%'});
+        $('#inn').select2({width:'100%'});
+        $('#s_n_all_invoices').select2({width:'100%'});
+        $('#supp_all_invoices').select2({width:'100%'});
+        $('#commision').select2({width:'100%'});
         
 
     });

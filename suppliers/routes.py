@@ -677,11 +677,15 @@ def suppliers_payments_to_db():
     summ_amount = request.args.get('summ_amount')
     supp_payment_id = request.args.get('supp_payment_id')
     transit = request.args.get('transit')
+
+    commision = float(request.args.get("commision"))
     day = request.args.get('day')
     supplier_id = request.args.get('supplier')
     supp = Supplier.query.get(int(supplier_id))
+    cost =int(summ_amount)/ (100-commision)
 
     print('day' + str(day))
+    print('eto cost: '+str(cost))
     
     
     
@@ -691,8 +695,15 @@ def suppliers_payments_to_db():
     su = Supp_payment.query.get(int(supp_payment_id))
     if su and summ_amount and transit and day:
         invoice_number = su.s_inv_number
-        new_payment = Invoice_payment_s(summ_pay=summ_amount, supp_payment=supp_payment_id, transit=transit, date_payment=day, s_inv_number=invoice_number, supplier_id=int(supplier_id))
+        new_payment = Invoice_payment_s(summ_pay=summ_amount, \
+            supp_payment=supp_payment_id, \
+                transit=transit, date_payment=day, \
+                    s_inv_number=invoice_number, supplier_id=int(supplier_id),\
+                        commision=commision)
         db.session.add(new_payment)
+        new_payment.cost_for_us=cost
+        
+        
         
         supp.invoice_payment.append(new_payment)
         
