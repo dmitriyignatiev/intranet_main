@@ -704,7 +704,6 @@ def suppliers_payments_to_db():
         new_payment.cost_for_us=cost
         
         
-        
         supp.invoice_payment.append(new_payment)
         
         db.session.commit()

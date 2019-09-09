@@ -8,6 +8,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
 
+
+
 {%block content%}
 
 
@@ -213,7 +215,7 @@
       {%if supp%}
 
  
-
+<div id="content1">
     <table class="table table-sm">
 
             
@@ -229,7 +231,10 @@
                 <th>дата платежа</th>
             </tr>
         </thead>
+
+       
         <tbody>
+            
             
             <th>
                <button id="write">Записать</button>
@@ -242,12 +247,14 @@
             <th bgcolor='#B16F61'>{{formInv.commision}}</th>
             <th bgcolor="#D4EFDF ">{{formInv.date_payment}}</th>
             </form>
-           
+          
         </tbody>
+    
 
         
 
-    </table>
+    </table> 
+</div>
     {%endif%}
             
     
@@ -291,8 +298,12 @@
         });
    
     </script>
+    <p></p>
+    <p></p>
+    <p></p>
+    <p></p>
 
-    <div >
+    <div id='r' onclick="myFunction(event)">
         <table class="table table-sm">
             <thead>
                 <tr>
@@ -343,9 +354,9 @@
                                     <th>
                                             {%for invs in invoice_payments%}
                                                 {%if invs.supp_payment == inv.id%}
-                                            <div id='r' onclick="myFunction(event)">
+                                             
                                                 <p id='id'>
-                                                    
+                                                   
                                                         <button  id='remove_payment' style="color:red"
                                                         class="glyphicon glyphicon-remove-circle">{{invs.id}}</button></p>    
                                                 
@@ -354,6 +365,7 @@
 
                                             
                                                 {%endif%}
+                                            
                                                 {%endfor%}
                                             </th>  
                                          
@@ -372,9 +384,11 @@
     </div>
 
     <script>
+         let del_button = document.getElementById("remove_payment")
             function myFunction(event ) {
-
-                if (confirm("Подтверждаете удаление?")){
+                console.log(event.target.id)
+              
+                if (event.target.id=="remove_payment" && confirm("Подтверждаете удаление?")){
 
 
                 

@@ -151,9 +151,9 @@ class Invoice_payment_s(db.Model):
     cost_for_us = db.Column(db.Float)
 
     
-    def cost_for_us(self):
+    def cost_with_commision(self):
         if self.commision:
-            self.cost_for_us=self.summ_pay/self.commision
+            self.cost_for_us=self.summ_pay/(100-self.commision)/100
             return self.cost_for_us
         else:
             return False

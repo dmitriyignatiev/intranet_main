@@ -13,7 +13,13 @@ $(function() {
         $('#inn').select2({width:'100%'});
         $('#s_n_all_invoices').select2({width:'100%'});
         $('#supp_all_invoices').select2({width:'100%'});
-        $('#commision').select2({width:'100%'});
+        $('#commision').select2({width:'100%',
+        placeholder:"выбрать",
+        tags:true,
+        selectOnClose: true,
+        
+
+                });
         
 
     });
