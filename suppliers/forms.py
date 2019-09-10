@@ -96,3 +96,7 @@ class UploadForm(FlaskForm):
     ])
     submit = SubmitField('Submit')
 
+class FormTransit(FlaskForm):
+    inn = StringField('ИНН')
+    submit = SubmitField('Записать в базу')
+

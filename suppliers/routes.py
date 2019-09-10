@@ -606,6 +606,7 @@ def suppliers():
     formName=formSupplierName()
     formINN = formSupplierInn()
     formInv = formSupplierInv()
+    formTransit = FormTransit()
     
 
 
@@ -668,7 +669,8 @@ def suppliers():
     print('eto supp' + str(supp))
 
     return render_template('suppliers.html', suppliers=suppliers, formName=formName, formINN=formINN,
-            all=all, supplier=supplier, supp=supp, formInv=formInv, invoices=invoices, invoice_payments=invoice_payments) 
+            all=all, supplier=supplier, supp=supp, formInv=formInv, invoices=invoices, invoice_payments=invoice_payments,\
+                formTransit=formTransit) 
 
 #json to save paymentto suppliers
 @supp.route('suppliers_payments_to_db', methods=['POST', 'GET'])
@@ -677,6 +679,8 @@ def suppliers_payments_to_db():
     summ_amount = request.args.get('summ_amount')
     supp_payment_id = request.args.get('supp_payment_id')
     transit = request.args.get('transit')
+
+    
 
     commision = float(request.args.get("commision"))
     day = request.args.get('day')
@@ -759,4 +763,13 @@ def remove_payment(id):
             db.session.commit()
             return jsonify({'success_remove': 'Запись удалена'})
         
-        
+
+#добавление транзита
+@supp.route('/add_third_party', methods=['POST', 'GET'])
+def add_third_party():
+    form=FormTransit()
+    new = request.form['inn']
+    print(new)
+    if request.method=='POST':
+        print('inn :' + str(new))
+        return jsonify({'inn':new})

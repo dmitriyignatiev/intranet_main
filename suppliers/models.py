@@ -149,6 +149,7 @@ class Invoice_payment_s(db.Model):
     supplier_id = db.Column(db.Integer, db.ForeignKey('supplier.id'))
     commision = db.Column(db.Float)
     cost_for_us = db.Column(db.Float)
+    transit = db.relationship('Transit', backref='invoice_p', lazy='dynamic')
 
     
     def cost_with_commision(self):
@@ -313,15 +314,14 @@ class Pochta(db.Model):
     fin_id = db.Column(db.Integer, db.ForeignKey('prefin.id'))
 
 
-class Parent(db.Model):
-    
-    id = db.Column(db.Integer, primary_key=True) 
-    children = db.relationship("Child")
-
-class Child(db.Model):
-    
+class Transit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    parent_id = db.Column(db.Integer, db.ForeignKey('parent.id'))
+    inn = db.Column(db.String(10))
+    name = db.Column(db.Text)
+    payment_id = db.Column(db.Integer, db.ForeignKey('invoice_payment_s.id'))
+
+
+
 
 
 

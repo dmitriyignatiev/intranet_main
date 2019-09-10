@@ -28,7 +28,37 @@
 
 
         </div> 
+<div class='content'>
+        <div id='new_transit'>
+            <form action="add_third_party" method="POST">
+                {{ formTransit.csrf_token }}
+                {{formTransit.inn.label}}{{formTransit.inn}}
+                <input type="submit" id='write_transit'>
+            </form>
 
+        <script>
+        
+        $("write_transit").bind('click', function(e){
+
+            e.preventDefault()
+            $.getJSON('/suppliers/add_third_party',{
+                inn:$('input#inn').val(),
+                type:'POST',
+                data:'/suppliers/add_third_party'
+            
+            }, function(data){
+                console.log(data)
+            })
+
+        })
+            
+
+        </script>
+
+
+
+        </div>
+</div>
         {%if supp%}
 
         <div id="content"> 
@@ -346,7 +376,7 @@
                             <th>
                                     {%for invs in invoice_payments%}
                                         {%if invs.supp_payment == inv.id%}
-                                        <p>{{invs.transit}}</p>
+                                        <p>{{invs.transit.inn}}</p>
                                         {%endif%}
                                         {%endfor%}
                                     </th>
