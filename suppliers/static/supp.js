@@ -2,7 +2,7 @@
 jQuery(function($) {
 $(function() {
     $(document).ready(function() {
-
+        $.fn.select2.defaults.reset();
         $('#name').select2({width:'100%'});
         $('#tora_red').select2({width:'100%'});
         $('#type_of_truck').select2({width:'100%'});
@@ -12,14 +12,8 @@ $(function() {
         $('#check_inn').select2({width:'100%'});
         $('#inn').select2({width:'100%'});
         $('#s_n_all_invoices').select2({width:'100%'});
-        $('#supp_all_invoices').select2({width:'100%'});
-        $('#commision').select2({width:'100%',
-        placeholder:"выбрать",
-        tags:true,
-        selectOnClose: true,
-        
-
-                });
+        $('select#supp_all_invoices').select2({width:'100%'});
+        $('select#commision').select2({width:'100%' });
         
 
     });

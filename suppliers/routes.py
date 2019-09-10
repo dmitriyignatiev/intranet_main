@@ -656,6 +656,7 @@ def suppliers():
     if supp:
         try:
             formInv.supp_all_invoices.choices = [(g.id, g.s_inv_number) for g in Supp_payment.query.filter_by(supplier_id=supp.id).all()]
+            formTransit.name.choices = [(g.id, g.name) for g in Transit.query.all() ]
             session['supp_name'] = supp.llc_name
             formName.name.data = session['supp_name']
             number = request.args.get('supp_payment_id')
@@ -767,9 +768,15 @@ def remove_payment(id):
 #добавление транзита
 @supp.route('/add_third_party', methods=['POST', 'GET'])
 def add_third_party():
-    form=FormTransit()
-    new = request.form['inn']
-    print(new)
-    if request.method=='POST':
-        print('inn :' + str(new))
-        return jsonify({'inn':new})
+    
+    inn = request.args.get('inn')
+    print(inn)
+    transit = Transit.query.filter_by(inn=inn).first()
+   
+    if transit:
+        return jsonify({'error':'Данный агент уже есть в базе'})
+    else:
+        transit = Transit(inn=inn)
+        db.session.add(transit)
+        db.session.commit()
+        return jsonify({'success':'Контрагент внесен'})

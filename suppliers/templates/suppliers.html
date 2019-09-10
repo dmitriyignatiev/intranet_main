@@ -30,24 +30,35 @@
         </div> 
 <div class='content'>
         <div id='new_transit'>
-            <form action="add_third_party" method="POST">
-                {{ formTransit.csrf_token }}
-                {{formTransit.inn.label}}{{formTransit.inn}}
-                <input type="submit" id='write_transit'>
+            <form id='write_transit' action="" method="POST">
+                
+                <p style="margin:10px">{{formTransit.inn(placeholder='указать ИНН')}}
+                <input type="submit" id='write_transit'></p>
             </form>
+
+            
 
         <script>
         
-        $("write_transit").bind('click', function(e){
-
+        $("form#write_transit").bind('click', function(e){
+            console.log('ready')
             e.preventDefault()
+           
             $.getJSON('/suppliers/add_third_party',{
                 inn:$('input#inn').val(),
                 type:'POST',
-                data:'/suppliers/add_third_party'
-            
+                data:'/suppliers/add_third_party',
+                
             }, function(data){
                 console.log(data)
+                if(data.error){
+                    $('#errorAlert').text(data.error).show();
+                    $('#successAlert').hide();
+                }else{
+                    window.setTimeout(function() { location.reload() }, 3000);
+                    $('#successAlert').text(data.success).show()
+                    $('#errorAlert').hide();
+                }
             })
 
         })
@@ -61,7 +72,7 @@
 </div>
         {%if supp%}
 
-        <div id="content"> 
+        <div id="content2"> 
 
         
                 <table class="table table-sm">
@@ -270,7 +281,7 @@
                <button id="write">Записать</button>
             </th>
             
-            <form action="">
+            <form id='one' action="">
             <th bgcolor ='#A5B3BA' name='inv_number' id='number'>{{formInv.supp_all_invoices}}</th>
             <th bgcolor="#A5BAAF">{{formInv.summ_pay}}</th>
             <th bgcolor="#A7AEC9">{{formInv.transit}}</th>
