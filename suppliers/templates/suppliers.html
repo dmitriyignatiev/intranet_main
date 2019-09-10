@@ -28,11 +28,11 @@
 
 
         </div> 
-<div class='content'>
+
         <div id='new_transit'>
             <form id='write_transit' action="" method="POST">
                 
-                <p style="margin:10px">{{formTransit.inn(placeholder='указать ИНН')}}
+                <p style="margin:10px">{{formTransit.innadd(placeholder='указать ИНН')}}
                 <input type="submit" id='write_transit'></p>
             </form>
 
@@ -45,7 +45,7 @@
             e.preventDefault()
            
             $.getJSON('/suppliers/add_third_party',{
-                inn:$('input#inn').val(),
+                inn:$('input#innadd').val(),
                 type:'POST',
                 data:'/suppliers/add_third_party',
                 
@@ -72,7 +72,7 @@
 </div>
         {%if supp%}
 
-        <div id="content2"> 
+        <div id="content"> 
 
         
                 <table class="table table-sm">
