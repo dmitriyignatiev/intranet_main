@@ -34,6 +34,8 @@
     <h15><a class="navbar-brand" href="{{url_for('index')}}">Главная</a></h15>
         {%if current_user.role !='sale'%}
         <h15><a class="navbar-brand" href="{{url_for('supp.suppliers')}}">Поставщики</a></h15>
+        <h15><a class="navbar-brand" href="{{url_for('supp.s_payment_calendar')}}">Календарь оплат постащикам</a></h15>
+
         <h15><a class="navbar-brand" href="{{url_for('supp.all_suppliers')}}">Все поставщики</a></h15>
         {%endif%}
        

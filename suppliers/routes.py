@@ -1,6 +1,6 @@
 from flask import render_template, request, \
     jsonify, redirect, flash, \
-        send_from_directory, url_for, send_file, session, make_response, g
+        send_from_directory, url_for, send_file, session, make_response, g, Response
 from suppliers import supp
 from .models import Supplier, Prefin, Documents, Tn, Supp_payment 
 from app_main.models import *
@@ -10,6 +10,9 @@ from sqlalchemy import exc
 from sqlalchemy import desc, or_, and_
 
 import datetime
+from datetime import timedelta
+import json
+
 
 
 
@@ -780,3 +783,32 @@ def add_third_party():
         db.session.add(transit)
         db.session.commit()
         return jsonify({'success':'Контрагент внесен'})
+
+@supp.route('/s_payment_calendar', methods=['POST', 'GET'])
+def s_payment_calendar():
+    today = datetime.datetime.today()
+    delta = timedelta(days=1)
+    y = today - delta
+    print(y)
+   
+    return render_template('s_payment_calendar.html', date=today)
+
+
+@supp.route('/data')
+def return_data():
+    
+    callist = list()
+
+    invoices = Supp_payment.query.all()
+    
+    cl = []
+    print(cl)
+    
+    for inv  in invoices:
+        callist.append({'start':inv.day_plan_pay.strftime("%Y-%m-%d"), 'sum':str(inv.s_inv_amount), 'title':(inv.tora_red + ' ' + str(inv.s_inv_amount)) })
+
+    
+        
+    return Response(json.dumps(callist),  mimetype='application/json')
+
+
