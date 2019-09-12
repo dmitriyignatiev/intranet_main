@@ -14,7 +14,8 @@ $(function() {
         $('#s_n_all_invoices').select2({width:'100%'});
         $('select#supp_all_invoices').select2({width:'100%'});
         $('select#commision').select2({width:'100%' });
-        $('select#name').select2({width:'100%' });
+        $('select#name_tr').select2({width:'100%' });
+        $('select#transit').select2({width:'100'});
 
     });
 

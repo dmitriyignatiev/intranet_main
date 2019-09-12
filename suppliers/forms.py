@@ -98,6 +98,6 @@ class UploadForm(FlaskForm):
 
 class FormTransit(FlaskForm):
     innadd = StringField('ИНН')
-    name = SelectField('Имя', coerce=str)
+    name_tr = SelectField('Имя', coerce=str)
     submit = SubmitField('Записать в базу')
 

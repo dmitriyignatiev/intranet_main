@@ -635,6 +635,7 @@ def suppliers():
     all = Supplier.query.all()
     formName.name.choices = [(g.llc_name, g.llc_name) for g in all]
     formINN.check_inn.choices=[(g.inn, g.inn) for g in all]
+    formTransit.name_tr.choices = [(g.id, g.name) for g in Transit.query.all() ]
 
     
     
@@ -659,7 +660,7 @@ def suppliers():
     if supp:
         try:
             formInv.supp_all_invoices.choices = [(g.id, g.s_inv_number) for g in Supp_payment.query.filter_by(supplier_id=supp.id).all()]
-            formTransit.name.choices = [(g.id, g.name) for g in Transit.query.all() ]
+            formTransit.name_tr.choices = [(g.id, g.name) for g in Transit.query.all() ]
             session['supp_name'] = supp.llc_name
             formName.name.data = session['supp_name']
             number = request.args.get('supp_payment_id')
@@ -801,14 +802,27 @@ def return_data():
 
     invoices = Supp_payment.query.all()
     
-    cl = []
-    print(cl)
+    # cl = []
+    # print(cl)
     
-    for inv  in invoices:
-        callist.append({'start':inv.day_plan_pay.strftime("%Y-%m-%d"), 'sum':str(inv.s_inv_amount), 'title':(inv.tora_red + ' ' + str(inv.s_inv_amount)) })
+    # for inv  in invoices:
+    #     callist.append({'start':inv.day_plan_pay.strftime("%Y-%m-%d"), 'sum':str(inv.s_inv_amount), 'title':(inv.tora_red + ' ' + str(inv.s_inv_amount)) })
 
     
         
-    return Response(json.dumps(callist),  mimetype='application/json')
+    # return Response(json.dumps(callist),  mimetype='application/json')
+    invoicesArray = []
+
+    for inv in invoices:
+        invObj = {}
+        invObj['id']=inv.id
+        supplier = Supplier.query.get(inv.supplier_id)
+        invObj['start']=inv.day_plan_pay.strftime("%Y-%m-%d")
+        invObj['title'] = ( supplier.llc_name + ' ' + '[' + str(inv.s_inv_amount) + ']')
+        invObj['s_inv_number']=inv.s_inv_number
+        invObj['s_inv_amount'] =inv.s_inv_amount
+        invoicesArray.append(invObj)
+   
+    return jsonify(invoicesArray)
 
 
