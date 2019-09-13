@@ -83,8 +83,10 @@
                                 
                                         {%for i in docs%}
                                          {%if i.prefin_id == fin.id%}
+                                         
                                          <p><a href="{{url_for('supp.download_s_docs', filename=i.path)}}">{{i.path}}</a>
                                          </p> 
+                                        
                                          {%endif%}
                                       {%endfor%}
                                        
@@ -99,9 +101,11 @@
                                     {%endif%}
                                         {%for inv in invoicec%}
                                         {%if inv.prefin_id == fin.id%}
+                                        {%if inv.path !=None%}
                                         <p><a href="{{url_for('supp.download_c_inv', filename=inv.path)}}">{{inv.path}}</a>  
                                         
                                         </p>
+                                        {%endif%}
                                        {%endif%}
                                         {%endfor%}
                                        

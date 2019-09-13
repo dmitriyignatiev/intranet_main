@@ -8,6 +8,7 @@ finsupp_table = db.Table('finsup',
                      db.Column('supp_ip', db.Integer, db.ForeignKey('supplier.id'))
                     )
 
+
 class Supplier(db.Model):
     id = db.Column (db.Integer, primary_key=True)
     llc = db.Column (db.String (240))
@@ -172,6 +173,8 @@ class newSup(db.Model):
 
 
 
+
+
 class Prefin(db.Model):
 
     id = db.Column (db.Integer, primary_key=True)
@@ -249,10 +252,11 @@ class Prefin(db.Model):
     #Доки
     zayvka = db.relationship('Zayvka', backref='prefin_z', lazy='dynamic')
     docs = db.relationship('Documents', backref='prefin_docs', lazy='dynamic')
+    #вместо invs используем supp_payment при обращениях
     invs = db.relationship('Invoicesup', backref='prefin_invs', lazy='dynamic')
     invc = db.relationship('Invoicecust', backref='prefin_invc', lazy='dynamic')
     tn_doc = db.relationship('Tn', backref='prefin', lazy='dynamic')
-
+    supp_payments = db.relationship('Supp_payment', backref='supp_p', lazy='dynamic')
 
        
 
@@ -295,13 +299,33 @@ class Invoicesup(db.Model):
     supp_id = db.Column(db.Integer, db.ForeignKey('supplier.id'))
     supp_payment_id = db.Column(db.Integer, db.ForeignKey('supp_payment.id'))
 
-#Для подгрузки счета на клиента
+#Для подгрузки счета на клиента + информация по счетам
 class Invoicecust(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     fin_id = db.Column(db.Integer)
     path = db.Column(db.Text)
     prefin_id = db.Column(db.Integer, db.ForeignKey('prefin.id'))
     req_id = db.Column(db.Integer, db.ForeignKey('request.id'))
+    invoice_number = db.Column(db.Text)
+    invoice_amount = db.Column(db.Float)
+    invoice_date = db.Column(db.DateTime)
+    invoice_deadline_payment = db.Column(db.DateTime)
+    invoice_tracking_number = db.Column(db.Text)
+    invoice_tracking_company = db.Column(db.Text)
+    invoice_tracking_day = db.Column(db.DateTime)
+    invoice_actual_payment = db.relationship('Invoice_payment_c', backref='inv_c', lazy='dynamic')
+
+#детализация по счету
+class Invoice_payment_c(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    summ = db.Column(db.Float)
+    date = db.Column(db.DateTime)
+    invoicecust_id = db.Column(db.Integer, db.ForeignKey('invoicecust.id') )
+
+
+
+
+
 
 
 

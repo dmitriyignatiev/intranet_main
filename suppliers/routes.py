@@ -32,6 +32,8 @@ def add_supplier(id):
     docs = Documents.query.filter(Documents.req_id==session['id'])
     id = req.id
     pick_up_date = req.pick_up_date
+
+
     
     
     z_id = session['id']
@@ -52,6 +54,8 @@ def add_supplier(id):
         form.tora_red.data = fin.tora_red
         form.name.data = fin.supplier_name
         form.status.data = fin.status_of_request
+
+        
 
     return render_template('add_supplier.html', form=form, req=req, date=date, docs=docs, fin=fin, z_doc=z_doc)
 
@@ -493,7 +497,7 @@ def prefin_change_id_test(id):
 
     print('session: ' + str(session['fin_id']))
 
-    c_plan_day = req.customer.payment_day
+    c_plan_day = req.customer.payment_day + 4
     
     
     print('forma: ' + str(form.s_invoice_number.data))
@@ -519,13 +523,38 @@ def prefin_change_id_test(id):
         fin.c_inv_number=form.c_inv_number.data
         fin.c_invoice_date=form.c_invoice_date.data
         
+        
+        
         if fin.c_invoice_date:
             fin.c_inv_plan_pay = fin.c_invoice_date + datetime.timedelta(days=c_plan_day)
         else:
             fin.c_inv_plan_pay=form.c_inv_plan_pay.data
 
+        
+
         print(fin.s_invoice_number)
         db.session.commit()
+
+        exist_invoice = Invoicecust.query.filter_by(prefin_id=fin.id).first()
+        if not exist_invoice:
+            invoice = Invoicecust(invoice_number = fin.c_inv_number,\
+                                  invoice_amount = fin.c_inv_amount,\
+                                   invoice_date = fin.c_invoice_date,\
+                                   invoice_deadline_payment = fin.c_inv_plan_pay,\
+                                       )
+            db.session.add(invoice)
+            db.session.commit()
+            fin.invc.append(invoice)
+            db.session.commit()
+        else:
+            exist_invoice.invoice_number = fin.c_inv_number
+            exist_invoice.invoice_amount = fin.c_inv_amount
+            exist_invoice.invoice_date = fin.c_invoice_date
+            exist_invoice = fin.c_inv_plan_pay
+
+            db.session.commit()
+        
+
    
 
     supp_p = Supp_payment.query.filter(and_(Supp_payment.supplier_id==fin.supplier_id, 
@@ -798,19 +827,10 @@ def s_payment_calendar():
 @supp.route('/data')
 def return_data():
     
-    callist = list()
+   
 
     invoices = Supp_payment.query.all()
     
-    # cl = []
-    # print(cl)
-    
-    # for inv  in invoices:
-    #     callist.append({'start':inv.day_plan_pay.strftime("%Y-%m-%d"), 'sum':str(inv.s_inv_amount), 'title':(inv.tora_red + ' ' + str(inv.s_inv_amount)) })
-
-    
-        
-    # return Response(json.dumps(callist),  mimetype='application/json')
     invoicesArray = []
 
     for inv in invoices:
