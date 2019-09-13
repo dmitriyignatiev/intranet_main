@@ -13,7 +13,7 @@ from app_main.models import db, User, Request, Posts, Costs, Status, \
     Truck_opt, Truck, Quantity, Ttn, Customer_base, subs, Finance, Paid, Zayvka
         
 from suppliers.models import Supplier, newSup, Prefin, Documents, \
-    Pochta, Invoicesup, Tn, Supp_payment, Invoice_payment_s, Transit
+    Pochta, Invoicesup, Tn, Supp_payment, Invoice_payment_s, Transit, Invoicecust
 
 
 fin = Finance.query.get(44)
@@ -40,7 +40,8 @@ def make_shell_context():
             'Tn':Tn,
             'Supp_payment':Supp_payment,
             'Invoice_payment_s':Invoice_payment_s,
-            'Transit':Transit
+            'Transit':Transit,
+            'Invoicecust':Invoicecust
             }
 
 

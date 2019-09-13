@@ -314,7 +314,7 @@ class Invoicecust(db.Model):
     invoice_tracking_company = db.Column(db.Text)
     invoice_tracking_day = db.Column(db.DateTime)
     invoice_actual_payment = db.relationship('Invoice_payment_c', backref='inv_c', lazy='dynamic')
-
+    customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'))
 #детализация по счету
 class Invoice_payment_c(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -343,6 +343,8 @@ class Transit(db.Model):
     inn = db.Column(db.String(10))
     name = db.Column(db.Text)
     payment_id = db.Column(db.Integer, db.ForeignKey('invoice_payment_s.id'))
+
+
 
 
 

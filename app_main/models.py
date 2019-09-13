@@ -85,7 +85,6 @@ def load_user(id):
 
 class Request (db.Model):
 
-    
 
     id = db.Column (db.Integer, primary_key=True)
     org = db.Column (db.String (120))
@@ -225,6 +224,7 @@ class Customer(db.Model):
     customer_base = db.Column(db.String(240))
     customer_character = db.Column(db.String(120))
     customer_inn = db.Column(db.Integer)
+    invoices = db.relationship('Invoicecust', backref='customer', lazy='dynamic')
 
 
 

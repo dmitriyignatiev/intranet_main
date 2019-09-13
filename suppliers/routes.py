@@ -55,7 +55,7 @@ def add_supplier(id):
         form.name.data = fin.supplier_name
         form.status.data = fin.status_of_request
 
-        
+
 
     return render_template('add_supplier.html', form=form, req=req, date=date, docs=docs, fin=fin, z_doc=z_doc)
 
@@ -486,6 +486,8 @@ def prefin_change_id_test(id):
     invoicec = Invoicecust.query.all()
 
     req = Request.query.filter_by(id=fin.req_id).first()
+    cust = Customer.query.join(Request).filter(Request.id==req.id).first()
+    
     
     docs = Documents.query.filter(Documents.req_id==req.id).all()
     invs = Invoicesup.query.filter(Invoicesup.req_id==req.id).all()
@@ -504,6 +506,8 @@ def prefin_change_id_test(id):
    
    
     ####Доделать
+
+
    
     
 
@@ -545,14 +549,21 @@ def prefin_change_id_test(id):
             db.session.add(invoice)
             db.session.commit()
             fin.invc.append(invoice)
+            cust.invoices.append(invoice)
             db.session.commit()
         else:
             exist_invoice.invoice_number = fin.c_inv_number
             exist_invoice.invoice_amount = fin.c_inv_amount
             exist_invoice.invoice_date = fin.c_invoice_date
             exist_invoice = fin.c_inv_plan_pay
-
+            
             db.session.commit()
+        
+        
+
+        
+
+        
         
 
    
