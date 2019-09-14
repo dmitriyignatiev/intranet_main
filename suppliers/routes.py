@@ -558,6 +558,9 @@ def prefin_change_id_test(id):
             exist_invoice = fin.c_inv_plan_pay
             
             db.session.commit()
+
+
+
         
         
 
@@ -682,7 +685,7 @@ def suppliers():
 
 
     supp = Supplier.query.filter(or_(Supplier.llc_name==formName.name.data, Supplier.inn==formINN.check_inn.data)).first()
-    
+    print('eto supp : ' + str(supp))
       #все счета
     try:
         invoices = Supp_payment.query.filter(Supp_payment.supplier_id==supp.id).order_by(Supp_payment.s_invoice_date.desc()).all()
@@ -700,15 +703,12 @@ def suppliers():
     if supp:
         try:
             formInv.supp_all_invoices.choices = [(g.id, g.s_inv_number) for g in Supp_payment.query.filter_by(supplier_id=supp.id).all()]
-            formTransit.name_tr.choices = [(g.id, g.name) for g in Transit.query.all() ]
+            formTransit.name_tr.choices = [(g.name, g.name) for g in Transit.query.all() ]
             session['supp_name'] = supp.llc_name
             formName.name.data = session['supp_name']
             number = request.args.get('supp_payment_id')
             print('number' + formInv.supp_all_invoices.data)
-           
-
-           
-
+        
         except AttributeError:
             formInv.supp_all_invoices.choices = [(g.s_inv_number, g.s_inv_number) for g in Supp_payment.query.all()]
     print('eto supp' + str(supp))
@@ -723,40 +723,39 @@ def suppliers_payments_to_db():
     form=formSupplierInv()
     summ_amount = request.args.get('summ_amount')
     supp_payment_id = request.args.get('supp_payment_id')
-    transit = request.args.get('transit')
-
-    
-
-    commision = float(request.args.get("commision"))
+    transit_name = request.args.get('transit')
+    print(transit_name)
+    transit_model = Transit.query.filter_by(name=transit_name).first()
+    print(transit_model)
+   
+    commision = request.args.get("commision")
     day = request.args.get('day')
     supplier_id = request.args.get('supplier')
     supp = Supplier.query.get(int(supplier_id))
-    cost =int(summ_amount)/ (100-commision)
+    cost =int(summ_amount)/ (100-float(commision))
 
     print('day' + str(day))
     print('eto cost: '+str(cost))
     
-    
-    
-
     print(summ_amount)
     
     su = Supp_payment.query.get(int(supp_payment_id))
-    if su and summ_amount and transit and day:
+    if su and summ_amount and transit_name and day:
         invoice_number = su.s_inv_number
         new_payment = Invoice_payment_s(summ_pay=summ_amount, \
             supp_payment=supp_payment_id, \
-                transit=transit, date_payment=day, \
+                date_payment=day, \
                     s_inv_number=invoice_number, supplier_id=int(supplier_id),\
-                        commision=commision)
+                       )
         db.session.add(new_payment)
+        
         new_payment.cost_for_us=cost
         
         
         supp.invoice_payment.append(new_payment)
-        
+        new_payment.transit.append(transit_model)
         db.session.commit()
-
+        
         
         return jsonify({'success': 'оплата зафиксирована'})
     
@@ -855,5 +854,7 @@ def return_data():
         invoicesArray.append(invObj)
    
     return jsonify(invoicesArray)
+
+
 
 

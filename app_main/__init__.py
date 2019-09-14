@@ -63,3 +63,6 @@ from app_main import routes, models
 
 from suppliers.routes import supp
 app.register_blueprint(supp, url_prefix='/suppliers')
+
+from customers.routes import cust 
+app.register_blueprint(cust, url_prefix='/customers')

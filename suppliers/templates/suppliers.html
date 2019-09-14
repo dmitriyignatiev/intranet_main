@@ -138,7 +138,7 @@
         <div id='content'>
 
            
-
+{%if supp%}
         <table class="table table-sm">
             
              <thead>
@@ -253,7 +253,7 @@
 
             </tbody>
             
-      {%if supp%}
+     
 
  
 <div id="content1">
@@ -284,7 +284,7 @@
             <form id='one' action="">
             <th bgcolor ='#A5B3BA' name='inv_number' id='number'>{{formInv.supp_all_invoices}}</th>
             <th bgcolor="#A5BAAF">{{formInv.summ_pay}}</th>
-            <th bgcolor="#A7AEC9">{{formTransit.name_tr}}</th>
+            <th bgcolor="#A7AEC9" >{{formTransit.name_tr}}</th>
             <th bgcolor='#B16F61'>{{formInv.commision}}</th>
             <th bgcolor="#D4EFDF ">{{formInv.date_payment}}</th>
             </form>
@@ -313,7 +313,7 @@
             supplier:$('#id').text(),
             summ_amount:$('#summ_pay').val(),
             supp_payment_id:$("#supp_all_invoices").val(),
-            transit:$("#transit").val(),
+            transit:$("#name_tr").val(),
             commision:$("#commision").val(),
             day:$("#date_payment").val(),
             type:'POST',
