@@ -299,28 +299,7 @@ class Invoicesup(db.Model):
     supp_id = db.Column(db.Integer, db.ForeignKey('supplier.id'))
     supp_payment_id = db.Column(db.Integer, db.ForeignKey('supp_payment.id'))
 
-#Для подгрузки счета на клиента + информация по счетам
-class Invoicecust(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    fin_id = db.Column(db.Integer)
-    path = db.Column(db.Text)
-    prefin_id = db.Column(db.Integer, db.ForeignKey('prefin.id'))
-    req_id = db.Column(db.Integer, db.ForeignKey('request.id'))
-    invoice_number = db.Column(db.Text)
-    invoice_amount = db.Column(db.Float)
-    invoice_date = db.Column(db.DateTime)
-    invoice_deadline_payment = db.Column(db.DateTime)
-    invoice_tracking_number = db.Column(db.Text)
-    invoice_tracking_company = db.Column(db.Text)
-    invoice_tracking_day = db.Column(db.DateTime)
-    invoice_actual_payment = db.relationship('Invoice_payment_c', backref='inv_c', lazy='dynamic')
-    customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'))
-#детализация по счету
-class Invoice_payment_c(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    summ = db.Column(db.Float)
-    date = db.Column(db.DateTime)
-    invoicecust_id = db.Column(db.Integer, db.ForeignKey('invoicecust.id') )
+
 
 
 

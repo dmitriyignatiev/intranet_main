@@ -14,8 +14,8 @@
 <div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
 <div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
 <div class>
-    <script src="{{url_for('.static', filename='supp.js')}}"></script>
-    <script src="{{url_for('.static', filename='add.js')}}"></script>
+    <script src="{{url_for('supp.static', filename='supp.js')}}"></script>
+    <script src="{{url_for('supp.static', filename='add.js')}}"></script>
 
     
 
@@ -36,6 +36,39 @@
                 <th>Поиск по ИНН</th>
                 
             </tr>
+            </thead>
+            <body>
+                <form action="" method="POST">
+                {{ formName.csrf_token }}
+              <th> {{formName.name}} {{formName.submit_name}}</th>
+                
+            </form>
+            </body>
+            </table>
+            
+            {%if customer%}
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Номер счета</th>
+                        <th>Сумма счета</th>
+                    </tr>
+        
+                </thead>
+
+                <tbody>
+                        {%for inv in customer.invoices.all()%}
+                        <tr>
+                        
+                           <th>{{inv.invoice_number}}</th> 
+                            <th>{{inv.invoice_amount}}</th>
+                        </tr>
+                        {%endfor%}
+                </tbody>
+
+            </table>
+            {%endif%}
+
 
 {%endblock%}
 

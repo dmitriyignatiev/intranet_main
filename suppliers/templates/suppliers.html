@@ -167,13 +167,16 @@
             </tr>
 
             <tbody>
+                
                 {%for inv in invoices%}
+
                 <tr>
                   
                     <th id='id'  style="display:none;">{{inv.supplier_id}}</th>
                     
-                   
+                   {%if inv.number%}
                     <th>{{inv.s_inv_number}}</th>
+
                     <th>{{inv.s_invoice_date.strftime('%Y-%m-%d')}}</th>
                     <th>{{inv.s_inv_amount}}</th>
                     <th>{{inv.fin_id}}</th>
@@ -184,6 +187,7 @@
                         {%endfor%}
                          
                     </th>
+                    {%endif%}
                     <th>{{inv.still_own()}}</th>
                     
                     

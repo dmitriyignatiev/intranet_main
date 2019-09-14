@@ -9,6 +9,8 @@ from .forms import *
 from sqlalchemy import exc
 from sqlalchemy import desc, or_, and_
 
+from customers.models import *
+
 import datetime
 from datetime import timedelta
 import json

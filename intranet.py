@@ -13,7 +13,9 @@ from app_main.models import db, User, Request, Posts, Costs, Status, \
     Truck_opt, Truck, Quantity, Ttn, Customer_base, subs, Finance, Paid, Zayvka
         
 from suppliers.models import Supplier, newSup, Prefin, Documents, \
-    Pochta, Invoicesup, Tn, Supp_payment, Invoice_payment_s, Transit, Invoicecust
+    Pochta, Invoicesup, Tn, Supp_payment, Invoice_payment_s, Transit
+
+from customers.models import  Invoicecust
 
 
 fin = Finance.query.get(44)
