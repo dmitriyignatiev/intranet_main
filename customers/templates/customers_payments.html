@@ -38,9 +38,9 @@
             </tr>
             </thead>
             <body>
-                <form action="" method="POST">
+                <form action="" method="POST" name='cust' >
                 {{ formName.csrf_token }}
-              <th> {{formName.name}} {{formName.submit_name}}</th>
+              <th onchange="myFunction()"> {{formName.name}} {{formName.submit_name}}</th>
                 
             </form>
             </body>
@@ -67,7 +67,87 @@
                 </tbody>
 
             </table>
+
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Действие</th>
+                        <th>Номер счета</th>
+                        <th>Сумма оплаты</th>
+                        <th>Дата оплаты</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+   
+                        {{formInvoice.csrf_token}}
+                        <input type="hidden" name="form-name" value="form1">
+                        <th bgcolor="#CDCCC4"><input type="submit" id='submit_invoice' value="записать данные"></th>
+                        <th bgcolor="#B1C0CA " >{{formInvoice.number}}</th>
+                        <th bgcolor='#6DBA73'>{{formInvoice.summ}}</th>
+                        <th bgcolor='#AABA6D' >{{formInvoice.date}}</th>
+                   
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table table-sm"> 
+                <thead>
+                    <tr>
+                        <th>Номер счета</th>
+                        <th>Сумма оплаты</th>
+                        <th>Дата оплаты</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>
+                            
+                        </th>
+                    </tr>
+                </tbody>
+
+            </table>
+
+
             {%endif%}
+
+
+<script>
+    function myFunction(){
+        let name= $("#select2-name-container").text();
+        console.log(name)
+    }
+
+</script>
+
+<script>
+    $("select#number").select2({width:'100%'})
+$('input#submit_invoice').bind('click', function(e){
+    e.preventDefault();
+    console.log('ready for work')
+    $.getJSON({{ url_for('.add_payments')|tojson }}, {
+        name: $("#select2-name-container").text(),
+        c_inv_number: $("#select2-number-container").text(),
+        summ: $('input#summ').val(),
+        date: $('input#date').val(),
+        type:'GET',
+        data: $(this).serialize(),
+    }).done(show);
+
+function show(data){
+    if(parseFloat(data.summ)){
+       console.log(data) 
+    }else{
+        console.log('dewdwe')
+    }
+    
+}
+})
+
+</script>
+
 
 
 {%endblock%}

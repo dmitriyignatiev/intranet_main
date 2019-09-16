@@ -17,4 +17,6 @@ class CustomerForm(FlaskForm):
 
 class InvoiceForm(FlaskForm):
     number = SelectField('номер', coerce=str)
-    submit_invoice = SubmitField(label='выбрать')
+    summ = FloatField('сумма счета', validators=[DataRequired()])
+    date = DateField('дата платежа')
+    submit_invoice = SubmitField(label='Записать')
