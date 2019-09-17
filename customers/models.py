@@ -22,6 +22,7 @@ class Invoicecust(db.Model):
     invoice_actual_payment = db.relationship('Invoice_payment_c', backref='inv_c', lazy='dynamic')
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'))
 
+    
 
 #детализация по счету
 class Invoice_payment_c(db.Model):

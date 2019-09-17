@@ -27,25 +27,26 @@
 
 
      
-        
+        <div class='content'></div>
 
         <table class="table table-sm">
         <thead>
             <tr>
                 
                 <th>Поиск по Наименованию</th>
-                
+                <form action="" method="POST" id="cust_payment" >
+               
+                        <th onchange="myFunction()"> {{formName.name}} </th>
+                          <input type="submit" id='submit_name' hidden='true'>
             </tr>
             </thead>
-            <body>
-                <form action="" method="POST" name='cust' id='cust'>
-               
-              <th onchange="myFunction()"> {{formName.name}} 
-                <input type="submit" id='submit_name' hidden='true'></th>
+            <tbody>
+                
                 
             </form>
-            </body>
+            </tbody>
             </table>
+            </div>
             
             {%if customer%}
             <table class="table table-sm">
@@ -94,12 +95,15 @@
                     </tr>
                 </tbody>
             </table>
+
+            <div id='r', onclick="delFunction(event)">
             <table class="table table-sm"> 
                 <thead>
                     <tr>
                         <th>Номер счета</th>
                         <th>Сумма оплаты</th>
                         <th>Дата оплаты</th>
+                        <th>Удалить</th>
                         
                     </tr>
                 </thead>
@@ -127,6 +131,18 @@
                             {%endif%}
                             {%endfor%}
                         </th>
+
+                        <th>
+                            {%for payment in all_payments%}
+                            {%if payment.invoice_number==inv.invoice_number%}
+                            <p id='id'>
+                                    <button  id='remove_payment_c' style="color:red"
+                                    class="glyphicon glyphicon-remove-circle">{{payment.id}}</button>
+                            </p>
+                            {%endif%}
+                            {%endfor%}
+
+                        </th>
                         
                        </tr> 
                         
@@ -136,6 +152,7 @@
                 </tbody>
 
             </table>
+        </div>
 
 
             {%endif%}
@@ -146,7 +163,7 @@
 
     function myFunction(){
         let name= $("#select2-name-container").text();
-        $('form#cust').submit();
+        $('form#cust_payment').submit();
         console.log(name)
     }
 
@@ -179,6 +196,37 @@ function show(data){
 
 
 })
+
+</script>
+
+<script>
+    let del_button=document.getElementById('remove_payment_c')
+    function delFunction(event)
+    {
+        if(event.target.id=='remove_payment_c'){
+        console.log(event.target.innerText)
+            var x = event.target.innerText
+            let list=[]
+
+            list.push(x)
+            console.log(list[0])
+
+            $.getJSON('/customers/remove_payments_c/'+list[0],
+            {
+                id:list[0],
+                type:'POST',
+                data:'/customers/customers'
+
+            }, function(data){
+                console.log(data.success_remove)
+                window.location.reload()
+            }
+            )
+        
+
+        }
+    } 
+
 
 </script>
 

@@ -80,3 +80,16 @@ def add_payments():
     print(type(data))
     return jsonify({'summ':summ , 'name':name, \
         'data': data, 'invoice':invoice_number, 'customer':customer.id})
+
+
+@cust.route('remove_payments_c/<int:id>', methods=['POST', 'GET'])
+def remove_payments_c(id):
+    id = request.args.get('id')
+    payment = Invoice_payment_c.query.get(int(id))
+    if payment:
+        db.session.delete(payment)
+        db.session.commit()
+        return jsonify({'success_remove':'Запись удалена'})
+    else:
+        return jsonify({'faile':'failed'})
+    
