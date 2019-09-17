@@ -32,15 +32,16 @@
         <table class="table table-sm">
         <thead>
             <tr>
-                <th>Поиск по имени</th>
-                <th>Поиск по ИНН</th>
+                
+                <th>Поиск по Наименованию</th>
                 
             </tr>
             </thead>
             <body>
-                <form action="" method="POST" name='cust' >
-                {{ formName.csrf_token }}
-              <th onchange="myFunction()"> {{formName.name}} {{formName.submit_name}}</th>
+                <form action="" method="POST" name='cust' id='cust'>
+               
+              <th onchange="myFunction()"> {{formName.name}} 
+                <input type="submit" id='submit_name' hidden='true'></th>
                 
             </form>
             </body>
@@ -52,16 +53,18 @@
                     <tr>
                         <th>Номер счета</th>
                         <th>Сумма счета</th>
+                        <th>Дата счета</th>
                     </tr>
         
                 </thead>
 
                 <tbody>
-                        {%for inv in customer.invoices.all()%}
+                        {%for inv in invoices%}
                         <tr>
                         
                            <th>{{inv.invoice_number}}</th> 
                             <th>{{inv.invoice_amount}}</th>
+                            <th>{{inv.invoice_date}}</th>
                         </tr>
                         {%endfor%}
                 </tbody>
@@ -101,11 +104,35 @@
                     </tr>
                 </thead>
                 <tbody>
+                   
+                   {%for inv in invoices%}
                     <tr>
+                       
+                    
                         <th>
-                            
+                          {{inv.invoice_number}} 
+                        </th>  
+                   
+                        
+                        <th>{%for payment in all_payments%}
+                            {%if payment.invoice_number==inv.invoice_number%}
+                            <p>{{payment.summ}}</p>
+                            {%endif%}
+                            {%endfor%}
                         </th>
-                    </tr>
+                        <th>
+                            {%for payment in all_payments%}
+                            {%if payment.invoice_number==inv.invoice_number%}
+                            <p>{{payment.date}}</p>
+                            {%endif%}
+                            {%endfor%}
+                        </th>
+                        
+                       </tr> 
+                        
+                   {%endfor%}
+                   
+
                 </tbody>
 
             </table>
@@ -115,8 +142,11 @@
 
 
 <script>
+
+
     function myFunction(){
         let name= $("#select2-name-container").text();
+        $('form#cust').submit();
         console.log(name)
     }
 
@@ -139,11 +169,15 @@ $('input#submit_invoice').bind('click', function(e){
 function show(data){
     if(parseFloat(data.summ)){
        console.log(data) 
+       window.location.reload()
+       
     }else{
         console.log('dewdwe')
     }
     
 }
+
+
 })
 
 </script>

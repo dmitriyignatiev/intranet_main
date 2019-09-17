@@ -30,3 +30,4 @@ class Invoice_payment_c(db.Model):
     date = db.Column(db.DateTime)
     invoice_number = db.Column(db.Text)
     invoicecust_id = db.Column(db.Integer, db.ForeignKey('invoicecust.id') )
+    customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'))

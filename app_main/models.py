@@ -225,6 +225,7 @@ class Customer(db.Model):
     customer_character = db.Column(db.String(120))
     customer_inn = db.Column(db.Integer)
     invoices = db.relationship('Invoicecust', backref='customer', lazy='dynamic')
+    invoices_payments = db.relationship('Invoice_payment_c', backref='customer_payments', lazy='dynamic')
 
 
 

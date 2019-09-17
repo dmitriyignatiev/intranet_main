@@ -27,21 +27,28 @@ def customers_payments():
     invoices = Invoicecust.query.all()
     formName = CustomerForm()
     formName.name.choices = [(g.id, g.name) for g in customers]
+    
    
     if formName.is_submitted():
         customer = Customer.query.get(formName.name.data)
-        print(customer)
+        print(customer.id)
+
+        all_payments = Invoice_payment_c.query.filter(Invoice_payment_c.customer_id==customer.id).\
+            order_by(Invoice_payment_c.date.desc()).all()
+    
+        
     
         
         formInvoice = InvoiceForm()
-        invoices = Invoicecust.query.filter(Invoicecust.customer_id==customer.id).all()
+        invoices = Invoicecust.query.filter(Invoicecust.customer_id==customer.id).\
+            order_by(Invoicecust.invoice_date.desc()).all()
         formInvoice.number.choices=[(g.id, g.invoice_number) for g in invoices]
 
        
 
         return render_template('customers_payments.html', \
         customers=customers, formName=formName, customer=customer, invoices=invoices,\
-            formInvoice=formInvoice)
+            formInvoice=formInvoice, all_payments=all_payments)
 
     return render_template('customers_payments.html', \
         customers=customers, formName=formName, invoices=invoices)
@@ -54,14 +61,16 @@ def add_payments():
     data=datetime.datetime.strptime(date,'%Y-%m-%d')
     invoice_number = request.args.get('c_inv_number')
 
+
     customer = Customer.query.filter_by(name=name).first()
+    
     print(customer)
 
     invoicecust = Invoicecust.query.filter(and_(Invoicecust.customer_id==customer.id, Invoicecust.invoice_number==invoice_number)).first()
     print(invoicecust)
 
     payment = Invoice_payment_c(summ=summ, date=data,\
-        invoice_number=invoice_number, invoicecust_id=invoicecust.id)
+        invoice_number=invoice_number, invoicecust_id=invoicecust.id, customer_id=customer.id)
     db.session.add(payment)
     db.session.commit()
 
@@ -70,4 +79,4 @@ def add_payments():
     
     print(type(data))
     return jsonify({'summ':summ , 'name':name, \
-        'data': data, 'invoice':invoice_number})
+        'data': data, 'invoice':invoice_number, 'customer':customer.id})
