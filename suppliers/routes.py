@@ -557,7 +557,8 @@ def prefin_change_id_test(id):
             exist_invoice.invoice_number = fin.c_inv_number
             exist_invoice.invoice_amount = fin.c_inv_amount
             exist_invoice.invoice_date = fin.c_invoice_date
-            exist_invoice = fin.c_inv_plan_pay
+            exist_invoice.invoice_deadline_payment= fin.c_inv_plan_pay
+
             
             db.session.commit()
 

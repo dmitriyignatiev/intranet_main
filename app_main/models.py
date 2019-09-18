@@ -212,6 +212,9 @@ class Message(db.Model):
 
 # база данных клиентов
 class Customer(db.Model):
+
+    
+
     id = db.Column (db.Integer, primary_key=True)
     name = db.Column (db.String (240), unique=True)
     phone = db.Column (db.String (240))
@@ -227,6 +230,68 @@ class Customer(db.Model):
     invoices = db.relationship('Invoicecust', backref='customer', lazy='dynamic')
     invoices_payments = db.relationship('Invoice_payment_c', backref='customer_payments', lazy='dynamic')
 
+    
+    #итоговая задолженность
+    def total_dept(self):
+        total_invoice_amount  = 0
+        total_payment_amount = 0
+        total_dept = 0
+        for i in self.invoices.all():
+            total_invoice_amount+=i.invoice_amount
+        for i in self.invoices_payments.all():
+            total_payment_amount +=i.summ
+        total_dept = total_invoice_amount - total_payment_amount
+        return total_dept
+    
+    #дата последнего платежа
+    def last_payment_date(self):
+        new = []
+        for i in self.invoices_payments.all():
+            new.append(i.date)
+            new.sort(reverse=True)
+        return new[0]
+    
+    def inv_failed(self):
+        list = []
+        payments = 0
+        
+        today = datetime.today()
+        for i in self.invoices:
+            if i.all_payments() <=0 and i.invoice_deadline_payment < today:
+                list.append(i)
+
+       
+                
+        
+        return list
+    
+    def inv_failed_summ(self):
+        list = []
+        total_summ = 0
+        payment_summ = 0
+        finale_summ = 0
+        today = datetime.today()
+        for i in self.invoices:
+            if i.invoice_deadline_payment < today:
+                list.append(i)
+        for i in list:
+            total_summ += i.invoice_amount
+
+        for i in self.invoices_payments:
+            payment_summ +=i.summ
+        
+        finale_summ = total_summ-payment_summ
+        return finale_summ
+                
+
+
+    
+    
+
+    
+
+        
+        
 
 
     def __repr__(self):

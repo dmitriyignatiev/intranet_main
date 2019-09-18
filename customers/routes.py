@@ -27,6 +27,8 @@ def customers_payments():
     invoices = Invoicecust.query.all()
     formName = CustomerForm()
     formName.name.choices = [(g.id, g.name) for g in customers]
+    today = datetime.datetime.today()
+
     
    
     if formName.is_submitted():
@@ -35,6 +37,10 @@ def customers_payments():
 
         all_payments = Invoice_payment_c.query.filter(Invoice_payment_c.customer_id==customer.id).\
             order_by(Invoice_payment_c.date.desc()).all()
+        
+        invoices_failed = Invoicecust.query.filter(and_(Invoicecust.customer_id==customer.id, Invoicecust.invoice_deadline_payment<today)).\
+            order_by(Invoicecust.invoice_date.desc()).all()
+        
     
         
     
@@ -44,12 +50,11 @@ def customers_payments():
             order_by(Invoicecust.invoice_date.desc()).all()
         formInvoice.number.choices=[(g.id, g.invoice_number) for g in invoices]
 
-       
 
         return render_template('customers_payments.html', \
         customers=customers, formName=formName, customer=customer, invoices=invoices,\
-            formInvoice=formInvoice, all_payments=all_payments)
-
+            formInvoice=formInvoice, all_payments=all_payments, today=today, invoices_failed=invoices_failed)
+    
     return render_template('customers_payments.html', \
         customers=customers, formName=formName, invoices=invoices)
 
@@ -60,6 +65,7 @@ def add_payments():
     date = request.args.get('date')
     data=datetime.datetime.strptime(date,'%Y-%m-%d')
     invoice_number = request.args.get('c_inv_number')
+    
 
 
     customer = Customer.query.filter_by(name=name).first()

@@ -33,17 +33,57 @@
         <thead>
             <tr>
                 
-                <th>Поиск по Наименованию</th>
+                
                 <form action="" method="POST" id="cust_payment" >
                
                         <th onchange="myFunction()"> {{formName.name}} </th>
                           <input type="submit" id='submit_name' hidden='true'>
+
+                          {%if customer%}
+                <th>Итоговая задолженность 
+                </th>
+                <th>Просроченная задолженность</th>
+                <th>Просроченные счета</th>
+                <th>Дата послежнего платежа </th>
+                <th>Сумма последнего платежа </th>
+
+                
+                
+                
             </tr>
             </thead>
             <tbody>
+                <tr>
+                    <th>
+                    </th>
+                    <th>
+                            {{customer.total_dept()}} РУБ
+                    </th>
+                    <th>{{customer.inv_failed_summ()}}</th>
+                    
+                    <th>
+                    {%for inv in customer.inv_failed() %}
+                        <p>{{inv.invoice_number}} - сумма {{inv.invoice_amount}}</p>
+                    {%endfor%}
+                    </th>
+                    {%if all_payments %}
+                    <th>
+                        
+                            {{moment(all_payments[0].date).fromNow()}}
+                       
+                        
+                        
+                        </th>
+                    <th>
+                            {{all_payments[0].summ}}РУБ
+                    </th>
+                    {%endif%}
+                </tr>
+
                 
                 
             </form>
+            {%endif%}
             </tbody>
             </table>
             </div>
@@ -55,18 +95,33 @@
                         <th>Номер счета</th>
                         <th>Сумма счета</th>
                         <th>Дата счета</th>
+                        <th>Дата оплаты</th>
                     </tr>
         
                 </thead>
 
                 <tbody>
                         {%for inv in invoices%}
-                        <tr>
+                        {%if inv in customer.inv_failed()%}
+                        
+                        <tr bgcolor='red'>
+                            {%else%}
+                            <tr> 
+                        {%endif%}
                         
                            <th>{{inv.invoice_number}}</th> 
                             <th>{{inv.invoice_amount}}</th>
                             <th>{{inv.invoice_date}}</th>
+                           
+                                <th> {{moment(inv.invoice_deadline_payment).fromNow()}}</th>
+
+                                   
+                            
+                            <th>
+
+                            </th>
                         </tr>
+                       
                         {%endfor%}
                 </tbody>
 
@@ -203,7 +258,7 @@ function show(data){
     let del_button=document.getElementById('remove_payment_c')
     function delFunction(event)
     {
-        if(event.target.id=='remove_payment_c'){
+        if(event.target.id=='remove_payment_c' && confirm('Подтверждаете удаление?')){
         console.log(event.target.innerText)
             var x = event.target.innerText
             let list=[]

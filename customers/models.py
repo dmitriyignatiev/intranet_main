@@ -22,7 +22,15 @@ class Invoicecust(db.Model):
     invoice_actual_payment = db.relationship('Invoice_payment_c', backref='inv_c', lazy='dynamic')
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'))
 
-    
+    def all_payments(self):
+        summ =0
+        for i in self.invoice_actual_payment:
+            summ +=i.summ
+        return summ
+
+
+
+
 
 #детализация по счету
 class Invoice_payment_c(db.Model):
@@ -32,3 +40,4 @@ class Invoice_payment_c(db.Model):
     invoice_number = db.Column(db.Text)
     invoicecust_id = db.Column(db.Integer, db.ForeignKey('invoicecust.id') )
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'))
+
