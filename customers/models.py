@@ -23,10 +23,29 @@ class Invoicecust(db.Model):
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'))
 
     def all_payments(self):
-        summ =0
-        for i in self.invoice_actual_payment:
-            summ +=i.summ
-        return summ
+        sum =0
+        list = [i.summ for i in self.invoice_actual_payment]
+        for i in list:
+            print(i)
+          
+        return sum
+
+    #задолженность по счету
+    def debt_inv(self):
+        sum =0
+        list = [i.summ for i in self.invoice_actual_payment]
+        for i in list:
+            sum +=i
+        dept = self.invoice_amount - sum
+        if dept > 0:
+            return  dept
+        else:
+            return 0
+        
+
+        
+
+
 
 
 
@@ -40,4 +59,14 @@ class Invoice_payment_c(db.Model):
     invoice_number = db.Column(db.Text)
     invoicecust_id = db.Column(db.Integer, db.ForeignKey('invoicecust.id') )
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'))
+
+    def sum(self):
+        payments = Invoicecust.query.filter_by(invoicecust_id=self.id).all()
+        return payments
+
+   
+   
+
+
+
 

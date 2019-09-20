@@ -40,9 +40,10 @@
                           <input type="submit" id='submit_name' hidden='true'>
 
                           {%if customer%}
+                          
                 <th>Итоговая задолженность 
                 </th>
-                <th>Просроченная задолженность</th>
+                <th>Сумма просроченная задолженности</th>
                 <th>Просроченные счета</th>
                 <th>Дата послежнего платежа </th>
                 <th>Сумма последнего платежа </th>
@@ -141,6 +142,7 @@
                     <tr>
    
                         {{formInvoice.csrf_token}}
+                        
                         <input type="hidden" name="form-name" value="form1">
                         <th bgcolor="#CDCCC4"><input type="submit" id='submit_invoice' value="записать данные"></th>
                         <th bgcolor="#B1C0CA " >{{formInvoice.number}}</th>

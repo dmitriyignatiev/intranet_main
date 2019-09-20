@@ -281,8 +281,9 @@ class Customer(db.Model):
             payment_summ +=i.summ
         
         finale_summ = total_summ-payment_summ
-        return finale_summ
-                
+        return [finale_summ, list] 
+
+               
 
 
     
