@@ -33,7 +33,7 @@ class Invoicecust(db.Model):
     #задолженность по счету
     def debt_inv(self):
         sum =0
-        list = [i.summ for i in self.invoice_actual_payment]
+        list = [i.summ for i in self.invoice_actual_payment ]
         for i in list:
             sum +=i
         dept = self.invoice_amount - sum
@@ -41,6 +41,15 @@ class Invoicecust(db.Model):
             return  dept
         else:
             return 0
+
+
+    def debt(self):
+        sum =0
+        list = [self.invoice_number for self in c.invoices if self.debt_inv()]
+        
+        return list()
+
+ 
         
 
         

@@ -43,7 +43,7 @@
                           
                 <th>Итоговая задолженность 
                 </th>
-                <th>Сумма просроченная задолженности</th>
+                <th>Сумма просроченной задолженности</th>
                 <th>Просроченные счета</th>
                 <th>Дата послежнего платежа </th>
                 <th>Сумма последнего платежа </th>
@@ -57,15 +57,26 @@
                 <tr>
                     <th>
                     </th>
-                    <th>
-                            {{customer.total_dept()}} РУБ
+                    {%if customer.sum_bd()[0][0]>customer.total_dept()%}
+                    <th bgcolor='#BF7A73'>{{customer.total_dept()}} РУБ
+                            Есть переплаченные счета, необходимо разнести корректно оплату</p>
                     </th>
-                    <th>{{customer.inv_failed_summ()}}</th>
+                        {%else%}
+                        
+                    <th>
+                          {{customer.total_dept()}} РУБ  
+                            {%endif%}
+                    </th>
+                    <th>
+                        {{customer.sum_bd()[0][0]}}</th>
                     
                     <th>
-                    {%for inv in customer.inv_failed() %}
-                        <p>{{inv.invoice_number}} - сумма {{inv.invoice_amount}}</p>
-                    {%endfor%}
+                    {%for inv in customer.invoices %}
+                        {%if inv.debt_inv() > 0 and inv.invoice_number in customer.sum_bd()[1]%}
+                        <p>{{inv.invoice_number}}
+                             - сумма долга {{inv.debt_inv()}}</p>
+                        {%endif%}
+                        {%endfor%}
                     </th>
                     {%if all_payments %}
                     <th>
@@ -96,14 +107,14 @@
                         <th>Номер счета</th>
                         <th>Сумма счета</th>
                         <th>Дата счета</th>
-                        <th>Дата оплаты</th>
+                        <th>Дата когда наступит срок оплаты</th>
                     </tr>
         
                 </thead>
 
                 <tbody>
                         {%for inv in invoices%}
-                        {%if inv in customer.inv_failed()%}
+                        {%if inv.invoice_number in customer.sum_bd()[1]%}
                         
                         <tr bgcolor='red'>
                             {%else%}

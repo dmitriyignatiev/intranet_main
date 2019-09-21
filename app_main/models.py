@@ -259,11 +259,19 @@ class Customer(db.Model):
         for i in self.invoices:
             if i.all_payments() <=0 and i.invoice_deadline_payment < today:
                 list.append(i)
+        return list
 
+    def sum_bd(self):
+        list = [i.invoice_number for i in self.invoices if i.debt_inv() if i.invoice_deadline_payment < datetime.today()]
+        new = [i.summ for i in self.invoices_payments if i.invoice_number in list]
+        db =  [i.invoice_amount for i in self.invoices\
+            if i.invoice_number in list]
+        diff = sum(db)-sum(new),
+        return  diff, list, db
        
                 
         
-        return list
+        
     
     def inv_failed_summ(self):
         list = []
