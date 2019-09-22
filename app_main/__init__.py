@@ -66,3 +66,6 @@ app.register_blueprint(supp, url_prefix='/suppliers')
 
 from customers.routes import cust 
 app.register_blueprint(cust, url_prefix='/customers')
+
+from agreements_word.routes import agr
+app.register_blueprint(agr, url_prefix='/agreements')

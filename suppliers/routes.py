@@ -20,6 +20,7 @@ import json
 
 
 
+
 @supp.route('/index')
 def index():
     return render_template('app_main.base.html')

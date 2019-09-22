@@ -16,7 +16,7 @@ from suppliers.models import Supplier, newSup, Prefin, Documents, \
     Pochta, Invoicesup, Tn, Supp_payment, Invoice_payment_s, Transit
 
 from customers.models import  Invoicecust, Invoice_payment_c
-
+from agreements_word.models import *
 
 fin = Finance.query.get(44)
 pay = Paid.query.get(1)
@@ -45,7 +45,7 @@ def make_shell_context():
             'Transit':Transit,
             'Invoicecust':Invoicecust,
             'Invoice_payment_c':Invoice_payment_c,
-
+            'Agreements':Agreements
             }
 
 

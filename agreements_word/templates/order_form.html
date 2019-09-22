@@ -1,0 +1,46 @@
+{%extends 'base.html'%}
+
+{%block content%}
+
+<form action="" method="POST">
+    {{form.hidden_tag()}}
+    <table class="table table-sm table-dark">
+
+        <thead  class="table-info">
+
+          {%for field in form%}
+          <th scope="col"> {{field.label}}</th>
+          {%endfor%}
+        
+    </thead>
+    <tbody>
+        <tr>
+                {%for field in form%}
+               <td>{{field}}</td> 
+                {%endfor%}
+        </tr>
+    </tbody>
+
+    </table>
+   
+
+  
+</form>
+
+
+{%endblock%}
+
+{%block scripts%}
+
+<script>
+
+$(document).ready(function() {
+
+        
+$('#customer_name').select2();
+
+
+})
+   
+    </script>
+    {%endblock%}

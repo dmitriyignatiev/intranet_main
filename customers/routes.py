@@ -98,4 +98,7 @@ def remove_payments_c(id):
         return jsonify({'success_remove':'Запись удалена'})
     else:
         return jsonify({'faile':'failed'})
+
+
+
     
