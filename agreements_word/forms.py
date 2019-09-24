@@ -16,8 +16,9 @@ from .models import *
 
 class OrderForm(FlaskForm):
     customer_name = SelectField('Имя клиента', coerce=str)
-    date_order = DateField('Дата_заявки')
+    date_order = DateField('Дата_заявки', )
     date_loading = DateField('Дата погрузки')
+    time_loading = TextField('Время погрузки')
     o_from = TextField('Откуда')
     o_to  = TextField('Куда')
     address_loading = TextField('Адрес загрузки')

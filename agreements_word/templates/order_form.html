@@ -2,8 +2,9 @@
 
 {%block content%}
 
-<form action="" method="POST">
-    {{form.hidden_tag()}}
+<div class="content">
+<form action="" method="post">
+        {{ form.csrf_token }}
     <table class="table table-sm table-dark">
 
         <thead  class="table-info">
@@ -27,6 +28,31 @@
   
 </form>
 
+<table class="table table-hover" >
+    <thead>
+       <th>id</th>
+        <th scope="col">Заявка</th>
+        
+
+          
+    </thead>
+    <tbody>
+        {%for row in all_agr_db%}
+        <tr>
+            <td id='a_id' width='10'>{{row.id}}</td>
+            <td scope="col" width='800'>
+               <a href="{{url_for('.download_agr', filename=row.path)}}"> {{row.path}}
+            
+                    <a href="#" onclick='f1(event)'>
+                            <span id='sp' class="glyphicon glyphicon-remove-sign"></span>
+                          </a>
+            </td>
+        </tr>
+        {%endfor%}
+        
+    </tbody>
+</table>
+</div>
 
 {%endblock%}
 
@@ -42,5 +68,36 @@ $('#customer_name').select2();
 
 })
    
+    </script>
+   
+    <script>
+     function f1(event){
+         let a=event.target.parentNode.parentNode
+         let c=a.previousElementSibling
+         console.log(c.innerHTML)
+         const id = c.innerHTML;
+         if(confirm('Удалить заявку. Вы уверены?'))
+         {
+             $.getJSON('/agreements/delete_agr/'+ id, {
+                id:id,
+
+             }, function(data){
+                 console.log(data);
+                
+             }
+             
+
+             )
+
+       window.location.reload(); 
+
+        }else{
+            (console.log('d'))
+        }
+        
+    } 
+   
+   
+    
     </script>
     {%endblock%}
