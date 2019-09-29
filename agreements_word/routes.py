@@ -21,7 +21,8 @@ APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 @agr.route('/', methods=['POST', 'GET'])
 def index():
-    form = OrderForm()
+    form = OrderForm_a()
+    
     target = os.path.join(APP_ROOT, 'agreements_TEST/')
     if not os.path.isdir(target):
          os.mkdir(target)
@@ -47,7 +48,7 @@ def index():
     all_agr_db = Agreements.query.all()
 
     if request.method == 'POST' and form.validate():
-        print(form.customer_name.data)
+     
         
         
 
@@ -60,23 +61,43 @@ def index():
             new_list=[i for i in document.get_merge_fields()]
             print(new_list)
             document.merge(
-            time_loading = form.time_loading.data,
-            order_number = str(agr.id),
+            
+            #date_order
             date_order = str(form.date_order.data),
-            date_loading = str(form.date_loading.data),
-            tima_loading = form.time_loading,
+            #номер заявки
+            order_number = str(agr.id),
+
+            #loading
             org = form.o_from.data,
-            dest = form.o_to.data,
+            date_loading = str(form.date_loading.data),
+            
             address_loading = form.address_loading.data,
+            time_loadding =form.time_loading.data,
             contacts_loading = form.contacts_loading.data,
-            cargo_description  = form.cargo_description.data,
+
+            #dest
+            dest = form.o_to.data ,
+            date_unloading = form.date_unloading.data,
+            time_unloading = form.time_unloading.data, 
+            address_unloading = form.address_unloading.data,
+            contacts_unloading = form.contacts_unloading.data,
+
+            #cargo
+            cargo_description = form.cargo_description.data, 
             quantity_pallets = form.quantity_pallets.data,
             weigth = form.weigth.data,
-            shipper_name=form.shipper_name.data,
-            cnee_name=form.cnee_name.data,
-            cnee_contact=form.cnee_contact.data,
-            cost = form.cost.data,
+            type_loading = form.type_loading.data,
+            type_unloading = form.type_unloading.data,
+            cargo_cost = form.cargo_cost.data,
+            volume = form.volume.data,
+            cargo_comments = form.cargo_comments.data,
             
+
+            
+
+            
+
+           
             
             
             
@@ -86,6 +107,15 @@ def index():
 
 
         )
+            agr.shipper_name = form.shipper_name.data, 
+            agr.shipper_address = form.address_loading.data,
+            agr.shipper_phone = form.contacts_loading.data,
+
+            agr.cnee_name = form.cnee_name.data ,
+            arg.cnee_address = form.address_unloading.data,
+            arg.contacts_unloading = form.contacts_unloading.data,
+            db.session.commit()
+
             count +=1
             if 'r_ttg' in new_list:
                 document.merge(
@@ -93,7 +123,7 @@ def index():
                     who_supplier = ' "ООО ТТГ" ',
                 )
                 
-
+                
                 
                 
             elif 'r_ttg' not in new_list:
@@ -101,14 +131,22 @@ def index():
                     who_customer = 'test customer',
                     who_supplier = 'test supplier',
                 )
-
-            document.write(path.format('Заявка №  {} между  {}.docx'.format(agr.id, count)))
+                
             
-
-            agr.path = 'Заявка №  {} между  {}.docx'.format(agr.id, count)
-            destination = "/".join([target, agr.path])
-            document.write(destination)
-            db.session.commit()
+         
+            
+            
+            if 'r_ttg' in new_list:
+                agr.path = 'Заявка №  {} между  Росэкспорт и клиент {}.docx'.format(agr.id, form.customer_name.data)
+                destination = "/".join([target, agr.path])
+                document.write(destination)
+                db.session.commit()
+            elif 'r_ttg' not in new_list:
+                agr.path = 'Заявка №  {} между  Test и {}.docx'.format(agr.id, form.customer_name.data)
+                destination = "/".join([target, agr.path])
+                document.write(destination)
+                db.session.commit()
+            
         return redirect(request.url)
                 
    
@@ -129,5 +167,6 @@ def delete_agr(id):
     os.remove(os.path.join(APP_ROOT, 'agreements_TEST/', agr_db.path))
     db.session.delete(agr_db)
     db.session.commit()
+    return redirect_url('.index')
    
     

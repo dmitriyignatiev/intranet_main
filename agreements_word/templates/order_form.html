@@ -5,28 +5,235 @@
 <div class="content">
 <form action="" method="post">
         {{ form.csrf_token }}
-    <table class="table table-sm table-dark">
+    <table class="table table-sm table-dark" border="2px">
 
-        <thead  class="table-info">
-
-          {%for field in form%}
-          <th scope="col"> {{field.label}}</th>
-          {%endfor%}
-        
+        <thead >
+<tr>
+     <th>{{form.customer_name.label()}}</th>     
+    <th>{{form.date_order.label()}}</th>
+    
+       </tr> 
     </thead>
     <tbody>
         <tr>
-                {%for field in form%}
-               <td>{{field}}</td> 
-                {%endfor%}
+               <td>{{form.customer_name}}</td>
+            <td>{{form.date_order}}</td>
+            
+               
         </tr>
     </tbody>
 
-    </table>
    
 
-  
-</form>
+ </table>
+    <p></p>
+    <p></p>
+    <p></p>
+
+    <div> Загрузка
+        <table class="table table-sm table-dark" border='2px'>
+    
+                <thead >
+        <tr>
+            <th>{{form.o_from.label()}}</th>
+            <th>{{form.address_loading.label()}}</th>
+            <th>{{form.type_loading.label}}</th> 
+            <th>{{form.shipper_name.label()}}</th>   
+            <th>{{form.date_loading.label()}}</th> 
+            <th>{{form.time_loading.label()}}</th>
+            <th>{{form.contacts_loading.label()}}</th>
+            
+               </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                        <td>{{form.o_from}}</td>
+                       <td>{{form.address_loading}}</td>
+                       <td>{{form.type_loading(placeholder='зад, бок, верх, полная растентовка')}}</td>
+                       <th>{{form.shipper_name}}</th> 
+                       <td>{{form.date_loading}}</td>
+                        <td>{{form.time_loading(placeholder= 'например с 8:00 до 17:00' )}}</td>
+                        <td>{{form.contacts_loading(placeholder='Иван Иванович тел 8999999')}}</td>
+                       
+                </tr>
+            </tbody>
+        
+           
+        
+         </table>
+    
+      </div>
+    
+    
+    <p></p>
+    <p></p>
+    <p></p>
+
+
+  <div>Выгрузка
+        <table class="table table-sm table-dark", border="2px">
+
+                <thead >
+        <tr>
+            
+           
+            <th>{{form.o_to.label()}}</th> 
+            <th>{{form.address_unloading.label()}}</th>  
+            <th>{{form.type_unloading.label}}</th>
+            <td>{{form.cnee_name.label()}}</td>
+            
+            <th>{{form.date_unloading.label()}}</th>
+            <th>{{form.time_unloading.label()}}</th>
+            <th>{{form.contacts_unloading.label()}}</th>
+            
+            
+               </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                  
+                       <td>{{form.o_to}}</td>
+                       <td>{{form.address_unloading}}</td>
+                       <td>{{form.type_unloading(placeholder='бок, зад, полная растентовка')}}</td>
+                       <td>{{form.cnee_name}}</td>
+                       
+
+                        
+                       <td>{{form.date_unloading}}</td>
+                      <td>{{form.time_unloading(placeholder='например c 8 до 15:00 строго')}}</td>
+                       <td>{{form.contacts_unloading(placeholder='Иван етрович +78663333')}}</td>
+                   
+                    
+                       
+                </tr>
+            </tbody>
+        
+           
+        
+         </table>
+
+  </div>
+    
+
+
+
+
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+
+<div> Все о грузе
+        <table class="table table-sm table-dark" border='2px'>
+    
+                <thead >
+        <tr>
+            <th>{{form.cargo_description.label()}}</th>
+            <th>{{form.quantity_pallets.label()}}</th> 
+            <th>{{form.weigth.label()}}</th>  
+            <th>{{form.volume.label}}</th> 
+            <th>{{form.cargo_cost.label()}}</th>
+            <th>{{form.cargo_comments.label}}</th>
+            
+            
+               </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                       <td>{{form.cargo_description}}</td>
+                       <td>{{form.quantity_pallets}}</td>
+                       <th>{{form.weigth}}</th>
+                       <th>{{form.volume}}</th>
+                       <th>{{form.cargo_cost}}</th>
+                       <th>{{form.cargo_comments}}</th>
+                       
+                       
+                </tr>
+            </tbody>
+        
+           
+        
+         </table>
+    
+      </div>
+      
+
+
+
+
+
+         <div> Все о грузе
+                <table class="table table-sm table-dark" border='2px'>
+            
+                        <thead >
+                <tr>
+                    <th>{{form.cargo_description.label()}}</th>
+                    <th>{{form.quantity_pallets.label()}}</th> 
+                    <th>{{form.weigth.label()}}</th>  
+                    <th>{{form.volume.label}}</th> 
+                    <th>{{form.cargo_cost.label()}}</th>
+                    
+                    
+                       </tr> 
+                    </thead>
+                    <tbody>
+                        <tr>
+                               <td>{{form.cargo_description}}</td>
+                               <td>{{form.quantity_pallets}}</td>
+                               <th>{{form.weigth}}</th>
+                               <th>{{form.volume}}</th>
+                               <th>{{form.cargo_cost}}</th>
+                               
+                               
+                        </tr>
+                    </tbody>
+                
+                   
+                
+                 </table>
+            
+              </div>
+
+              <div>Условия оплаты
+
+                    <table class="table table-sm table-dark" border='2px'>
+                
+                            <thead >
+                    <tr>
+                        <th>{{form.cost.label}}</th>
+                        <th>{{form.org_scan.label}}</th>
+                        <th>{{form.date_payment.label}}</th>
+            
+                            
+            
+                        
+                        
+                           </tr> 
+                        </thead>
+                        <tbody>
+                            <tr>
+                                   <td>{{form.cost}}</td>
+                                   <th>{{form.org_scan(placeholder='Скан или квиток, аванс и т.д.')}}</th>
+                                   <th>{{form.date_payment}}</th>
+            
+                                  
+                                   
+            
+            
+                                   
+                                   
+                            </tr>
+                        </tbody>
+                    
+                       
+                    
+                     </table>
+                    </div>
+              
+         {{form.submit}}
+    
+      </div>
+    </form>
 
 <table class="table table-hover" >
     <thead>
@@ -38,6 +245,7 @@
     </thead>
     <tbody>
         {%for row in all_agr_db%}
+        {%if row%}
         <tr>
             <td id='a_id' width='10'>{{row.id}}</td>
             <td scope="col" width='800'>
@@ -48,17 +256,24 @@
                           </a>
             </td>
         </tr>
+        {%endif%}
         {%endfor%}
         
     </tbody>
 </table>
 </div>
 
+
+
+
+
+
 {%endblock%}
 
 {%block scripts%}
 
 <script>
+
 
 $(document).ready(function() {
 

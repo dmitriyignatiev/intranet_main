@@ -9,13 +9,13 @@ day=day.replace(hour=0)
 
 
 from app_main.models import db, User, Request, Posts, Costs, Status, \
-    Direction, Agreement, Customer, Agg_number, Who_number,\
-    Truck_opt, Truck, Quantity, Ttn, Customer_base, subs, Finance, Paid, Zayvka
+    Direction, Agreement, Agg_number, Who_number,\
+    Truck_opt, Truck, Quantity, Ttn, Customer_base, subs, Finance, Paid, Zayvka, Customer
         
 from suppliers.models import Supplier, newSup, Prefin, Documents, \
     Pochta, Invoicesup, Tn, Supp_payment, Invoice_payment_s, Transit
 
-from customers.models import  Invoicecust, Invoice_payment_c
+from customers.models import   Invoicecust, Invoice_payment_c
 from agreements_word.models import *
 
 fin = Finance.query.get(44)

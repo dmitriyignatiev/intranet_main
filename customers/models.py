@@ -49,6 +49,23 @@ class Invoicecust(db.Model):
         
         return list()
 
+
+
+    
+    
+
+    
+    
+
+    
+
+        
+        
+
+
+    def __repr__(self):
+        return "Customer <{}>".format(self.name, self.user.name)
+
  
         
 
