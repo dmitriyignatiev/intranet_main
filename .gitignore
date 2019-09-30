@@ -2,4 +2,4 @@ config.py
 venv/
 v1/
 
-.*docx
+.*d
