@@ -76,6 +76,7 @@ class OrderForm_a(FlaskForm):
     cust_bank = TextField('Банк')
     cust_bik_bank = TextField('БИК')
     cust_inn = TextField('ИНН')
+    cust_kpp = TextField('КПП')
     cust_sign_fio = TextField('Расшифровка подписи')
 
 

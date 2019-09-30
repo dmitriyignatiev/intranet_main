@@ -32,7 +32,7 @@ def index():
     path = r"C:\Users\Dmitriy\Desktop\intr\intranet_main\agreements_word\argeement\{}"
     
     template_test = r"C:\Users\Dmitriy\Desktop\intr\intranet_main\agreements_word\argeement\order_rosexp_customer.docx"
-    template_r_ttg = r"C:\Users\Dmitriy\Desktop\intr\intranet_main\agreements_word\argeement\r_ttg.docx"
+    template_r_ttg = r"C:\Users\Dmitriy\Desktop\intr\intranet_main\agreements_word\a\r.docx"
     document_test = MailMerge(template_test)
     document_r_ttg = MailMerge(template_r_ttg)
 
@@ -90,8 +90,36 @@ def index():
             type_unloading = form.type_unloading.data,
             cargo_cost = form.cargo_cost.data,
             volume = form.volume.data,
-            cargo_comments = form.cargo_comments.data,
-            
+            comments = form.cargo_comments.data,
+
+            #auto
+            model = form.model.data,
+            auto_number = form.auto_number.data,
+            driver_name = form.driver_name.data,
+            driver_phone = form.driver_phone.data,
+            passport = form.passport.data,
+            driver_license = form.driver_license.data,
+            type_truck = form.type_truck.data,
+
+            #cost_agreem
+            cost = form.cost.data,
+            date_payment = form.date_payment.data,
+            org_scan = form.org_scan.data,
+
+            #cnee
+            legal_add = form.cust_legal_address.data, 
+            fact_add = form.cust_fact_address.data,
+            inn = form.cust_inn.data,
+            kpp = form.cust_kpp.data,
+            bank = form.cust_bank.data,
+            cust_bik_bank = form.cust_bik_bank.data, 
+            cust_bank_kc = form.cust_bank_kc.data,
+            cust_acc_test = form.cust_accout.data,
+            cust_sign_fio = form.cust_sign_fio.data,
+
+
+
+
 
             
 
@@ -107,13 +135,13 @@ def index():
 
 
         )
-            agr.shipper_name = form.shipper_name.data, 
-            agr.shipper_address = form.address_loading.data,
-            agr.shipper_phone = form.contacts_loading.data,
+            agr.shipper_name = form.shipper_name.data
+            agr.shipper_address = form.address_loading.data
+            agr.shipper_phone = form.contacts_loading.data
 
-            agr.cnee_name = form.cnee_name.data ,
-            arg.cnee_address = form.address_unloading.data,
-            arg.contacts_unloading = form.contacts_unloading.data,
+            agr.cnee_name = form.cnee_name.data 
+            agr.cnee_address = form.address_unloading.data
+            agr.cnee_phone = form.contacts_unloading.data
             db.session.commit()
 
             count +=1

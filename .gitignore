@@ -1,3 +1,5 @@
 config.py
-venv\
-v1\
+venv/
+v1/
+
+.*docx

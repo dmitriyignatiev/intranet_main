@@ -162,28 +162,31 @@
 
 
 
-         <div> Все о грузе
+         <div> Данныена Авто
                 <table class="table table-sm table-dark" border='2px'>
             
                         <thead >
                 <tr>
-                    <th>{{form.cargo_description.label()}}</th>
-                    <th>{{form.quantity_pallets.label()}}</th> 
-                    <th>{{form.weigth.label()}}</th>  
-                    <th>{{form.volume.label}}</th> 
-                    <th>{{form.cargo_cost.label()}}</th>
+                    <th>{{form.model.label}}</th>
+                    <th>{{form.auto_number.label}}</th>
+                    <th>{{form.driver_name.label}}</th>
+                    <th>{{form.driver_phone.label}}</th>
+                    <th>{{form.passport.label}}</th>
+                    <th>{{form.driver_license.label}}</th>
+                    <th>{{form.type_truck.label}}</th>
                     
                     
                        </tr> 
                     </thead>
                     <tbody>
                         <tr>
-                               <td>{{form.cargo_description}}</td>
-                               <td>{{form.quantity_pallets}}</td>
-                               <th>{{form.weigth}}</th>
-                               <th>{{form.volume}}</th>
-                               <th>{{form.cargo_cost}}</th>
-                               
+                                    <td>{{form.model}}</td>
+                                    <td>{{form.auto_number}}</td>          
+                                    <td>{{form.driver_name}}</td>   
+                                    <td>{{form.driver_phone}}</td>   
+                                    <td>{{form.passport}}</td> 
+                                    <td>{{form.driver_license}}</td>
+                                    <th>{{form.type_truck}}</th>        
                                
                         </tr>
                     </tbody>
@@ -229,6 +232,59 @@
                     
                      </table>
                     </div>
+
+                    <div>Банковские реквизиты клиента
+
+                            <table class="table table-sm table-dark" border='2px'>
+                        
+                                    <thead >
+                            <tr>
+                                <th>{{form.cust_legal_address.label}}</th>
+                                <th>{{form.cust_fact_address.label}}</th>
+                                <th>{{form.cust_inn.label}}</th>
+                                <th>{{form.cust_kpp.label}}</th>
+                                <th>{{form.cust_bank.label}}</th>
+                                <th>{{form.cust_bik_bank.label}}</th>
+                                <th>{{form.cust_accout.label}}</th>
+                                <th>{{form.cust_bank_kc.label}}</th>
+                                
+                             
+                                <th>{{form.cust_sign_fio.label}}</th>
+                    
+                                    
+                    
+                                
+                                
+                                   </tr> 
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>{{form.cust_legal_address}}</th>
+                                        <td>{{form.cust_fact_address}}</td>
+                                        <td>{{form.cust_inn}}</td>
+                                        <td>{{form.cust_kpp}}</td>
+                                        <td>{{form.cust_bank}}</td>
+                                        <td>{{form.cust_bik_bank}}</td>
+                                           <td>{{form.cust_accout}}</td>
+                                           <td>{{form.cust_bank_kc}}</td>
+                                          
+                                           
+                                           <td>{{form.cust_sign_fio(placeholder='Иванов И.И')}}</td>
+                                         
+                    
+                                          
+                                           
+                    
+                    
+                                           
+                                           
+                                    </tr>
+                                </tbody>
+                            
+                               
+                            
+                             </table>
+                            </div>
               
          {{form.submit}}
     
