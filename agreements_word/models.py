@@ -1,4 +1,5 @@
 from app_main.models import *
+from app_main.models import User
 
 class Agreements(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -15,4 +16,4 @@ class Agreements(db.Model):
     date_unloading = db.Column(db.DateTime)
     driver = db.Column(db.Text)
     date_order = db.Column(db.DateTime)
-    
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))

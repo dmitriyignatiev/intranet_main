@@ -60,7 +60,7 @@ def index():
     
     new_list = []
 
-    all_agr_db = Agreements.query.order_by(Agreements.date_order.desc()).all()
+    all_agr_db = Agreements.query.filter(Agreements.user_id==current_user.id).order_by(Agreements.date_order.desc()).all()
    
     if request.method == 'POST':
 

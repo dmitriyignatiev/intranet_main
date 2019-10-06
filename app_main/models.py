@@ -8,6 +8,7 @@ from datetime import datetime
 
 
 
+
 subs = db.Table('subs',
                 db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
                 db.Column('request_id', db.Integer, db.ForeignKey('request.id'))
@@ -53,6 +54,7 @@ class User(UserMixin, db.Model):
     external = db.Column(db.String(120))
     start_work = db.Column(db.DateTime)
 
+    agreements = db.relationship('Agreements', backref='user_agr', lazy='dynamic')
     
 
 
