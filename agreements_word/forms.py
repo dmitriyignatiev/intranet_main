@@ -17,6 +17,7 @@ from .models import *
 class OrderForm_a(FlaskForm):
 
     customer_name = SelectField('Имя клиента', coerce=str)
+    supplier_name = SelectField('Имя поставщика', coerce=str)
     date_order = DateField('Дата_заявки')
     
     o_from = TextField('Город')
@@ -65,6 +66,7 @@ class OrderForm_a(FlaskForm):
     supp_bank = TextField('Банк')
     supp_bank_bik = TextField('БИК')
     supp_inn = TextField('ИНН')
+    supp_kpp = TextField('КПП')
     supp_sign_fio = TextField('Расшифровка подписи')
 
     #данные клиента
@@ -82,10 +84,16 @@ class OrderForm_a(FlaskForm):
 
     
 
-    #стоимость и срок оплаты
+    #стоимость и срок оплаты c перевозом
     cost = TextField('Стоимость перевозки ')
     org_scan = TextAreaField('Условия оплаты')
     date_payment = TextAreaField('Срок оплаты')
+
+    #стоимость и срок оплаты с клиентом
+    cost_c = TextField('Стоимость перевозки ')
+    org_scan_с = TextAreaField('Условия оплаты')
+    date_payment_с = TextAreaField('Срок оплаты')
+    
 
 
     submit = SubmitField('записать')

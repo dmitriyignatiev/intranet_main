@@ -19,7 +19,7 @@ import os
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-@agr.route('/', methods=['POST', 'GET'])
+@agr.route('/index', methods=['POST', 'GET'])
 def index():
     form = OrderForm_a()
     
@@ -28,38 +28,51 @@ def index():
          os.mkdir(target)
    
     form.customer_name.choices = [(g.name, g.name) for g in Customer.query.all()]
-    
+    form.supplier_name.choices = [(g.llc_name, g.llc_name) for g in Supplier.query.all()]
+
     path = r"C:\Users\Dmitriy\Desktop\intr\intranet_main\agreements_word\argeement\{}"
     
-    template_test = r"C:\Users\Dmitriy\Desktop\intr\intranet_main\agreements_word\argeement\order_rosexp_customer.docx"
-    template_r_ttg = r"C:\Users\Dmitriy\Desktop\intr\intranet_main\agreements_word\a\r.docx"
-    document_test = MailMerge(template_test)
-    document_r_ttg = MailMerge(template_r_ttg)
+   
+    template_with_customer = r"C:\Users\Dmitriy\Desktop\intr\intranet_main\agreements_word\a\r_with_custt.docx"
+    template_with_supplier = r"C:\Users\Dmitriy\Desktop\intr\intranet_main\agreements_word\a\r_with_supp.docx"
 
-    print(document_test.get_merge_fields())
-    print(document_r_ttg.get_merge_fields())
+    
+
    
     list=[]
-    list.extend((template_test, template_r_ttg))
-    print(list)
+    
+    
+        
+    if request.form.getlist('add_supp') and request.form.getlist('add_cust'):
+        list.extend((template_with_customer, template_with_supplier ))
+    
+    elif request.form.getlist('add_supp'):
+        list.append(template_with_supplier)
+    elif request.form.getlist('add_cust'):
+        list.append(template_with_customer)
+    
+    print('this is a list: ',  list)
+    
+
+   
     count = 0
-    new_list=[]
 
-    all_agr_db = Agreements.query.all()
+    
+    new_list = []
 
-    if request.method == 'POST' and form.validate():
-     
-        
-        
+    all_agr_db = Agreements.query.order_by(Agreements.date_order.desc()).all()
+   
+    if request.method == 'POST':
 
         for i in list:
-            agr = Agreements()
+
+            agr = Agreements(user_id=current_user.id)
             db.session.add(agr)
             db.session.commit()
 
             document = MailMerge(i)
             new_list=[i for i in document.get_merge_fields()]
-            print(new_list)
+            print('this a new list' + str(new_list))
             document.merge(
             
             #date_order
@@ -98,15 +111,21 @@ def index():
             driver_name = form.driver_name.data,
             driver_phone = form.driver_phone.data,
             passport = form.passport.data,
-            driver_license = form.driver_license.data,
+            drive_license = form.driver_license.data,
             type_truck = form.type_truck.data,
 
-            #cost_agreem
+            #cost_agreem_with_supp
             cost = form.cost.data,
             date_payment = form.date_payment.data,
             org_scan = form.org_scan.data,
 
+             #cost_agreem_with_cust
+            cost_c = form.cost_c.data,
+            org_scan_с = form.org_scan_с.data,
+            date_payment_с = form.date_payment_с.data,
+
             #cnee
+            who_cust = form.customer_name.data, 
             legal_add = form.cust_legal_address.data, 
             fact_add = form.cust_fact_address.data,
             inn = form.cust_inn.data,
@@ -116,25 +135,31 @@ def index():
             cust_bank_kc = form.cust_bank_kc.data,
             cust_acc_test = form.cust_accout.data,
             cust_sign_fio = form.cust_sign_fio.data,
-
-
-
-
-
             
+            #supplier
 
-            
-
-           
-            
-            
-            
-            
-          
-
+            who_supplier = form.supplier_name.data, 
+            supp_legal_address = form.supp_legal_address.data, 
+            supp_fact_address = form.supp_fact_address.data,
+            supp_inn = form.supp_inn.data,
+            supp_kpp = form.supp_kpp.data,
+            supp_bank = form.supp_bank.data,
+            supp_bank_kc = form.supp_bank_kc.data, 
+            supp_account = form.supp_accout.data,
+            supp_bank_bik = form.supp_bank_bik.data,
+            supp_sign_fio = form.supp_sign_fio.data,
 
 
         )
+            
+               
+
+
+
+
+            agr.date_loading = form.date_loading.data
+            agr.date_order = form.date_order.data
+            agr.driver =form.driver_name.data,
             agr.shipper_name = form.shipper_name.data
             agr.shipper_address = form.address_loading.data
             agr.shipper_phone = form.contacts_loading.data
@@ -145,37 +170,58 @@ def index():
             db.session.commit()
 
             count +=1
-            if 'r_ttg' in new_list:
-                document.merge(
-                    who_customer = ' "ООО Росэкспортдизайн" ',
-                    who_supplier = ' "ООО ТТГ" ',
-                )
-                
-                
-                
-                
-            elif 'r_ttg' not in new_list:
-                 document.merge(
-                    who_customer = 'test customer',
-                    who_supplier = 'test supplier',
-                )
-                
-            
          
+                
+                
             
-            
-            if 'r_ttg' in new_list:
-                agr.path = 'Заявка №  {} между  Росэкспорт и клиент {}.docx'.format(agr.id, form.customer_name.data)
+           
+            if  request.form.getlist('add_supp'):
+                agr.path = 'Заявка №  {} между Росэкспортом и  Перевозом: {}  .docx'.format(agr.id, form.supplier_name.data)
                 destination = "/".join([target, agr.path])
                 document.write(destination)
                 db.session.commit()
-            elif 'r_ttg' not in new_list:
-                agr.path = 'Заявка №  {} между  Test и {}.docx'.format(agr.id, form.customer_name.data)
+               
+            
+            if request.form.getlist('add_cust') and not request.form.getlist('add_supp'):
+                
+                agr.path = 'Заявка №  {} между Росэкспортом и  Клиентом: {}  .docx'.format(agr.id, form.customer_name.data)
                 destination = "/".join([target, agr.path])
                 document.write(destination)
                 db.session.commit()
+                
+
+            if request.form.getlist('add_supp') and request.form.getlist('add_cust'):
+                if i == list[0]:
+                    agr.path = 'Заявка №  {} между Росэкспортом и  Клиентом: {}  .docx'.format(agr.id, form.customer_name.data)
+                    destination = "/".join([target, agr.path])
+                    document.write(destination)
+                    db.session.commit()
+                
+                    
+                elif i==list[1]:
+                    agr.path='Заявка №  {} между Росэкспортом и  Перевозом: {}  .docx'.format(agr.id, form.supplier_name.data)
+                    destination = "/".join([target, agr.path])
+                    document.write(destination)
+                    db.session.commit()
+                    
+        return redirect(url_for('.index'))
+
             
-        return redirect(request.url)
+
+            
+           
+            
+            
+                
+            
+            
+            
+
+            
+        
+
+            
+        
                 
    
     return render_template('order_form.html', \
@@ -195,6 +241,6 @@ def delete_agr(id):
     os.remove(os.path.join(APP_ROOT, 'agreements_TEST/', agr_db.path))
     db.session.delete(agr_db)
     db.session.commit()
-    return redirect_url('.index')
+    return redirect(url_for('.index'))
    
     

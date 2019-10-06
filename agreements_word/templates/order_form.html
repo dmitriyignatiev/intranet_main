@@ -2,22 +2,78 @@
 
 {%block content%}
 
-<div class="content">
+<div class="content" >
 <form action="" method="post">
         {{ form.csrf_token }}
-    <table class="table table-sm table-dark" border="2px">
+    <table class="table table-sm table-dark" border="2px" style="background-color:#D8D29A;">
 
         <thead >
 <tr>
-     <th>{{form.customer_name.label()}}</th>     
+     <th>{{form.customer_name.label()}}</th> 
+     <th  >{{form.supplier_name.label}}  </th>  
     <th>{{form.date_order.label()}}</th>
+   
     
        </tr> 
     </thead>
+    
     <tbody>
         <tr>
-               <td>{{form.customer_name}}</td>
-            <td>{{form.date_order}}</td>
+            
+               <td>{{form.customer_name}}
+                    <div class="form-check"></div>
+                    <input type="checkbox" class="form-check-input" id="exampleCheck1" name='add_cust' onclick="Show_req_cust()">
+                    <script>
+                    function Show_req_cust(){
+                        var x = document.querySelectorAll("[id=req_cust]")
+                        x.forEach(function(el){
+                        
+                        if (el.style.display == 'none'){
+                        el.style.display = 'block'
+                   
+                         }else{
+                        el.style.display = "none"
+                        } 
+                    }
+                    )
+                    }
+                    </script>
+                    <label class="form-check-label" for="exampleCheck1" >Заявка с клиентом</label>
+                  </div>
+               </td>
+               
+               <td >{{form.supplier_name}}
+                    <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="exampleCheck1" name='add_supp' onclick="Show_req_supp()">
+                    </div><script>
+                     function Show_req_supp(){
+                        
+                        var x = document.querySelectorAll("[id=req_supp]");
+                        
+                        x.forEach(function(el){
+                        
+                            if (el.style.display == 'none'){
+                            el.style.display = 'block'
+                       
+                             }else{
+                            el.style.display = "none"
+                            } 
+                        }
+                        )
+                    }
+
+             
+                
+                       
+                    
+                    </script>
+                    <label class="form-check-label" for="exampleCheck1" >Заявка с поставщиком</label>
+                  </div>
+
+               </td>
+            <td>{{form.date_order}}
+                    
+            </td>
             
                
         </tr>
@@ -31,7 +87,7 @@
     <p></p>
 
     <div> Загрузка
-        <table class="table table-sm table-dark" border='2px'>
+        <table class="table table-sm table-dark" border='2px' style="background-color:#B1D89A;">
     
                 <thead >
         <tr>
@@ -71,7 +127,7 @@
 
 
   <div>Выгрузка
-        <table class="table table-sm table-dark", border="2px">
+        <table class="table table-sm table-dark", border="2px" style="background-color:#9ACBD8;">
 
                 <thead >
         <tr>
@@ -124,7 +180,7 @@
 <p></p>
 
 <div> Все о грузе
-        <table class="table table-sm table-dark" border='2px'>
+        <table class="table table-sm table-dark" border='2px' style="background-color:#9AD8B8;">
     
                 <thead >
         <tr>
@@ -162,8 +218,8 @@
 
 
 
-         <div> Данныена Авто
-                <table class="table table-sm table-dark" border='2px'>
+         <div> Данные на Авто
+                <table class="table table-sm table-dark" border='2px' style="background-color:#9ACBD8;">
             
                         <thead >
                 <tr>
@@ -197,9 +253,10 @@
             
               </div>
 
-              <div>Условия оплаты
+              <div id='req_supp' style="display:none" >Условия оплаты с перевозчиком
+                  
 
-                    <table class="table table-sm table-dark" border='2px'>
+                    <table class="table table-sm table-dark" border='2px' style="background-color:#D8B99A;">
                 
                             <thead >
                     <tr>
@@ -233,11 +290,46 @@
                      </table>
                     </div>
 
-                    <div>Банковские реквизиты клиента
+                    <div id='req_cust' style="display:none">Условия оплаты с клиентом
 
-                            <table class="table table-sm table-dark" border='2px'>
-                        
+                            <table class="table table-sm table-dark" border='2px' style="background-color:#D8B99A;">
+                
                                     <thead >
+                            <tr>
+                                <th>{{form.cost_c.label}}</th>
+                                <th>{{form.org_scan_с.label}}</th>
+                                <th>{{form.date_payment_с.label}}</th>
+                    
+                                    
+                    
+                                
+                                
+                                   </tr> 
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                           <td>{{form.cost_c}}</td>
+                                           <th>{{form.org_scan_с(placeholder='Скан или квиток, аванс и т.д.')}}</th>
+                                           <th>{{form.date_payment_с}}</th>
+                    
+                                          
+                                           
+                    
+                    
+                                           
+                                           
+                                    </tr>
+                                </tbody>
+
+                    </div>
+
+                    <div id='req_cust' style="display:none">
+
+                           
+
+                            <table class="table table-sm table-dark" border='2px' style="background-color:#D8B09A;">
+                        
+                                    <thead >Банковские реквизиты клиента
                             <tr>
                                 <th>{{form.cust_legal_address.label}}</th>
                                 <th>{{form.cust_fact_address.label}}</th>
@@ -285,33 +377,103 @@
                             
                              </table>
                             </div>
+
+                            <div id='req_supp' style="display:none">Банковские реквизиты перевозчика
+
+                                <script>
+                                    document.getElementById('req_supp').style.display='none';
+                                    </script>
+
+                                    <table class="table table-sm table-dark" border='2px' style="background-color:#D8B09A;">
+                                
+                                            <thead >
+                                    <tr>
+                                        <th>{{form.supp_legal_address.label}}</th>
+                                        <th>{{form.supp_fact_address.label}}</th>
+                                        <th>{{form.supp_inn.label}}</th>
+                                        <th>{{form.supp_kpp.label}}</th>
+                                        <th>{{form.supp_bank.label}}</th>
+                                        <th>{{form.supp_bank_bik.label}}</th>
+                                        <th>{{form.supp_accout.label}}</th>
+                                        <th>{{form.supp_bank_kc.label}}</th>
+                                        
+                                     
+                                        <th>{{form.supp_sign_fio.label}}</th>
+                            
+                                            
+                            
+                                        
+                                        
+                                           </tr> 
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th>{{form.supp_legal_address}}</th>
+                                                <td>{{form.supp_fact_address}}</td>
+                                                <td>{{form.supp_inn}}</td>
+                                                <td>{{form.supp_kpp}}</td>
+                                                <td>{{form.supp_bank}}</td>
+                                                <td>{{form.supp_bank_bik}}</td>
+                                                   <td>{{form.supp_accout}}</td>
+                                                   <td>{{form.supp_bank_kc}}</td>
+                                                  
+                                                   
+                                                   <td>{{form.supp_sign_fio(placeholder='Иванов И.И')}}</td>
+                                                 
+                            
+                                                  
+                                                   
+                            
+                            
+                                                   
+                                                   
+                                            </tr>
+                                        </tbody>
+                                    
+                                       
+                                    
+                                     </table>
+                                    </div>
               
          {{form.submit}}
     
       </div>
     </form>
 
-<table class="table table-hover" >
+   
+
+  <div >
+<table id='dtBasicExample' class="table table-hover" >
     <thead>
        <th>id</th>
         <th scope="col">Заявка</th>
+        <th>Водитель</th>
+        <th>Дата заявки</th>
+        <th>Дата погрузки</th>
         
 
           
     </thead>
-    <tbody>
+    <tbody id='inv1'>
+            <input class="form-control" id="myInput" type="text" placeholder="Search..">
         {%for row in all_agr_db%}
         {%if row%}
         <tr>
             <td id='a_id' width='10'>{{row.id}}</td>
             <td scope="col" width='800'>
+                {%if row.path%}
                <a href="{{url_for('.download_agr', filename=row.path)}}"> {{row.path}}
             
                     <a href="#" onclick='f1(event)'>
                             <span id='sp' class="glyphicon glyphicon-remove-sign"></span>
                           </a>
+                          {%endif%}
             </td>
+            <td>{{row.driver}}</td>
+            <td>{{row.date_order}}</td>
+            <td>{{row.date_loading}}</td>
         </tr>
+
         {%endif%}
         {%endfor%}
         
@@ -328,6 +490,9 @@
 
 {%block scripts%}
 
+
+
+
 <script>
 
 
@@ -335,6 +500,8 @@ $(document).ready(function() {
 
         
 $('#customer_name').select2();
+$('#supplier_name').select2();
+
 
 
 })
@@ -370,5 +537,19 @@ $('#customer_name').select2();
    
    
     
+    </script>
+
+    
+    
+    <script>
+                            $(document).ready(function(){
+                              $("#myInput").on("keyup", function() {
+                                var value = $(this).val().toLowerCase();
+                                $("#dtBasicExample tr").filter(function() {
+                                  $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                                });
+                              });
+                            });
+                      
     </script>
     {%endblock%}

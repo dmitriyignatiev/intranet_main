@@ -13,3 +13,6 @@ class Agreements(db.Model):
     cargo = db.Column(db.Text)
     date_loading = db.Column(db.DateTime)
     date_unloading = db.Column(db.DateTime)
+    driver = db.Column(db.Text)
+    date_order = db.Column(db.DateTime)
+    
