@@ -267,11 +267,11 @@ class Customer(db.Model):
         return list
 
     def sum_bd(self):
-        list = [i.invoice_number for i in self.invoices if i.debt_inv() if i.invoice_deadline_payment < datetime.today()]
+        list = [i.invoice_number for i in self.invoices if i.debt_inv() if i.invoice_deadline_payment]
         new = [i.summ for i in self.invoices_payments if i.invoice_number in list]
         db =  [i.invoice_amount for i in self.invoices\
             if i.invoice_number in list]
-        diff = sum(db)-sum(new),
+        diff = sum(db)-sum(new)
         return  diff, list, db
        
                 
@@ -295,6 +295,10 @@ class Customer(db.Model):
         
         finale_summ = total_summ-payment_summ
         return [finale_summ, list] 
+
+    def bad_dept(self):
+        list=[i for i in self.invoices if i.invoice_deadline_payment < datetime.today()  if i.debt_inv() > 0]
+        return list
 
                
 

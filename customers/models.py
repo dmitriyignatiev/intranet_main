@@ -22,6 +22,7 @@ class Invoicecust(db.Model):
     invoice_actual_payment = db.relationship('Invoice_payment_c', backref='inv_c', lazy='dynamic')
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'))
 
+
     def all_payments(self):
         sum =0
         list = [i.summ for i in self.invoice_actual_payment]
@@ -51,32 +52,6 @@ class Invoicecust(db.Model):
 
 
 
-    
-    
-
-    
-    
-
-    
-
-        
-        
-
-
-    def __repr__(self):
-        return "Customer <{}>".format(self.name, self.user.name)
-
- 
-        
-
-        
-
-
-
-
-
-
-
 #детализация по счету
 class Invoice_payment_c(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -85,11 +60,13 @@ class Invoice_payment_c(db.Model):
     invoice_number = db.Column(db.Text)
     invoicecust_id = db.Column(db.Integer, db.ForeignKey('invoicecust.id') )
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'))
+    
 
     def sum(self):
         payments = Invoicecust.query.filter_by(invoicecust_id=self.id).all()
         return payments
 
+    
    
    
 

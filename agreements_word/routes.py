@@ -206,26 +206,9 @@ def index():
                     
         return redirect(url_for('.index'))
 
-            
-
-            
-           
-            
-            
-                
-            
-            
-            
-
-            
-        
-
-            
-        
-                
-   
     return render_template('order_form.html', \
         form=form, all_agr_db = all_agr_db)
+
 
 @agr.route('/download_agr/<path:filename>', methods=['GET', 'POST'])
 def download_agr(filename):
@@ -236,7 +219,6 @@ def download_agr(filename):
 @agr.route('/delete_agr/<int:id>', methods=['POST', 'GET'])
 def delete_agr(id):
     id = request.args.get('id')
-
     agr_db = Agreements.query.get(id)
     os.remove(os.path.join(APP_ROOT, 'agreements_TEST/', agr_db.path))
     db.session.delete(agr_db)

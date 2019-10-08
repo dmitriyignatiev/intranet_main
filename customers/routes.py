@@ -29,6 +29,8 @@ def customers_payments():
     formName.name.choices = [(g.id, g.name) for g in customers]
     today = datetime.datetime.today()
 
+
+
     
    
     if formName.is_submitted():

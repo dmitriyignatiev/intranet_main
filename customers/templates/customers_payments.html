@@ -24,7 +24,7 @@
 
      
         <div class='content'></div>
-
+        
         <table class="table table-sm">
         <thead>
             <tr>
@@ -53,7 +53,8 @@
                 <tr>
                     <th>
                     </th>
-                    {%if customer.sum_bd()[0][0]>customer.total_dept()%}
+                   
+                    {%if customer.sum_bd()[0]>customer.total_dept()%}
                     <th bgcolor='#BF7A73'>{{customer.total_dept()}} РУБ
                             Есть переплаченные счета, необходимо разнести корректно оплату</p>
                     </th>
@@ -62,6 +63,7 @@
                     <th>
                           {{customer.total_dept()}} РУБ  
                             {%endif%}
+                            
                     </th>
                     <th>
                         {{customer.sum_bd()[0][0]}}</th>
@@ -131,24 +133,44 @@
                 <tbody>
                         
                         {%for inv in invoices%}
-                        {%if inv.invoice_number in customer.sum_bd()[1]%}
+                       
+                    
+                    
+                     
                         
-                        <tr bgcolor='red'>
+                      
+                        
+                               
+                            
+                            
+                      
+
+                            
+                       
+                                
+                            
+
+                            {%if inv in customer.bad_dept()%}
+                           <th bgcolor="red">{{inv.invoice_number}}</th> 
+                           {%else%}
+                           <th >{{inv.invoice_number}}</th> 
+                           {%endif%}
+                           {%if inv in customer.bad_dept()%}
+                            <th bgcolor="red">{{inv.invoice_amount}}</th>
                             {%else%}
-                            <tr> 
-                        {%endif%}
-                        
-                           <th>{{inv.invoice_number}}</th> 
-                            <th>{{inv.invoice_amount}}</th>
+                            <th >{{inv.invoice_amount}}</th>
+                            {%endif%}
+                            
                             <th>{{inv.invoice_date}}</th>
                            
                                 <th> {{moment(inv.invoice_deadline_payment).fromNow()}}</th>
 
                                    
                             
+                        
                         </tr>
-                       
                         {%endfor%}
+                    
                 </tbody>
                
 
