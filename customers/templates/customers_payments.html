@@ -56,11 +56,21 @@
                    
                     {%if customer.sum_bd()[0]>customer.total_dept()%}
                     <th bgcolor='#BF7A73'>{{customer.total_dept()}} РУБ
-                            Есть переплаченные счета, необходимо разнести корректно оплату</p>
+                            Есть переплаченные счета, необходимо проверить счета и разнести корректно оплату
+                            
+                                {%for invoice  in customer.upper_debt()%}
+                                    {%for i in invoice%}
+                                        {%if i[0]%}
+                                     <p>Счет № {{i}}</p>
+                                        {%endif%}
+                                     {%endfor%}
+                                
+                                {%endfor%}
                     </th>
                         {%else%}
                         
                     <th>
+                        
                           {{customer.total_dept()}} РУБ  
                             {%endif%}
                             
@@ -70,7 +80,7 @@
                     
                     <th>
                     {%for inv in customer.invoices %}
-                        {%if inv.debt_inv() > 0 and inv.invoice_number in customer.sum_bd()[1]%}
+                        {%if inv in  customer.bad_dept() %}
                         <p>{{inv.invoice_number}}
                              - сумма долга {{inv.debt_inv()}}</p>
                         {%endif%}
@@ -160,10 +170,18 @@
                             {%else%}
                             <th >{{inv.invoice_amount}}</th>
                             {%endif%}
-                            
-                            <th>{{inv.invoice_date}}</th>
+
+                            {%if inv in customer.bad_dept()%}
+                            <th bgcolor="red">{{inv.invoice_date}}</th>
+                            {%else%}
+                            <th >{{inv.invoice_date}}</th>
+                            {%endif%}
                            
-                                <th> {{moment(inv.invoice_deadline_payment).fromNow()}}</th>
+                            {%if inv in customer.bad_dept()%}
+                                <th bgcolor="red"> {{moment(inv.invoice_deadline_payment).fromNow()}}</th>
+                            {%else%}
+                            <th > {{moment(inv.invoice_deadline_payment).fromNow()}}</th>
+                            {%endif%}
 
                                    
                             

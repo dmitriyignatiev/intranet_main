@@ -300,18 +300,11 @@ class Customer(db.Model):
         list=[i for i in self.invoices if i.invoice_deadline_payment < datetime.today()  if i.debt_inv() > 0]
         return list
 
-               
-
-
-    
-    
-
-    
+    def upper_debt(self):
+        list = [(i, i.invoice_number, i.invoice_amount, x.summ) for i in self.invoices for x in i.invoice_actual_payment if i.invoice_amount < x.summ]
+        return list
 
         
-        
-
-
     def __repr__(self):
         return "Customer <{}>".format(self.name, self.user.name)
 
