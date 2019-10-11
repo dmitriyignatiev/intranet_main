@@ -296,13 +296,26 @@ class Customer(db.Model):
         finale_summ = total_summ-payment_summ
         return [finale_summ, list] 
 
+    #просроченные счета
     def bad_dept(self):
         list=[i for i in self.invoices if i.invoice_deadline_payment < datetime.today()  if i.debt_inv() > 0]
         return list
-
+    
+    #переплачнные счета
     def upper_debt(self):
         list = [(i, i.invoice_number, i.invoice_amount, x.summ) for i in self.invoices for x in i.invoice_actual_payment if i.invoice_amount < x.summ]
         return list
+
+    #сумма просроченной задолженности
+    def bad_debt_amount(self):
+        debt = 0
+        sum = 0
+        for i in self.bad_dept():
+            debt += i.invoice_amount
+            for s in i.invoice_actual_payment:
+                sum +=s.summ
+        x = debt - sum
+        return x
 
         
     def __repr__(self):
