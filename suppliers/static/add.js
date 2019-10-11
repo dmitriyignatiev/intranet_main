@@ -114,6 +114,7 @@ $(document).ready(function() {
         const s_inv_currency = $('#s_inv_currency').val()
         const c_inv_amount = $('#c_inv_amount').val()
         const s_inv_date = $('#s_inv_date').val()
+        const work_id = $("#prefin")
 
 
         console.log(llc, req_id, date_request)
@@ -138,15 +139,20 @@ $(document).ready(function() {
 
         }, function(data) {
             if (data.success) {
-                console.log(data.success)
-                $('#successAlert').text(data.success).show();
+                console.log( data.req_id)
+                $('#successAlert').text(data.req_id).show();
                 $('#errorAlert').hide();
-                console.log(pick_up_date)
+                window.setTimeout(function() { location.reload() }, 1000)
+                
+                
+                
             } else {
                 console.log(data.not)
                 $('#errorAlert').text(data.not).show();
                 $('#successAlert').hide();
+
             }
+
         });
     });
 

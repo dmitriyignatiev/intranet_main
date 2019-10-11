@@ -257,6 +257,7 @@ class Prefin(db.Model):
     invc = db.relationship('Invoicecust', backref='prefin_invc', lazy='dynamic')
     tn_doc = db.relationship('Tn', backref='prefin', lazy='dynamic')
     supp_payments = db.relationship('Supp_payment', backref='supp_p', lazy='dynamic')
+    request_id = db.Column(db.Integer, db.ForeignKey('request.id'))
 
        
 

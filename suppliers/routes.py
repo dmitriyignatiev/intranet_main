@@ -192,6 +192,7 @@ def prefin():
             print(tora_red + str(req_id) + ' ' + str(date_request)+''+str(supplier_name) + ''+ str(direction) + str(status_of_request))
             newFin = Prefin(tora_red=tora_red, 
                         req_id=req_id, 
+                        request_id = req_id,
                         customer_order_date=customer_order_date,
                         direction=direction, 
                         sale=sale,
@@ -225,12 +226,12 @@ def prefin():
                 newFin.supplier.append(supplier_id)
                 db.session.commit()
                 
-                return jsonify({'success':'данные успешно внесены в базу'})
+                return jsonify({'success':'данные успешно внесены в базу', 'req_id': newFin.id})
             else:
                 db.session.add(newFin)
                 db.session.commit()
                 newFin.supplier.append(supplier_id)
-                return jsonify({'success':'данные успешно внесены в базу но без заявки'})
+                return jsonify({'success':'данные успешно внесены в базу но без заявки', 'req_id':  newFin.id})
                 
            
         else:
@@ -238,6 +239,7 @@ def prefin():
             newFin=Prefin.query.filter_by(req_id=req_id).first()
             newFin.tora_red = tora_red,
             newFin.req_id=req_id,
+            newFin.request_id = req_id,
             newFin.customer_order_date=customer_order_date,
             newFin.direction=direction, 
             newFin.sale=sale,
@@ -268,9 +270,9 @@ def prefin():
                 db.session.add(newFin)
                 db.session.commit()
             db.session.commit()
-            return jsonify({'success':'ок'})
+            return jsonify({'success':'ок', 'req_id':  newFin.id})
     except exc.IntegrityError as e:
-        return jsonify({'not':'в базе уже есть запись с таким ID'})
+        return jsonify({'not':'в базе уже есть запись с таким ID', 'req_id':  newFin.id})
    
 @supp.route('/prefin_change', methods=['POST', 'GET'])
 def prefin_change():

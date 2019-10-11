@@ -30,22 +30,22 @@
         </div> 
 
         <div id='new_transit'>
-            <form id='write_transit' action="" method="POST">
+           
                 
-                <p style="margin:10px">{{formTransit.innadd(placeholder='указать ИНН')}}
-                <input type="submit" id='write_transit'></p>
-            </form>
+                <p style="margin:10px"><input type="text" id="innadd" placeholder="укажите ИНН посредника">
+                <input type="submit" id='write_transit' onclick="add_transit()"></p>
+            
 
             
 
         <script>
         
-        $("form#write_transit").bind('click', function(e){
+        function add_transit(){
             console.log('ready')
-            e.preventDefault()
+            
            
             $.getJSON('/suppliers/add_third_party',{
-                inn:$('input#innadd').val(),
+                inn:$('#innadd').val(),
                 type:'POST',
                 data:'/suppliers/add_third_party',
                 
@@ -61,7 +61,7 @@
                 }
             })
 
-        })
+        }
             
 
         </script>

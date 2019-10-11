@@ -141,7 +141,8 @@ class Request (db.Model):
 
     docs = db.relationship('Documents', backref='request', lazy='dynamic')
     zayvka = db.relationship('Zayvka', backref='request', lazy='dynamic')
-    
+    prefin = db.relationship('Prefin', backref='request', lazy='dynamic')
+        
 
     
 
