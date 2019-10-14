@@ -1,4 +1,5 @@
  {%extends 'base.html'%} {%block head%} {{super()}}
+ <link rel="stylesheet" href="{{ url_for('.static', filename='supp.css') }}">
 <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.js">
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
@@ -18,6 +19,7 @@
 <div class>
     <script src="{{url_for('.static', filename='supp.js')}}"></script>
     <script src="{{url_for('.static', filename='add.js')}}"></script>
+    
 
     
 
@@ -152,7 +154,7 @@
                 <th>Номер счета</th>
                 <th>Дата счета</th>
                 <th>Сумма счета</th>
-                <th>Номер перевозки</th>
+                <th>Номер работы</th>
                 <th>На кого выставлен</th>
                 
                 <th>Ссылки на счет</th>
@@ -169,17 +171,25 @@
             <tbody>
                 
                 {%for inv in invoices%}
+                {%if inv.s_inv_number%}
 
-                <tr>
+                <tr >
                   
                     <th id='id'  style="display:none;">{{inv.supplier_id}}</th>
                     
-                   {%if inv.number%}
+                    {%if inv.s_inv_number%}
                     <th>{{inv.s_inv_number}}</th>
+                    {%else%}
+                    <th>Номер отсутствует</th>
+                    {%endif%}
 
+                    {%if inv.s_invoice_date%}
                     <th>{{inv.s_invoice_date.strftime('%Y-%m-%d')}}</th>
+                    {%else%}
+                    <th>Дата отсутствует</th>
+                    {%endif%}
                     <th>{{inv.s_inv_amount}}</th>
-                    <th>{{inv.fin_id}}</th>
+                    <th><a href="{{url_for('supp.prefin_change_id_test', id=inv.fin_id)}}">{{inv.fin_id}}</a></th>
                     <th>{{inv.tora_red}}</th>
                     <th>
                         {%for path in inv.invoice()%}
@@ -187,7 +197,7 @@
                         {%endfor%}
                          
                     </th>
-                    {%endif%}
+                    
                     <th>{{inv.still_own()}}</th>
                     
                     
@@ -200,60 +210,11 @@
                     
                     
                    
-           
+                    {%endif%}
                 {%endfor%}
 
 
-                <!-- <th id='id'>{{supp.id}}</th>
-                <th>{{supp.llc_name}}</th>
-                <th>{{supp.inn}}</th> -->
-                <!-- <th>{%for i in supp.prefin%}<p>{{i.id}}</p>{%endfor%}</th> -->
-                <!-- {%if supp%}
-                <th>{{supp.prefin|length}}</th>
-                <th>
-                    {%for inv in supp.prefin%}
-
-                        {%for invoice in supp.inv %}
-                            {%if inv.invs.all()|length > 0%}
-                          
-                            <p><a href="{{url_for('supp.download_s_inv', filename=invoice.path)}}">{{invoice.path}}</a></p>
-                            {%else%}
-                            <p>None</p>
-                            {%endif%}
-                            
-                    
-                        {%endfor%}
-                    {%endfor%}
-
-                </th>
-            <th>
-                {%for inv in supp.prefin%}
-                <p>{{inv.tora_red}}</p>
-                {%endfor%}
-            </th>
-                <th>
-                    {%for inv in supp.invoices_list()%}
-                    
-                 <p>{{inv}}     </p>           
-                     {%endfor%}
-                    
-                </th>
-
-                <th>
-                    {%for inv in supp.invoice_amount_list()%}
-                    <p>{{inv}}</p>
-                    {%endfor%}
-                </th>
-                <th>
-                    {%for inv in supp.supp_payment%}
-                        <p>{{inv.still_own()}}</p>
-                        {%endfor%}
-                </th>
-
-
-
-
-                {%endif%} -->
+              
 
             </tbody>
             
@@ -355,7 +316,7 @@
                     <th>№ Счета</th>
                     <th>Сумма оплат</th>
                     <th>Дата оплаты</th>
-                    <th>Через кого платим</th>
+                    <th>Через кого оплачивали</th>
                     
                         <th>Удалить</th>
                         
@@ -363,6 +324,7 @@
             </thead>
             <tbody>
                 {%for inv in  invoices%}
+                {%if inv.s_inv_number%}
                 <tr>
                    
                     <th>
@@ -389,11 +351,12 @@
                             </th>
 
                             <th>
-                                    {%for invs in invoice_payments%}
-                                        {%if invs.supp_payment == inv.id%}
-                                        <p>{{invs.transit.inn}}</p>
-                                        {%endif%}
-                                        {%endfor%}
+                                {%for i in inv.transit()%}
+                                 {%if i%}
+                                    <p>{{i[0]}}</p>
+                                    {%endif%}
+                                {%endfor%}
+                                   
                                     </th>
                                 
                                     <th>
@@ -417,6 +380,7 @@
                          </div>
 
                 </tr>
+                {%endif%}
                 {%endfor%}
             </tbody>
         </table>

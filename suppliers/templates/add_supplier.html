@@ -114,7 +114,7 @@
                                     {%if req.prefin[0]%}
                                         <th id='prefin'><a href="{{url_for('supp.prefin_change_id_test', id=req.prefin[0].id)}}">{{req.prefin[0].id}}</a> </th>
                                     {%else%}
-                                    <<th id='prefin'></th>
+                                    <th id='prefin'></th>
                                     {%endif%}
                                         {%if fin.tora_red %}
                                     <th name='tora_red'>{{form.tora_red(value=fin.tora_red)}}</th>

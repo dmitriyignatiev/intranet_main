@@ -37,8 +37,10 @@
 
                           {%if customer%}
                           
-                <th>Итоговая задолженность 
-                </th>
+                <th>Итоговая задолженность</th>
+                {%if customer.work_wo_inv()%}
+                <th style="display: block;">Невыставленные счета</th>
+                {%endif%}
                 <th>Сумма просроченной задолженности</th>
                 <th>Просроченные счета</th>
                 <th>Дата послежнего платежа </th>
@@ -72,10 +74,32 @@
                     <th>
                         
                           {{customer.total_dept()}} РУБ  
+                          
                             {%endif%}
                             
                     </th>
+                    {%if customer.work_wo_inv()%}
+                    <th style="display: block;">
+                        <table class="table table-hover table-sm">
+                                                    <thead>
+                                                        <td>номер работы</td>
+                                                        <td>сумма</td>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr class="table table-info">
+                                                            {%for i in customer.work_wo_inv()%}
+                                                            <td><a href="{{url_for('supp.prefin_change_id_test', id=i.prefin_id)}}">{{i.prefin_id}}</a></td>
+                                                            <td>{{i.invoice_amount}}</td>
+                                                            {%endfor%}
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                    </th>
+                   
+                    {%endif%}
                     <th>
+
                         {{customer.bad_debt_amount()}} РУБ</th>
                     
                     <th>
@@ -113,7 +137,7 @@
 
             
             
-            <table id="dtBasicExample" class="table table-striped table-bordered table-sm">
+            <table id="dtBasicExample" class="table  table-hover">
 
                     <script>
                             $(document).ready(function(){
@@ -144,6 +168,7 @@
                 <tbody>
                         
                         {%for inv in invoices%}
+                        {%if inv.invoice_number %}
                        
                     
                     
@@ -162,6 +187,7 @@
                             
 
                             {%if inv in customer.bad_dept()%}
+                            
                            <th bgcolor="red">{{inv.invoice_number}}</th> 
                            {%else%}
                            <th >{{inv.invoice_number}}</th> 
@@ -172,11 +198,13 @@
                             <th >{{inv.invoice_amount}}</th>
                             {%endif%}
 
+                            
                             {%if inv in customer.bad_dept()%}
                             <th bgcolor="red">{{inv.invoice_date}}</th>
                             {%else%}
                             <th >{{inv.invoice_date}}</th>
                             {%endif%}
+                            
                            
                             {%if inv in customer.bad_dept()%}
                                 <th bgcolor="red"> {{moment(inv.invoice_deadline_payment).fromNow()}}</th>
@@ -206,6 +234,8 @@
                             
                         
                         </tr>
+                        
+                        {%endif%}
                         {%endfor%}
                     
                 </tbody>

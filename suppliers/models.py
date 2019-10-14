@@ -137,6 +137,14 @@ class Supp_payment(db.Model):
             return payments_all.date_payment.strftime("%Y-%m-%d")
         except AttributeError:
             return "Платежей пока не было"
+
+    #показываем через кого платили
+    def transit(self):
+        list = [x for x in self.invoice_payment ]
+        transit_list = [x.transit.all() for x in list]
+        return transit_list
+        
+        
     
 
 #class where payments will be store many-to-one with Supp_payment
@@ -324,6 +332,8 @@ class Transit(db.Model):
     name = db.Column(db.Text)
     payment_id = db.Column(db.Integer, db.ForeignKey('invoice_payment_s.id'))
 
+    def __repr__(self):
+        return "{},  {}".format(self.name, self.inn)
 
 
 

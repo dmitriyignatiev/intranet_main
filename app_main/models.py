@@ -242,12 +242,20 @@ class Customer(db.Model):
         total_invoice_amount  = 0
         total_payment_amount = 0
         total_dept = 0
-        for i in self.invoices.all():
+        cust_id = [inv.id for inv in self.invoices]
+        invoices_list = [inv for inv in self.invoices]
+        for i in invoices_list:
             total_invoice_amount+=i.invoice_amount
         for i in self.invoices_payments.all():
-            total_payment_amount +=i.summ
+            if i.invoicecust_id in cust_id:
+                total_payment_amount +=i.summ
         total_dept = total_invoice_amount - total_payment_amount
         return total_dept
+
+    #не разнесенные суммы (есть затраты, но нет счетов)
+    def work_wo_inv(self):
+        work_list = [inv for inv in self.invoices if not inv.invoice_number]
+        return work_list
     
     #дата последнего платежа
     def last_payment_date(self):
@@ -299,7 +307,11 @@ class Customer(db.Model):
 
     #просроченные счета
     def bad_dept(self):
-        list=[i for i in self.invoices if i.invoice_deadline_payment < datetime.today()  if i.debt_inv() > 0]
+       
+       
+        new_list = [i for i in self.invoices if i.invoice_deadline_payment !=None]
+        list=[i for i in new_list if i.invoice_deadline_payment < datetime.today() if i.debt_inv() > 0]
+       
         return list
     
     #переплачнные счета
