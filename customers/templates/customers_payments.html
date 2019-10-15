@@ -38,14 +38,14 @@
                           {%if customer%}
                           
                 <th>Итоговая задолженность</th>
-                {%if customer.work_wo_inv()%}
-                <th style="display: block;">Невыставленные счета</th>
-                {%endif%}
+                
                 <th>Сумма просроченной задолженности</th>
                 <th>Просроченные счета</th>
                 <th>Дата послежнего платежа </th>
                 <th>Сумма последнего платежа </th>
-
+                {%if customer.work_wo_inv()%}
+                <th style="display: block;">Невыставленные счета</th>
+                {%endif%}
                 
                 
                 
@@ -78,26 +78,7 @@
                             {%endif%}
                             
                     </th>
-                    {%if customer.work_wo_inv()%}
-                    <th style="display: block;">
-                        <table class="table table-hover table-sm">
-                                                    <thead>
-                                                        <td>номер работы</td>
-                                                        <td>сумма</td>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr class="table table-info">
-                                                            {%for i in customer.work_wo_inv()%}
-                                                            <td><a href="{{url_for('supp.prefin_change_id_test', id=i.prefin_id)}}">{{i.prefin_id}}</a></td>
-                                                            <td>{{i.invoice_amount}}</td>
-                                                            {%endfor%}
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-
-                    </th>
                    
-                    {%endif%}
                     <th>
 
                         {{customer.bad_debt_amount()}} РУБ</th>
@@ -121,6 +102,29 @@
                     <th>
                             {{all_payments[0].summ}}РУБ
                     </th>
+                    {%endif%}
+
+                    {%if customer.work_wo_inv()%}
+                    <th style="display: block;">
+                        <table class="table table-hover table-dark">
+                                                    <thead>
+                                                        <td>номер работы</td>
+                                                        <td>сумма счета</td>
+                                                    </thead>
+                                                    <tbody>
+                                                        {%for i in customer.work_wo_inv()%}
+                                                        <tr>
+                                                            
+                                                            <td><a href="{{url_for('supp.prefin_change_id_test', id=i.prefin_id)}}">{{i.prefin_id}}</a></td>
+                                                            <td>{{i.invoice_amount}}</td>
+                                                            
+                                                        </tr>
+                                                        {%endfor%}
+                                                    </tbody>
+                                                </table>
+
+                    </th>
+                   
                     {%endif%}
                 </tr>
 

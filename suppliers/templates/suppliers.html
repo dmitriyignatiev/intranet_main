@@ -34,8 +34,8 @@
         <div id='new_transit'>
            
                 
-                <p style="margin:10px"><input type="text" id="innadd" placeholder="укажите ИНН посредника">
-                <input type="submit" id='write_transit' onclick="add_transit()"></p>
+                <p style="margin:10px"><input type="text" id="innadd" placeholder="укажите ИНН посредника"  class="form-control">
+                <input type="submit" id='write_transit' onclick="add_transit()" value="Записать"></p>
             
 
             
@@ -72,38 +72,7 @@
 
         </div>
 </div>
-        {%if supp%}
-
-        <div id="content"> 
-
         
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th>Долг Итого</th>
-                            <th>Дата последнего платежа</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <th>
-                            {{supp.total_credit()}} РУБ
-                        </th>
-                        
-                      
-                        <th>
-                            {{supp.last_payment()}}
-
-                        </th>
-                        
-                        
-                        </tbody>
-                    </tbody>
-        
-        
-                </table>
-               
-        </div>
-        {%endif%}
         
 
         <table class="table table-sm">
@@ -115,25 +84,82 @@
             </tr>
         </thead>
         <tbody>
-            <th>
+            <td >
                     <form action=""  method="POST">
                             {{ formName.csrf_token }}
                             
                             {{formName.name.label()}}{{formName.name}}
-                            <input type="submit">
+                            <input type="submit" value="Выбрать">
                     </form>
             
-            </th>
-            <th>
+            </td >
+            <td>
                     <form action=""  method="POST">
                             {{ formINN.csrf_token }}
                             {{formINN.check_inn.label()}}  {{formINN.check_inn}}
-                            <input type="submit">
+                            <input type="submit" value="Выбрать">
                     </form>
 
-            </th>
+            </td>
         </tbody>
         </table>
+       
+
+        {%if supp%}
+
+        <div id="content"> 
+
+        
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Долг Итого</th>
+                            <th>Дата последнего платежа</th>
+                            <th>Работы без счетов</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <th>
+                            {{supp.total_debt()}} РУБ
+                        </th>
+                        
+                      
+                        <th>
+                            {{supp.last_payment()}}
+
+                        </th>
+
+                        <th>
+                            <table class="table table-hover table-dark">
+                                <thead>
+                                    <th>номер работы</th>
+                                    <th>сумма счета</th>
+                                </thead>
+                                <tbody>
+                                    {%for inv in supp.work_wo_inv()%}
+                                    <tr>
+                                           <td><a href="{{url_for('supp.prefin_change_id_test', id=inv.fin_id)}}">{{inv.fin_id}}</a></td> 
+                                           <td>{{inv.s_inv_amount}}</td>        
+                                    </tr>
+                                    {%endfor%}
+                                </tbody>
+                            </table>
+                        
+                       
+                        
+                        </th>
+
+                        
+                        
+                        </tbody>
+                    </tbody>
+        
+        
+                </table>
+               
+        </div>
+        {%endif%}
+        
        
         
 

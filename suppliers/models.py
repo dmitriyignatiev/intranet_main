@@ -63,6 +63,19 @@ class Supplier(db.Model):
                 new_list.append(path.path)
         return new_list
 
+    # итоговую задолженность
+    def total_debt(self):
+        inv = [i.s_inv_amount for i in self.supp_payment]
+        payments = [p.summ_pay for p in self.invoice_payment if p.supp_payment_s in self.supp_payment]
+        return sum(inv)-sum(payments)
+
+    def work_wo_inv(self):
+        list = [x for x in self.supp_payment if not x.s_inv_number ]
+        return list
+
+        
+
+
     
     # показывает сколько мы должны
     def total_credit(self):
@@ -81,18 +94,6 @@ class Supplier(db.Model):
             return "Платежей пока не было"
         
             
-
-
-
-
-    
-
-            
-        
-
-   
-    
-    
 
 #класс где мы будем разносить оплаты перевозчикам
 #storage for all invoices
