@@ -116,6 +116,8 @@
                             <th>Долг Итого</th>
                             <th>Дата последнего платежа</th>
                             <th>Работы без счетов</th>
+                            <th>Неразнесенные счета</th>
+                            
                         </tr>
                     </thead>
                     <tbody>
@@ -148,6 +150,25 @@
                        
                         
                         </th>
+                        <th>
+
+                                <table class="table table-hover table-dark">
+                                        <thead>
+                                            <th>номер работы</th>
+                                            <th>сумма счета</th>
+                                        </thead>
+                                        <tbody>
+                                            {%for inv in supp.work_wo_inv_plan_day()%}
+                                            <tr>
+                                                   <td><a href="{{url_for('supp.prefin_change_id_test', id=inv.fin_id)}}">{{inv.fin_id}}</a></td> 
+                                                   <td>{{inv.s_inv_amount}}</td>        
+                                            </tr>
+                                            {%endfor%}
+                                        </tbody>
+                                    </table>
+
+                            
+                        </th>
 
                         
                         
@@ -167,18 +188,30 @@
 
            
 {%if supp%}
-        <table class="table table-sm">
+        <table class="table table-hover" id='s_inv_table'>
+
+                <script>
+                        $(document).ready(function(){
+                          $("#myInput").on("keyup", function() {
+                            var value = $(this).val().toLowerCase();
+                            $("#s_inv_table tr").filter(function() {
+                              $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                            });
+                          });
+                        });
+                        </script>
             
              <thead>
                
                 <tr>
             
-                        
+                <input class="form-control" id="myInput" type="text" placeholder="Search..">        
                 <th style="display:none;">Id перевоза</th>
                 
                 
                 <th>Номер счета</th>
                 <th>Дата счета</th>
+                <th>Дата когда надо платить</th>
                 <th>Сумма счета</th>
                 <th>Номер работы</th>
                 <th>На кого выставлен</th>
@@ -187,6 +220,7 @@
                 <th>Остаемся должны</th>
                 <th>Дата последнего платежа</th>
                 <th>Количество платежей по счету</th>
+                <th>Просрочка в днях</th>
 
 
               
@@ -199,7 +233,7 @@
                 {%for inv in invoices%}
                 {%if inv.s_inv_number%}
 
-                <tr >
+                <tr {%if inv in supp.bad_debt()%} style="background-color: red;" {%endif%}>
                   
                     <th id='id'  style="display:none;">{{inv.supplier_id}}</th>
                     
@@ -213,6 +247,11 @@
                     <th>{{inv.s_invoice_date.strftime('%Y-%m-%d')}}</th>
                     {%else%}
                     <th>Дата отсутствует</th>
+                    {%endif%}
+                    {%if inv.day_plan_pay%}
+                    <th>{{inv.day_plan_pay.strftime('%Y-%m-%d')}}</th>
+                    {%else%}
+                    <th>Дата отcутствует</th>
                     {%endif%}
                     <th>{{inv.s_inv_amount}}</th>
                     <th><a href="{{url_for('supp.prefin_change_id_test', id=inv.fin_id)}}">{{inv.fin_id}}</a></th>
@@ -232,6 +271,17 @@
                    
                     
                     <th>{{inv.count_payments()}}</th>
+
+                   
+
+                    <th>
+                        {%if inv.day_plan_pay%}
+                        {{day - inv.day_plan_pay}}
+                        {%else%}
+                    даты оплаты не запланирована
+                        {%endif%}
+                    </th>
+                        
                     
                     
                     
@@ -248,13 +298,13 @@
 
  
 <div id="content1">
-    <table class="table table-sm">
+    <table class="table"
 
             
 
         <thead>
             <tr>
-                
+                  
                 <th>Действие</th>
                 <th>номера счета</th>
                 <th>сумма оплаты</th>
@@ -267,7 +317,7 @@
        
         <tbody>
             
-            
+                
             <th>
                <button id="write">Записать</button>
             </th>
@@ -336,9 +386,23 @@
     <p></p>
 
     <div id='r' onclick="myFunction(event)">
-        <table class="table table-sm">
+        <table class="table table-sm" id="s_inv_payment">
             <thead>
+
+                    
+
+                    <script>
+                            $(document).ready(function(){
+                              $("#myInput_v").on("keyup", function() {
+                                var value = $(this).val().toLowerCase();
+                                $("#s_inv_payment tr").filter(function() {
+                                  $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                                });
+                              });
+                            });
+                    </script>
                 <tr>
+                    <input class="form-control" id="myInput_v" type="text" placeholder="Search..">
                     <th>№ Счета</th>
                     <th>Сумма оплат</th>
                     <th>Дата оплаты</th>

@@ -69,9 +69,27 @@ class Supplier(db.Model):
         payments = [p.summ_pay for p in self.invoice_payment if p.supp_payment_s in self.supp_payment]
         return sum(inv)-sum(payments)
 
+    # работы без счетов
     def work_wo_inv(self):
         list = [x for x in self.supp_payment if not x.s_inv_number ]
         return list
+
+    #показывает просроченные счета
+    def bad_debt(self):
+        day=datetime.today()
+        list = [s for s in self.supp_payment if s.s_inv_number]
+        inv_list = [s for s in list if s.s_invoice_date if s.day_plan_pay if s.day_plan_pay < day]
+        return inv_list
+
+    #есть счет но без даты когда надо платить
+    def work_wo_inv_plan_day(self):
+        list = [x for x in self.supp_payment if x.s_inv_number if not x.day_plan_pay ]
+        return list
+
+    
+   
+
+
 
         
 
@@ -144,6 +162,8 @@ class Supp_payment(db.Model):
         list = [x for x in self.invoice_payment ]
         transit_list = [x.transit.all() for x in list]
         return transit_list
+
+    
         
         
     
@@ -160,6 +180,7 @@ class Invoice_payment_s(db.Model):
     commision = db.Column(db.Float)
     cost_for_us = db.Column(db.Float)
     transit = db.relationship('Transit', backref='invoice_p', lazy='dynamic')
+    
 
     
     def cost_with_commision(self):
@@ -332,6 +353,7 @@ class Transit(db.Model):
     inn = db.Column(db.String(10))
     name = db.Column(db.Text)
     payment_id = db.Column(db.Integer, db.ForeignKey('invoice_payment_s.id'))
+    status = db.Column(db.Text)
 
     def __repr__(self):
         return "{},  {}".format(self.name, self.inn)

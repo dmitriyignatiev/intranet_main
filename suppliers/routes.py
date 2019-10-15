@@ -713,14 +713,14 @@ def suppliers():
             print('number' + formInv.supp_all_invoices.data)
             return render_template('suppliers.html', suppliers=suppliers, formName=formName, formINN=formINN,
             all=all, supplier=supplier, supp=supp, formInv=formInv, invoices=invoices, invoice_payments=invoice_payments,\
-                formTransit=formTransit)
+                formTransit=formTransit, day=datetime.datetime.today())
         
         except AttributeError:
             formInv.supp_all_invoices.choices = [(g.s_inv_number, g.s_inv_number) for g in Supp_payment.query.all()]
     print('eto supp' + str(supp))
 
     return render_template('suppliers.html', formName=formName, formINN=formINN,
-            all=all,  formInv=formInv) 
+            all=all,  formInv=formInv, day=datetime.datetime.today()) 
 
 #json to save paymentto suppliers
 @supp.route('suppliers_payments_to_db', methods=['POST', 'GET'])
@@ -860,6 +860,12 @@ def return_data():
         invoicesArray.append(invObj)
    
     return jsonify(invoicesArray)
+
+
+@supp.route('3rd_party_payments', methods=['POST', 'GET'])
+def third_party_payments():
+    all_transit = Transit.query.all()
+    return render_template('3rd_party.html', all_transit=all_transit)
 
 
 
