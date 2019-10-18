@@ -234,7 +234,7 @@
                 {%for inv in supp.supp_payment.all()%}
                 {%if inv.s_inv_number%}
 
-                <tr {%if inv in supp.bad_debt()%} style="background-color:#ff9999;" {%endif%}>
+                <tr {% if (inv in supp.bad_debt()) and (inv.still_own() !=0)  %} style="background-color:#ff9999;" {%endif%}>
                   
                     <th id='id'  style="display:none;">{{inv.supplier_id}}</th>
                     

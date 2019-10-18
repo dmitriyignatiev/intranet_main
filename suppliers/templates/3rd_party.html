@@ -43,15 +43,8 @@
                 {%for tr in all_transit%}
                 <tr>
                     <td>{{tr.name}}</td>
-                    <td>{{tr.invoice_p.summ_pay}}</td>
-                    <td>{{tr.invoice_p.date_payment}}</td>
-                   {%if tr.status%}
-                   <td>{{tr.status}}</td>
-                   {%else%}
-                    <form action="" method="POST">
-                    <td onchange="ChangeStatus(event)">{{form.status_tr(value=tr.status)}}</td>
-                    </form>
-                    {%endif%}
+                    <td>{{tr.invoices()}}</td>
+                   
                                      
                     <td style="display: none;">{{tr.id}}</td>
                 

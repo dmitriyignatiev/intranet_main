@@ -356,6 +356,10 @@ class Transit(db.Model):
     payment = db.relationship('Tr_payments', backref='transit', lazy='dynamic')
     
 
+    def invoices(self):
+        list = [x for x in self.payment]
+        return list
+
     def __repr__(self):
         return "{},  {}".format(self.name, self.inn)
 
@@ -364,7 +368,7 @@ class Tr_payments(db.Model):
     sum = db.Column(db.Integer)
     transit_id = db.Column(db.Integer, db.ForeignKey('transit.id'))
     payment_id = db.Column(db.Integer, db.ForeignKey('invoice_payment_s.id'))
-    
+    status = db.Column(db.Text)
 
 
 

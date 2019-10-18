@@ -659,6 +659,8 @@ def suppliers():
     formINN = formSupplierInn()
     formInv = formSupplierInv()
     formTransit = FormTransit()
+
+    print('data ' + formInv.commision.data)
     
 
 
@@ -711,6 +713,7 @@ def suppliers():
             formName.name.data = session['supp_name']
             number = request.args.get('supp_payment_id')
             print('number' + formInv.supp_all_invoices.data)
+            print('data ' + formInv.choices.data)
             
             return render_template('suppliers.html', suppliers=suppliers, formName=formName, formINN=formINN,
             all=all, supplier=supplier, supp=supp, formInv=formInv, invoices=invoices, invoice_payments=invoice_payments,\
@@ -727,6 +730,7 @@ def suppliers():
 @supp.route('suppliers_payments_to_db', methods=['POST', 'GET'])
 def suppliers_payments_to_db():
     form=formSupplierInv()
+   
     summ_amount = request.args.get('summ_amount')
     supp_payment_id = request.args.get('supp_payment_id')
     transit_name = request.args.get('transit')
