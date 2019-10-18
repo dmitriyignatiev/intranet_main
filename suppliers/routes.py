@@ -711,6 +711,7 @@ def suppliers():
             formName.name.data = session['supp_name']
             number = request.args.get('supp_payment_id')
             print('number' + formInv.supp_all_invoices.data)
+            
             return render_template('suppliers.html', suppliers=suppliers, formName=formName, formINN=formINN,
             all=all, supplier=supplier, supp=supp, formInv=formInv, invoices=invoices, invoice_payments=invoice_payments,\
                 formTransit=formTransit, day=datetime.datetime.today())
@@ -720,7 +721,7 @@ def suppliers():
     print('eto supp' + str(supp))
 
     return render_template('suppliers.html', formName=formName, formINN=formINN,
-            all=all,  formInv=formInv, day=datetime.datetime.today()) 
+            all=all,  formInv=formInv, day=datetime.datetime.today(), supp=supp, formTransit=formTransit) 
 
 #json to save paymentto suppliers
 @supp.route('suppliers_payments_to_db', methods=['POST', 'GET'])
@@ -736,8 +737,13 @@ def suppliers_payments_to_db():
     commision = request.args.get("commision")
     day = request.args.get('day')
     supplier_id = request.args.get('supplier')
-    supp = Supplier.query.get(int(supplier_id))
-    cost =int(summ_amount)/ (100-float(commision))
+    supp = Supplier.query.get(supplier_id)
+    try:
+        cost =int(summ_amount)/ (100-float(commision))
+    except ValueError:
+        print('no')
+
+    supp_payment = Supp_payment.query.get(supp_payment_id)
 
     print('day' + str(day))
     print('eto cost: '+str(cost))
@@ -745,25 +751,37 @@ def suppliers_payments_to_db():
     print(summ_amount)
     
     su = Supp_payment.query.get(int(supp_payment_id))
-    if su and summ_amount and transit_name and day:
-        invoice_number = su.s_inv_number
-        new_payment = Invoice_payment_s(summ_pay=summ_amount, \
-            supp_payment=supp_payment_id, \
-                date_payment=day, \
-                    s_inv_number=invoice_number, supplier_id=int(supplier_id),\
-                       )
-        db.session.add(new_payment)
+    if su and transit_name !=None and day:
+        if summ_amount !=0 or summ_amount !=None:
+            invoice_number = su.s_inv_number
+            new_payment = Invoice_payment_s(summ_pay=summ_amount, \
+                supp_payment=supp_payment_id, \
+                    date_payment=day, \
+                        s_inv_number=invoice_number, supplier_id=int(supplier_id),\
+                        )
+            db.session.add(new_payment)
+            
+            new_payment.cost_for_us=cost
+            
+            
+            supp.invoice_payment.append(new_payment)
+            db.session.commit()
+
+            supp_payment.invoice_payment.append(new_payment)
+            db.session.commit()
+            tr_db_p = Tr_payments(sum=new_payment.summ_pay, transit_id = transit_model.id, payment_id=new_payment.id)
+            db.session.add(tr_db_p)
+            db.session.commit()
+            new_payment.tr_payment.append(tr_db_p)
+            db.session.commit()
         
-        new_payment.cost_for_us=cost
         
-        
-        supp.invoice_payment.append(new_payment)
-        db.session.commit()
-        new_payment.transit.append(transit_model)
-        db.session.commit()
-        
-        
-        return jsonify({'success': 'оплата зафиксирована'})
+            return jsonify({'success': 'оплата зафиксирована'})
+
+        else:
+            return jsonify({'error': 'неудачно, проверьте все ли поля заполенны для разнесения оплаты'})
+
+
     
     else:
         
@@ -808,8 +826,10 @@ def remove_payment(id):
     if request.method=='GET':
         print('eto:' + str(id))
         payment = Invoice_payment_s.query.get(id)
+        
         if payment:
             db.session.delete(payment)
+            
             db.session.commit()
             return jsonify({'success_remove': 'Запись удалена'})
         
@@ -862,11 +882,28 @@ def return_data():
     return jsonify(invoicesArray)
 
 
-@supp.route('3rd_party_payments', methods=['POST', 'GET'])
+@supp.route('/3rd_party_payments', methods=['POST', 'GET'])
 def third_party_payments():
     all_transit = Transit.query.all()
-    return render_template('3rd_party.html', all_transit=all_transit)
+    form=FormTransit()
+    
+    
+    
+
+
+    
+    return render_template('3rd_party.html', all_transit=all_transit, form=form)
 
 
 
+@supp.route('/3rd_party_payments_status', methods=['POST', 'GET'])
+def third_party_payments_status():
 
+    id = request.args.get('id')
+    
+    status = request.args.get('status')
+    print(status)
+    transit = Transit.query.get(id)
+    transit.status=status
+    db.session.commit()
+    return jsonify({'success':'done'})

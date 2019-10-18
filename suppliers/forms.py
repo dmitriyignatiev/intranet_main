@@ -47,6 +47,7 @@ class formSupplier(FlaskForm):
     c_inv_currency = SelectField('Валюта', choices=[('RUR', 'RUR'), ('EUR', 'EUR'), ('USD', 'USD')])
     c_inv_amount = IntegerField('Сумма счета на клиента')
     c_inv_plan_pay = DateField('ДАТА')
+
    
     
 
@@ -79,6 +80,7 @@ class formSupplierInv(FlaskForm):
     submit = SubmitField('Подтвердить Выбор')
 
 
+
    
 
 
@@ -100,5 +102,6 @@ class UploadForm(FlaskForm):
 class FormTransit(FlaskForm):
     innadd = StringField('ИНН')
     name_tr = SelectField('Имя', coerce=str)
+    status_tr = SelectField('статус', choices=[('неуспешно', 'неуспешно'), ('успешно', 'успешно')])
     submit = SubmitField('Записать в базу')
 

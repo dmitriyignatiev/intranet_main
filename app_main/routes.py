@@ -28,6 +28,14 @@ def before_request():
     if current_user.is_authenticated:
         db.session.commit()
 
+@app.teardown_request
+def checkin_db(exc):
+    try:
+        print ("Removing db session.")
+        db.session.remove()
+    except AttributeError:
+        pass        
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))

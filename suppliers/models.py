@@ -179,7 +179,8 @@ class Invoice_payment_s(db.Model):
     supplier_id = db.Column(db.Integer, db.ForeignKey('supplier.id'))
     commision = db.Column(db.Float)
     cost_for_us = db.Column(db.Float)
-    transit = db.relationship('Transit', backref='invoice_p', lazy='dynamic')
+    tr_payment = db.relationship('Tr_payments', backref='payment', lazy='dynamic')
+    
     
 
     
@@ -352,12 +353,18 @@ class Transit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     inn = db.Column(db.String(10))
     name = db.Column(db.Text)
-    payment_id = db.Column(db.Integer, db.ForeignKey('invoice_payment_s.id'))
-    status = db.Column(db.Text)
+    payment = db.relationship('Tr_payments', backref='transit', lazy='dynamic')
+    
 
     def __repr__(self):
         return "{},  {}".format(self.name, self.inn)
 
+class Tr_payments(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sum = db.Column(db.Integer)
+    transit_id = db.Column(db.Integer, db.ForeignKey('transit.id'))
+    payment_id = db.Column(db.Integer, db.ForeignKey('invoice_payment_s.id'))
+    
 
 
 

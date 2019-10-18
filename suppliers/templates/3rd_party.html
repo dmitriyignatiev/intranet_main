@@ -8,7 +8,8 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
-
+<script src="{{url_for('.static', filename='supp.js')}}"></script>
+    <script src="{{url_for('.static', filename='add.js')}}"></script>
 
 
 {%block content%}
@@ -17,8 +18,7 @@
 <div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
 <div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
 <div class>
-    <script src="{{url_for('.static', filename='supp.js')}}"></script>
-    <script src="{{url_for('.static', filename='add.js')}}"></script>
+    
     
 
     
@@ -45,8 +45,15 @@
                     <td>{{tr.name}}</td>
                     <td>{{tr.invoice_p.summ_pay}}</td>
                     <td>{{tr.invoice_p.date_payment}}</td>
-                    <td>{{tr.status}}</td>
-                    <td>{{tr.invoice_p.supp_payment}}</td>
+                   {%if tr.status%}
+                   <td>{{tr.status}}</td>
+                   {%else%}
+                    <form action="" method="POST">
+                    <td onchange="ChangeStatus(event)">{{form.status_tr(value=tr.status)}}</td>
+                    </form>
+                    {%endif%}
+                                     
+                    <td style="display: none;">{{tr.id}}</td>
                 
                 
                 </tr>
@@ -64,5 +71,35 @@
     {{moment.include_moment()}}
   {{moment.lang('ru')}}
             
+  <script>
+      function ChangeStatus(event){
+          var x = event.target;
+          var status = event.target.value;
+         
+          console.log(status)
+         
+          let list = []
+          list.push(x)
+          console.log(list[0].parentElement.parentElement.children[5].innerHTML)
+          
+          var y = list[0].parentElement.parentElement.children[5]
+          const tr_id =y.nextElementSibling.innerHTML
+          $.getJSON('/suppliers/3rd_party_payments_status',
+          {
+            id:tr_id,
+            status:status,
+            type: 'POST',
+            data: '/suppliers/3rd_party_payments'
+
+          }, function(data){
+              console.log(data)
+            
+          }
+          )
+          
+      }
+
+  </script>
+
             
             {%endblock%}

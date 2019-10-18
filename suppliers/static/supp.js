@@ -16,6 +16,7 @@ $(function() {
         $('select#commision').select2({width:'100%' });
         $('select#name_tr').select2({width:'100%' });
         $('select#transit').select2({width:'100'});
+        $('select#transit').select2({width:'100'});
 
     });
 

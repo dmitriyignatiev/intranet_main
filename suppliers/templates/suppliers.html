@@ -229,11 +229,12 @@
             </tr>
 
             <tbody>
+                {%if supp%}
                 
-                {%for inv in invoices%}
+                {%for inv in supp.supp_payment.all()%}
                 {%if inv.s_inv_number%}
 
-                <tr {%if inv in supp.bad_debt()%} style="background-color: red;" {%endif%}>
+                <tr {%if inv in supp.bad_debt()%} style="background-color:#ff9999;" {%endif%}>
                   
                     <th id='id'  style="display:none;">{{inv.supplier_id}}</th>
                     
@@ -293,7 +294,7 @@
               
 
             </tbody>
-            
+            {%endif%}
      
 
  
@@ -385,6 +386,7 @@
     <p></p>
     <p></p>
 
+    {%if supp%}
     <div id='r' onclick="myFunction(event)">
         <table class="table table-sm" id="s_inv_payment">
             <thead>
@@ -413,7 +415,7 @@
                 </tr>
             </thead>
             <tbody>
-                {%for inv in  invoices%}
+                {%for inv in supp.supp_payment.all()%}
                 {%if inv.s_inv_number%}
                 <tr>
                    
@@ -441,12 +443,18 @@
                             </th>
 
                             <th>
-                                {%for i in inv.transit()%}
-                                 {%if i%}
-                                    <p>{{i[0]}}</p>
-                                    {%endif%}
+                                
+                                {%for payment in inv.invoice_payment.all()%}
+                                    {%for tr in payment.tr_payment.all()%}
+
+                                        <p>{{tr.transit}}</p>
+                                        {%endfor%}
+                                    
                                 {%endfor%}
-                                   
+
+                                
+                           
+                                                       
                                     </th>
                                 
                                     <th>
@@ -474,6 +482,7 @@
                 {%endfor%}
             </tbody>
         </table>
+        {%endif%}
     
         
  
