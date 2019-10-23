@@ -521,10 +521,10 @@ def prefin_change_id_test(id):
     
     
     if request.method=='POST':
-        print('eto'+ str(fin.s_invoice_number))
+        print('eto s_inv_number'+ str(fin.s_invoice_number))
         
-
-        fin.s_invoice_number =form.s_invoice_number.data 
+        if not fin.s_invoice_number:
+            fin.s_invoice_number =form.s_invoice_number.data 
         
         
         fin.s_inv_date = form.s_inv_date.data
@@ -565,15 +565,6 @@ def prefin_change_id_test(id):
             
             db.session.commit()
 
-
-
-        
-        
-
-        
-
-        
-        
 
    
 
@@ -733,6 +724,7 @@ def suppliers_payments_to_db():
    
     summ_amount = request.args.get('summ_amount')
     supp_payment_id = request.args.get('supp_payment_id')
+    print('eto supp_p_id: ' + str(supp_payment_id))
     transit_name = request.args.get('transit')
     print(transit_name)
     transit_model = Transit.query.filter_by(name=transit_name).first()
@@ -742,26 +734,32 @@ def suppliers_payments_to_db():
     day = request.args.get('day')
     supplier_id = request.args.get('supplier')
     supp = Supplier.query.get(supplier_id)
+    print('eto supplier: ' + str(supp))
     try:
         cost =int(summ_amount)/ (100-float(commision))
     except ValueError:
         print('no')
 
-    supp_payment = Supp_payment.query.get(supp_payment_id)
+    
+    supp_payment_s = Supp_payment.query.filter(Supp_payment.s_inv_number==supp_payment_id).first()
+    print(supp_payment_s)
+    
 
     print('day' + str(day))
     print('eto cost: '+str(cost))
     
     print(summ_amount)
     
-    su = Supp_payment.query.get(int(supp_payment_id))
-    if su and transit_name !=None and day:
+    # su = Supp_payment.query.get(int(supp_payment_id))
+    # print('eto supp_payment: ' + str(su))
+    if supp_payment_id and transit_name !=None and day:
         if summ_amount !=0 or summ_amount !=None:
-            invoice_number = su.s_inv_number
+            
             new_payment = Invoice_payment_s(summ_pay=summ_amount, \
-                supp_payment=supp_payment_id, \
+                supp_payment=supp_payment_s.id, \
                     date_payment=day, \
-                        s_inv_number=invoice_number, supplier_id=int(supplier_id),\
+                        s_inv_number=int(supp_payment_id), 
+                        supplier_id=int(supplier_id),\
                         )
             db.session.add(new_payment)
             
@@ -771,9 +769,9 @@ def suppliers_payments_to_db():
             supp.invoice_payment.append(new_payment)
             db.session.commit()
 
-            supp_payment.invoice_payment.append(new_payment)
+            supp_payment_s.invoice_payment.append(new_payment)
             db.session.commit()
-            tr_db_p = Tr_payments(sum=new_payment.summ_pay, transit_id = transit_model.id, payment_id=new_payment.id)
+            tr_db_p = Tr_payments(sum=new_payment.summ_pay, transit_id = transit_model.id, payment_id=new_payment.id, status='неуспешно', )
             db.session.add(tr_db_p)
             db.session.commit()
             new_payment.tr_payment.append(tr_db_p)

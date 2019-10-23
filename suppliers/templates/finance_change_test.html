@@ -1,308 +1,257 @@
-{% extends "base.html" %}
-{%block head%} {{super()}}
+{% extends "base.html" %} {%block head%} {{super()}}
+
 <head>
 
-       
-    
-    {{ dropzone.load_css() }}
-    {{ dropzone.style('border: 2px dashed #0087F7; margin: 10px 0 10px; min-height: 50px; min-width: 50px;') }}
-       
+
+
+    {{ dropzone.load_css() }} {{ dropzone.style('border: 2px dashed #0087F7; margin: 10px 0 10px; min-height: 50px; min-width: 50px;') }}
+
 </head>
 <title>
-       
-        
-    </title>
-{%endblock%}
-{%block content%}
+
+
+</title>
+{%endblock%} {%block content%}
 
 
 <div>
 
- 
-<table class="table table-sm">
+
+    <table class="table table-sm">
         <thead>
             <tr>
-                
+
                 <th>ТН/ТТН</th>
                 <th>Счет от поставщика</th>
                 <th>Файлы от поставщика(договор заявка и другие)</th>
                 <th>Файлы от Бухгалтерии</th>
                 <th>Файлы от Клиента</th>
-             </tr>
-            </thead>
-                 <tbody>
-                     <tr>
-                        <th scope="row">
-                            {%if current_user.role!='sale' and current_user.role!='account'%}
-      
-                                {{ dropzone.create('supp.upload_tn') }}
-                                {{ dropzone.load_js() }}
-                                {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id)) }}
-                            {%endif%}
-                                <form action="">
-                              {%for i in ttn%}
-                               {%if i.prefin_id == fin.id%}
-                               <p><a href="{{url_for('supp.download_file_s_tn', filename=i.path)}}">{{i.path}}</a>
-                               </p> 
-                               {%endif%}
-                            {%endfor%}
-                             </form>
-
-                            
-    
-                        </th>
-                       
-                        <th scope="row">
-
-                            {%if current_user.role!='sale' and current_user.role!='account'%}
-                            
-                                {{ dropzone.create('supp.upload_s_inv') }}
-                                {{ dropzone.load_js() }}
-                                {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id)) }}
-                            {%endif%}
-                               
-                                    {%for i in invs %}
-                                    {%if i.prefin_id == fin.id%}
-                                     
-                                     <p><a href="{{url_for('supp.download_s_inv', filename=i.path)}}">{{i.path}}</a>
-                                     </p> 
-                                     {%endif%}
-                                     
-                                  {%endfor%}
-
-                           
-                                     
-                        </th>
-
-                         <th scope="row">
-                            {%if current_user.role!='sale' and current_user.role!='account'%}
-                                {{ dropzone.create('supp.upload_s_docs') }}
-                                {{ dropzone.load_js() }}
-                                {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id)) }}
-                            {%endif%}
-                                
-                                        {%for i in docs%}
-                                         {%if i.prefin_id == fin.id%}
-                                         
-                                         <p><a href="{{url_for('supp.download_s_docs', filename=i.path)}}">{{i.path}}</a>
-                                         </p> 
-                                        
-                                         {%endif%}
-                                      {%endfor%}
-                                       
-                                
-                                    </th>
-                                    
-                                <th>
-                                    {%if current_user.role!='sale' and current_user.role!='buyer'%}
-                                        {{ dropzone.create('supp.upload_с_invoice') }}
-                                        {{ dropzone.load_js() }}
-                                        {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id)) }}
-                                    {%endif%}
-                                        {%for inv in invoicec%}
-                                        {%if inv.prefin_id == fin.id%}
-                                        {%if inv.path !=None%}
-                                        <p><a href="{{url_for('supp.download_c_inv', filename=inv.path)}}">{{inv.path}}</a>  
-                                        
-                                        </p>
-                                        {%endif%}
-                                       {%endif%}
-                                        {%endfor%}
-                                       
-                                    </th>
-                                  
-                                    <th>
-                                        {%for doc in zayavka%}
-                                                    
-                                                <p><a href="{{url_for('download_file', filename=doc.path)}}">{{doc.path}}</a></p>
-                                                
-                                         {%endfor%}
-
-                                    </th>
-                                    
-                                            
-                                         
-                                       
-                     
-                                 </th>
-                             </tr>
-                         </tbody>
-            </table>
-
-
-            <div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
-            <div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
-            
-                  <table class="table" id="tblData">
-                    <thead>
-                  
-                        <th >Действие</th>
-                        <th>№</th>
-                       
-                        <th>Юр лицо</th>
-                        <th >Направление</th>
-                        <th>Продавец</th>
-                        <th>Закупшик</th>
-                        <th>Название клиента</th>
-                        <th>№ заявки</th>
-                        <th>Дата заявки с клиентом</th>
-                        <th>Место загрузки</th>
-                        <th>Характер груза</th>
-                        <th>Место выгрузки</th>
-                        <th>Дата выгрузки</th>
-                        <th>Перевозчик</th>
-                        
-                        {%if current_user.role=='buyer'%}
-                        <th>Сумма счета от Постащика</th>
-                        <th>Номер счета от поставщика</th>
-                        <th>Дата счета от Постащика</th>
-                        <th>Дата когда нужно заплатить поставщику</th>
-                        <th>Размер НДС</th>
-                        {%endif%}
-
-                        {%if current_user.role=='account'%}
-                        <th>Номер счета на клиента</th>
-                        <th>Дата счета на клиента</th>
-                        <th>Дедлайн по оплате</th>
-                        {%endif%}
-                        <th>Валюта счета</th>
-                        <th>Размер предоплаты</th>
-                        <th>Кост для нас</th>
-                        <th>Профит</th>
-                         </tr>
-                         </thead>
-                 
-                     
-              
-            
-                  <tr>
-                
-            
-                       
-                            
-                            <td>
-            
-                                
-                                
-                                 
-            
-            
-                                        <p></p>
-                                
-            
-                                <form method="POST" id="form" action=''>
-                                        {{form.submit()}}
-                                        
-                                
-            
-                            </td>
-                            
-                            <td id='fin_id'>{{fin.id}}</td>
-                            <td>{{fin.tora_red}}</td>
-                            <td>{{fin.direction}}</td>
-                            <td id="sale">{{fin.sale}}</td>
-                            <td>{{fin.buyer}}</td>
-                            <td>{{fin.customer_name}}</td>
-                            <td>{{fin.req_id}}</td>
-                            <td>{{fin.customer_order_date}}</td>
-                            <td>{{fin.loading_place}}</td>
-                            <td>{{fin.cargo_character}}</td>
-                            <td>{{fin.unloading_place}}</td>
-                            <td>{{fin.unloading_date}}</td>
-                            <td>{{fin.supplier_name}}</td> 
-
-                            {%if current_user.role == 'buyer'%}
-                                <td>{{fin.s_inv_amount}}</td>
-                               
-                                
-                                
-                                <td bgcolor="green">{{form.s_invoice_number(value=fin.s_invoice_number)}}</td>
-                                                        
-                                {%if fin.s_inv_date%}
-                                <td bgcolor="yellow">{{form.s_inv_date(value=fin.s_inv_date.strftime('%Y-%m-%d'))}}</td>
-                                {%else%}
-                                <td bgcolor="yellow">{{form.s_inv_date}}</td>
-                                {%endif%}
-                                {%if fin.s_inv_date_to_pay%}
-                                <td bgcolor="red">{{form.s_inv_das_inv_date_to_pay(value=fin.s_inv_date_to_pay.strftime('%Y-%m-%d'))}}</td>
-                                {%else%}
-                                <td bgcolor="red">{{form.s_inv_das_inv_date_to_pay}}</td>
-                                {%endif%}
-                                <td>{{fin.s_inv_vat}}</td>
-                            {%endif%}
-
-                            {% if current_user.role == 'account' %}
-                            {%if fin.c_inv_number%}
-                            <th bgcolor="green">{{form.c_inv_number(value=fin.c_inv_number)}}</th>
-                            {%else%}
-                            <th  bgcolor="green">{{form.c_inv_number}}</th>
-                            {%endif%}
-                            {%if fin.c_invoice_date%}
-                            <th  bgcolor="yellow">{{form.c_invoice_date(value=fin.c_invoice_date.strftime('%Y-%m-%d'))}}</th>
-                            {%else%}
-                            <th bgcolor="yellow">{{form.c_invoice_date}}</th>
-                            {%endif%}
-                            {%if fin.c_inv_plan_pay%}
-                           
-                                        <th  bgcolor="red">
-                                            
-                                                {{form.c_inv_plan_pay(value=fin.c_inv_plan_pay.strftime('%Y-%m-%d'))}}</th>
-                                          
-
-                              
-
-                            
-                            
-                            {%else%}
-                            <th bgcolor="red">{{form.c_inv_plan_pay}}</th>
-                            {%endif%}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">
+                    {%if current_user.role!='sale' and current_user.role!='account'%} {{ dropzone.create('supp.upload_tn') }} {{ dropzone.load_js() }} {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id)) }} {%endif%}
+                    <form action="">
+                        {%for i in ttn%} {%if i.prefin_id == fin.id%}
+                        <p><a href="{{url_for('supp.download_file_s_tn', filename=i.path)}}">{{i.path}}</a>
+                        </p>
+                        {%endif%} {%endfor%}
+                    </form>
 
 
 
-                        
+                </th>
 
-                            
-                            {% endif %}
+                <th scope="row">
+
+                    {%if current_user.role!='sale' and current_user.role!='account'%} {{ dropzone.create('supp.upload_s_inv') }} {{ dropzone.load_js() }} {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id)) }} {%endif%} {%for i in invs %} {%if
+                    i.prefin_id == fin.id%}
+
+                    <p><a href="{{url_for('supp.download_s_inv', filename=i.path)}}">{{i.path}}</a>
+                    </p>
+                    {%endif%} {%endfor%}
+
+
+
+                </th>
+
+                <th scope="row">
+                    {%if current_user.role!='sale' and current_user.role!='account'%} {{ dropzone.create('supp.upload_s_docs') }} {{ dropzone.load_js() }} {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id)) }} {%endif%} {%for i in docs%} {%if
+                    i.prefin_id == fin.id%}
+
+                    <p><a href="{{url_for('supp.download_s_docs', filename=i.path)}}">{{i.path}}</a>
+                    </p>
+
+                    {%endif%} {%endfor%}
+
+
+                </th>
+
+                <th>
+                    {%if current_user.role!='sale' and current_user.role!='buyer'%} {{ dropzone.create('supp.upload_с_invoice') }} {{ dropzone.load_js() }} {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id)) }} {%endif%} {%for inv in invoicec%}
+                    {%if inv.prefin_id == fin.id%} {%if inv.path !=None%}
+                    <p><a href="{{url_for('supp.download_c_inv', filename=inv.path)}}">{{inv.path}}</a>
+
+                    </p>
+                    {%endif%} {%endif%} {%endfor%}
+
+                </th>
+
+                <th>
+                    {%for doc in zayavka%}
+
+                    <p><a href="{{url_for('download_file', filename=doc.path)}}">{{doc.path}}</a></p>
+
+                    {%endfor%}
+
+                </th>
 
 
 
 
-                            <td>{{fin.s_inv_currency}}</td>
-                            <td>{{fin.s_prepaid_amount}}</td>
-                            <td>{{fin.cost_with_vat}}</td>
-                            <td>{{fin.profit}}</td>
-            
-                       
-                     
-                    </tr>
-                    </table>
-              </table>  
-            </form>
-        </div>
-            
-             
-             
-             
-            
-              
-             
-            
-            
-               
-         
-            
-            
-            
-            
-            
-            </body>
-            
-            
-            </html>
-            
-            {%endblock%}
-                {%block scripts%} {{super()}}
 
-               
-               
-                {%endblock%}
+                </th>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
+    <div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
+
+    <table class="table" id="tblData">
+        <thead>
+
+            <th>Действие</th>
+            <th>№</th>
+
+            <th>Юр лицо</th>
+            <th>Направление</th>
+            <th>Продавец</th>
+            <th>Закупшик</th>
+            <th>Название клиента</th>
+            <th>№ заявки</th>
+            <th>Дата заявки с клиентом</th>
+            <th>Место загрузки</th>
+            <th>Характер груза</th>
+            <th>Место выгрузки</th>
+            <th>Дата выгрузки</th>
+            <th>Перевозчик</th>
+
+            {%if current_user.role=='buyer'%}
+            <th>Сумма счета от Постащика</th>
+            <th>Номер счета от поставщика</th>
+            <th>Дата счета от Постащика</th>
+            <th>Дата когда нужно заплатить поставщику</th>
+            <th>Размер НДС</th>
+            {%endif%} {%if current_user.role=='account'%}
+            <th>Номер счета на клиента</th>
+            <th>Дата счета на клиента</th>
+            <th>Дедлайн по оплате</th>
+            {%endif%}
+            <th>Валюта счета</th>
+            <th>Размер предоплаты</th>
+            <th>Кост для нас</th>
+            <th>Профит</th>
+            </tr>
+        </thead>
+
+
+
+
+        <tr>
+
+
+
+
+            <td>
+
+
+
+
+
+
+                <p></p>
+
+
+                <form method="POST" id="form" action=''>
+                    {{form.submit()}}
+
+
+
+            </td>
+
+            <td id='fin_id'>{{fin.id}}</td>
+            <td>{{fin.tora_red}}</td>
+            <td>{{fin.direction}}</td>
+            <td id="sale">{{fin.sale}}</td>
+            <td>{{fin.buyer}}</td>
+            <td>{{fin.customer_name}}</td>
+            <td>{{fin.req_id}}</td>
+            <td>{{fin.customer_order_date}}</td>
+            <td>{{fin.loading_place}}</td>
+            <td>{{fin.cargo_character}}</td>
+            <td>{{fin.unloading_place}}</td>
+            <td>{{fin.unloading_date}}</td>
+            <td>{{fin.supplier_name}}</td>
+
+            {%if current_user.role == 'buyer'%}
+            <td>{{fin.s_inv_amount}}</td>
+
+
+            {%if fin.s_invoice_number%}
+            <td bgcolor="green">{{form.s_invoice_number(value=fin.s_invoice_number)}}</td>
+            {%else%}
+            <td bgcolor="green">{{form.s_invoice_number}}</td>
+
+            {%endif%} {%if fin.s_inv_date%}
+            <td bgcolor="yellow">{{form.s_inv_date(value=fin.s_inv_date.strftime('%Y-%m-%d'))}}</td>
+            {%else%}
+            <td bgcolor="yellow">{{form.s_inv_date}}</td>
+            {%endif%} {%if fin.s_inv_date_to_pay%}
+            <td bgcolor="red">{{form.s_inv_das_inv_date_to_pay(value=fin.s_inv_date_to_pay.strftime('%Y-%m-%d'))}}</td>
+            {%else%}
+            <td bgcolor="red">{{form.s_inv_das_inv_date_to_pay}}</td>
+            {%endif%}
+            <td>{{fin.s_inv_vat}}</td>
+            {%endif%} {% if current_user.role == 'account' %} {%if fin.c_inv_number%}
+            <th bgcolor="green">{{form.c_inv_number(value=fin.c_inv_number)}}</th>
+            {%else%}
+            <th bgcolor="green">{{form.c_inv_number}}</th>
+            {%endif%} {%if fin.c_invoice_date%}
+            <th bgcolor="yellow">{{form.c_invoice_date(value=fin.c_invoice_date.strftime('%Y-%m-%d'))}}</th>
+            {%else%}
+            <th bgcolor="yellow">{{form.c_invoice_date}}</th>
+            {%endif%} {%if fin.c_inv_plan_pay%}
+
+            <th bgcolor="red">
+
+                {{form.c_inv_plan_pay(value=fin.c_inv_plan_pay.strftime('%Y-%m-%d'))}}</th>
+
+
+
+
+
+
+            {%else%}
+            <th bgcolor="red">{{form.c_inv_plan_pay}}</th>
+            {%endif%} {% endif %}
+
+
+
+
+            <td>{{fin.s_inv_currency}}</td>
+            <td>{{fin.s_prepaid_amount}}</td>
+            <td>{{fin.cost_with_vat}}</td>
+            <td>{{fin.profit}}</td>
+
+
+
+        </tr>
+    </table>
+    </table>
+    </form>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+
+</html>
+
+{%endblock%} {%block scripts%} {{super()}} {%endblock%}

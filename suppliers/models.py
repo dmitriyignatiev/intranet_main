@@ -369,7 +369,8 @@ class Tr_payments(db.Model):
     transit_id = db.Column(db.Integer, db.ForeignKey('transit.id'))
     payment_id = db.Column(db.Integer, db.ForeignKey('invoice_payment_s.id'))
     status = db.Column(db.Text)
-
+    transit_date_send = db.Column(db.DateTime)
+    transit_date_recieved = db.Column(db.DateTime)
 
 
 

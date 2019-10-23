@@ -1,15 +1,15 @@
  {%extends 'base.html'%} {%block head%} {{super()}}
- <link rel="stylesheet" href="{{ url_for('.static', filename='supp.css') }}">
+<link rel="stylesheet" href="{{ url_for('.static', filename='supp.css') }}">
 <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.js">
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" /> {%endblock%} 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" /> {%endblock%}
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
 <script src="{{url_for('.static', filename='supp.js')}}"></script>
-    <script src="{{url_for('.static', filename='add.js')}}"></script>
+<script src="{{url_for('.static', filename='add.js')}}"></script>
 
 
 {%block content%}
@@ -18,81 +18,100 @@
 <div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
 <div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
 <div class>
-    
-    
-
-    
-
-        <div id="successAlert" class="alert alert-success" role="alert" style="display:none;">
-
-        </div>
-        <div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;">
 
 
-        </div class='content'>
-        <table class='table table-hover'>
-            <thead>
-                <tr>
-                    <th>Третья сторона</th>
-                    <th>Сумма оплаты</th>
-                    <th>Дата оплаты</th>
-                    <th>Статус</th>
-                </tr>
-            </thead>
-            <tbody>
-                {%for tr in all_transit%}
-                <tr>
-                    <td>{{tr.name}}</td>
-                    <td>{{tr.invoices()}}</td>
-                   
-                                     
-                    <td style="display: none;">{{tr.id}}</td>
-                
-                
-                </tr>
-                {%endfor%}
-            </tbody>
 
-        </table>
-        </div> 
 
-      
 
-            {%endblock%} 
-            {%block scripts%} 
-            {{super()}}
-    {{moment.include_moment()}}
-  {{moment.lang('ru')}}
-            
-  <script>
-      function ChangeStatus(event){
-          var x = event.target;
-          var status = event.target.value;
-         
-          console.log(status)
-         
-          let list = []
-          list.push(x)
-          console.log(list[0].parentElement.parentElement.children[5].innerHTML)
-          
-          var y = list[0].parentElement.parentElement.children[5]
-          const tr_id =y.nextElementSibling.innerHTML
-          $.getJSON('/suppliers/3rd_party_payments_status',
-          {
-            id:tr_id,
-            status:status,
+    <div id="successAlert" class="alert alert-success" role="alert" style="display:none;">
+
+    </div>
+    <div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;">
+
+
+    </div class='content'>
+    <table class='table table-hover'>
+        <thead>
+            <tr>
+                <th>Третья сторона</th>
+                <th>Сумма оплаты</th>
+                <th>Дата перевода</th>
+                <th>Дата выплаты</th>
+                <th>Статус</th>
+            </tr>
+        </thead>
+        <tbody>
+            {%for tr in all_transit%}
+            <tr>
+                <td>{{tr.name}}</td>
+                <td>
+                    {%for i in tr.invoices()%}
+                    <p>{{i.sum}}</p>
+                    {%endfor%}
+                </td>
+                <td>
+                    {%if tr.transit_date_send%}
+                    <p>{{form.date_send(value=tr.transit_date_send)}}</p>
+                    {%else%}
+                    <p>{{form.date_send()}}</p>
+                    {%endif%}
+                </td>
+                <td>
+                    <p>{{form.date_recieved}}</p>
+                </td>
+
+                <td onchange=ChangeStatus(event)>
+                    {{form.status_tr}}
+                </td>
+
+
+
+                <td style="display: none;">{{tr.id}}</td>
+
+
+            </tr>
+            {%endfor%}
+        </tbody>
+
+    </table>
+</div>
+
+
+
+{%endblock%} {%block scripts%} {{super()}} {{moment.include_moment()}} {{moment.lang('ru')}}
+
+
+
+<script>
+    function ChangeStatus(event) {
+        var x = event.target;
+        var status = event.target.value;
+
+        console.log(status)
+
+        let list = []
+        list.push(x)
+        const tr_id = list[0].parentElement.parentElement.children[5].innerHTML
+        console.log(list[0].parentElement.parentElement.children[5].innerHTML)
+
+
+
+        var y = list[0].parentElement.parentElement.children[5]
+        console.log('y' + y)
+
+        $.getJSON('/suppliers/3rd_party_payments_status', {
+            id: tr_id,
+            status: status,
             type: 'POST',
             data: '/suppliers/3rd_party_payments'
 
-          }, function(data){
-              console.log(data)
-            
-          }
-          )
-          
-      }
+        }, function(data) {
+            console.log(data)
 
-  </script>
+        })
 
-            
-            {%endblock%}
+    }
+</script>
+
+
+{%endblock%}
