@@ -13,13 +13,13 @@ from app_main.models import db, User, Request, Posts, Costs, Status, \
     Truck_opt, Truck, Quantity, Ttn, Customer_base, subs, Finance, Paid, Zayvka, Customer
         
 from suppliers.models import Supplier, newSup, Prefin, Documents, \
-    Pochta, Invoicesup, Tn, Supp_payment, Invoice_payment_s, Transit
+    Pochta, Invoicesup, Tn, Supp_payment, Invoice_payment_s, Transit, Tr_status
 
 from customers.models import   Invoicecust, Invoice_payment_c
 from agreements_word.models import *
 
-fin = Finance.query.get(44)
-pay = Paid.query.get(1)
+
+
 
 
 
@@ -45,10 +45,11 @@ def make_shell_context():
             'Transit':Transit,
             'Invoicecust':Invoicecust,
             'Invoice_payment_c':Invoice_payment_c,
-            'Agreements':Agreements
+            'Agreements':Agreements,
+            'Tr_status':Tr_status
             }
 
 
 if __name__=='__main__':
     db.create_all()
-    app.run(debug=True, host='10.10.1.37', port='5000')
+    app.run(debug=True, host='10.10.1.35', port='5000')

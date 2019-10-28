@@ -48,6 +48,9 @@ def logout():
 @app.route('/', methods=['POST', 'GET'])
 @login_required
 def index():
+    
+    if session.get('fin_id'):
+        print('ses finid is :' + str(session['fin_id']))
    
     
     form = ch_customer()

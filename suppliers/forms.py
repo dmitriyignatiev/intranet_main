@@ -102,7 +102,7 @@ class UploadForm(FlaskForm):
 class FormTransit(FlaskForm):
     innadd = StringField('ИНН')
     name_tr = SelectField('Имя', coerce=str)
-    status_tr = SelectField('статус', choices=[('неуспешно', 'неуспешно'), ('успешно', 'успешно')])
+    status_tr = SelectField('статус', coerce=str)
     date_send = DateField('ДАТА Отправки в транзит')
     date_recieved = DateField('Дата получения транзита')
     submit = SubmitField('Записать в базу')

@@ -21,6 +21,7 @@ import json
 
 
 
+
 @supp.route('/index')
 def index():
     return render_template('app_main.base.html')
@@ -771,7 +772,7 @@ def suppliers_payments_to_db():
 
             supp_payment_s.invoice_payment.append(new_payment)
             db.session.commit()
-            tr_db_p = Tr_payments(sum=new_payment.summ_pay, transit_id = transit_model.id, payment_id=new_payment.id, status='неуспешно', )
+            tr_db_p = Tr_payments(sum=new_payment.summ_pay, transit_id = transit_model.id, payment_id=new_payment.id, status='в процессе', transit_date_send=day )
             db.session.add(tr_db_p)
             db.session.commit()
             new_payment.tr_payment.append(tr_db_p)
@@ -886,26 +887,82 @@ def return_data():
 
 @supp.route('/3rd_party_payments', methods=['POST', 'GET'])
 def third_party_payments():
-    all_transit = Transit.query.all()
-    form=FormTransit()
+    all = Tr_payments.query.all()
+    form=FormTransit() 
+    form.status_tr.choices= [(i.id, i.status) for i in Tr_status.query.all()]
+    print(form.status_tr.choices)
+    form.process()
+    return render_template('3rd_party.html',  form=form, all=all )
     
     
-    
-
-
-    
-    return render_template('3rd_party.html', all_transit=all_transit, form=form)
-
-
 
 @supp.route('/3rd_party_payments_status', methods=['POST', 'GET'])
 def third_party_payments_status():
 
     id = request.args.get('id')
     
+    print('eto id: ' + str(id))
+    
+    
     status = request.args.get('status')
     print(status)
-    transit = Transit.query.get(id)
+    transit = Tr_payments.query.get(id)
     transit.status=status
     db.session.commit()
     return jsonify({'success':'done'})
+
+
+@supp.route('/upload_payment_doc_tr', methods=['POST', 'GET'])
+def upload_payment_doc_tr():
+    
+    tr_payment = Tr_payments.query.get(session['tr_id_p'])
+    target = os.path.join(APP_ROOT, 'payments_docs_tr/')
+    if not os.path.isdir(target):
+         os.mkdir(target)
+    if request.method == 'POST':
+        
+        f = request.files.get('file')
+        #подумать
+        f.filename = 'платежка#' + str(tr_payment.id) + str(f.filename)
+        print('this is tr : ' + str(tr_payment))
+        destination = "/".join([target, f.filename])
+        tr_payment.doc_path = f.filename
+        tr_payment.transit_date_recieved=datetime.datetime.now()
+        tr_payment.status = 'успешно'
+
+        db.session.commit()
+
+        
+        print('eto dest: ' + str(destination))
+        f.save(destination)
+
+
+    return redirect (url_for('supp.third_party_payments'))
+
+@supp.route('/get_tr_id', methods=['POST', 'GET'])
+def get_tr_id():
+    p_date = request.args.get('p_date')
+    tr_id_p  = request.args.get('id')
+    print('id is : ' + str(tr_id_p))
+    session['tr_id_p'] = tr_id_p
+    session['tr_p_date'] = p_date
+    print(session['tr_id_p'])
+    return jsonify({'id':session['tr_id_p'], 'p_date':session['tr_p_date'] })
+
+@supp.route('/download_tr_doc_pay/<path:filename>', methods=['GET'])
+def download_tr_doc_pay(filename):
+    return send_from_directory(os.path.join(APP_ROOT, 'payments_docs_tr/'),
+                                filename, as_attachment=True)
+
+
+@supp.route('/tr_save_date', methods=['POST', 'GET'])
+def tr_dave_date():
+    id = request.args.get('id')
+    st_date = request.args.get('p_date')
+    t_date = datetime.datetime.strptime(st_date, "%Y-%m-%d").date()
+    print(t_date)
+    tr_payment = Tr_payments.query.get(id)
+    tr_payment.transit_date_send = t_date
+    print(type(tr_payment.transit_date_send))
+    db.session.commit()
+    return jsonify({'id':id, 'date_send':t_date})
