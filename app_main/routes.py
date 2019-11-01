@@ -11,7 +11,7 @@ from flask import render_template, flash, url_for, redirect, request
 from flask import send_from_directory, session
 
 from app_main import app
-from flask_login import current_user, login_required, login_user, logout_user
+from flask_login import current_user, login_required, login_user, logout_user, login_manager
 from app_main.models import *
 from app_main.forms import *
 
@@ -36,6 +36,8 @@ def checkin_db(exc):
     except AttributeError:
         pass        
 
+
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
@@ -51,6 +53,8 @@ def index():
     
     if session.get('fin_id'):
         print('ses finid is :' + str(session['fin_id']))
+    if session.get('supp_for_inv'):
+        print('sess supp_for_inv: ' + str(session['supp_for_inv']))
    
     
     form = ch_customer()

@@ -15,6 +15,9 @@ import datetime
 from datetime import timedelta
 import json
 
+from flask_login import current_user, login_required, login_user, logout_user
+
+
 
 
 
@@ -651,8 +654,22 @@ def suppliers():
     formINN = formSupplierInn()
     formInv = formSupplierInv()
     formTransit = FormTransit()
+    formName.name.choices = [(g.llc_name, g.llc_name) for g in Supplier.query.all()]
+    if formName.validate_on_submit():
+        name =  formName.name.data
+        supp = Supplier.query.filter_by(llc_name=name).first()
+        session['gid'] = supp.id
+        print('this is gid: ' + str(session.get('gid')))
+    else:
+        print('nnnn')
 
-    print('data ' + formInv.commision.data)
+    formInv.our_company.choices = [(g.name, g.name) for g in Companies.query.all()]
+
+    
+
+    
+   
+    
     
 
 
@@ -665,25 +682,19 @@ def suppliers():
     print('eto: ' + str(name))
     
 
-    suppliers = db.session.query(Prefin.supplier_name, Prefin.sale, db.func.sum(Prefin.s_inv_amount)).group_by(Prefin.supplier_name, Prefin.sale).all()
-
-   
-    
-    supplier = db.session.query(Prefin.supplier_name, Prefin.sale, db.func.sum(Prefin.s_inv_amount)).group_by(Prefin.supplier_name, Prefin.sale).\
-        filter_by(supplier_name=formName.name.data).all()
     
     #### Доделать
     
     
     all = Supplier.query.all()
-    formName.name.choices = [(g.llc_name, g.llc_name) for g in all]
+    
     formINN.check_inn.choices=[(g.inn, g.inn) for g in all]
     formTransit.name_tr.choices = [(g.name, g.name) for g in Transit.query.all() ]
-
+    formInv.our_company.choices = [(g.inn, g.inn) for g in Companies.query.all()]
     
     
 
-
+    supp=Supplier.query.get(1)
     supp = Supplier.query.filter(or_(Supplier.llc_name==formName.name.data, Supplier.inn==formINN.check_inn.data)).first()
     print('eto supp : ' + str(supp))
       #все счета
@@ -712,7 +723,8 @@ def suppliers():
                 formTransit=formTransit, day=datetime.datetime.today())
         
         except AttributeError:
-            formInv.supp_all_invoices.choices = [(g.s_inv_number, g.s_inv_number) for g in Supp_payment.query.all()]
+            print('ttt' + str(formName.name.data))
+            formInv.supp_all_invoices.choices = [(g.s_inv_number, g.s_inv_number) for g in Supp_payment.query.filter_by(supplier_id=session.get('gid')).all()]
     print('eto supp' + str(supp))
 
     return render_template('suppliers.html', formName=formName, formINN=formINN,
@@ -887,7 +899,7 @@ def return_data():
 
 @supp.route('/3rd_party_payments', methods=['POST', 'GET'])
 def third_party_payments():
-    all = Tr_payments.query.all()
+    all = Tr_payments.query.order_by(desc(Tr_payments.transit_date_send)).all()
     form=FormTransit() 
     form.status_tr.choices= [(i.id, i.status) for i in Tr_status.query.all()]
     print(form.status_tr.choices)

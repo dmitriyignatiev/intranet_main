@@ -289,6 +289,8 @@
                         <th>через кого платим(Транзит)</th>
                         <th>Коммисия</th>
                         <th>дата платежа</th>
+                        <th>Наше Юр Лицо</th>
+                        <th>Какой банк использовали</th>
                     </tr>
         </thead>
 
@@ -306,6 +308,9 @@
                 <th bgcolor="#A7AEC9">{{formTransit.name_tr}}</th>
                 <th bgcolor='#B16F61'>{{formInv.commision}}</th>
                 <th bgcolor="#D4EFDF ">{{formInv.date_payment}}</th>
+                <th bgcolor="#D4EFDF ">{{formInv.our_company}}</th>
+                
+                
             </form>
 
         </tbody>
@@ -385,13 +390,15 @@
                 <th>Сумма оплат</th>
                 <th>Дата оплаты</th>
                 <th>Через кого оплачивали</th>
+                <th>Какая наша компания</th>
+                <th>Какой наш банк</th>
 
                 <th>Удалить</th>
 
             </tr>
         </thead>
         <tbody>
-            {%for inv in supp.supp_payment.all()%} {%if inv.s_inv_number%}
+            {%for inv in supp.supp_payment.all()%} {%if inv.s_inv_number %}
             <tr>
 
                 <th>
@@ -424,6 +431,8 @@
 
 
                 </th>
+                <th>Тора</th>
+                <th>Банк</th>
 
                 <th>
                     {%for invs in supp.invoice_payment%} {%if invs.supp_payment == inv.id%}

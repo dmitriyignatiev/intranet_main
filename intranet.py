@@ -13,7 +13,7 @@ from app_main.models import db, User, Request, Posts, Costs, Status, \
     Truck_opt, Truck, Quantity, Ttn, Customer_base, subs, Finance, Paid, Zayvka, Customer
         
 from suppliers.models import Supplier, newSup, Prefin, Documents, \
-    Pochta, Invoicesup, Tn, Supp_payment, Invoice_payment_s, Transit, Tr_status
+    Pochta, Invoicesup, Tn, Supp_payment, Invoice_payment_s, Transit, Tr_status, Companies, Bank
 
 from customers.models import   Invoicecust, Invoice_payment_c
 from agreements_word.models import *
@@ -29,8 +29,8 @@ def make_shell_context():
             'Direction':Direction, 'Agreement':Agreement, 'Customer':Customer, 'Agg_number':Agg_number,
             'Who_number':Who_number, 'Truck':Truck, 'Quantity':Quantity, 'Truck_opt':Truck_opt, 'Ttn':Ttn,
             'Customer_base':Customer_base, 'db':db, 'subs':subs, 'day':day, 'Finance':Finance, 'Paid':Paid, 
-            'fin':fin, 
-            'pay':pay,
+            
+            
             'Supplier':Supplier,
             'newSup': newSup,
             'Prefin': Prefin,
@@ -46,10 +46,12 @@ def make_shell_context():
             'Invoicecust':Invoicecust,
             'Invoice_payment_c':Invoice_payment_c,
             'Agreements':Agreements,
-            'Tr_status':Tr_status
+            'Tr_status':Tr_status,
+            'Companies':Companies,
+            'Bank': Bank
             }
 
 
 if __name__=='__main__':
     db.create_all()
-    app.run(debug=True, host='10.10.1.35', port='5000')
+    app.run(debug=True, host='10.10.1.39', port='5000')

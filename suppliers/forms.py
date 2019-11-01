@@ -77,6 +77,10 @@ class formSupplierInv(FlaskForm):
       ], validators=[DataRequired()]
     )
     date_payment = DateField('Дата платежа')
+    our_company = SelectField('наша компания',  coerce=str) 
+    our_bank = SelectField('Банк', coerce=str) 
+    
+    
     submit = SubmitField('Подтвердить Выбор')
 
 

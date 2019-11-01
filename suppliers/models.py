@@ -9,6 +9,12 @@ finsupp_table = db.Table('finsup',
                     )
 
 
+comp_supp = db.Table('comp_supp',
+            db.Column('supplier_id', db.Integer, db.ForeignKey('supplier.id')),
+            db.Column('company_id', db.Integer, db.ForeignKey('companies.id'))
+            )
+
+
 class Supplier(db.Model):
     id = db.Column (db.Integer, primary_key=True)
     llc = db.Column (db.String (240))
@@ -32,6 +38,12 @@ class Supplier(db.Model):
     supp_payment = db.relationship('Supp_payment', backref='supp_payment', lazy='dynamic')
     inv = db.relationship('Invoicesup', backref='supplier', lazy='dynamic')
     invoice_payment = db.relationship('Invoice_payment_s', backref='supplier', lazy='dynamic')
+
+    company = db.relationship('Companies', secondary=comp_supp,
+                               
+                                backref=db.backref('supplier', lazy='dynamic')
+    )
+    
 
     def total_cost(self):
         total_summ = 0;
@@ -376,6 +388,26 @@ class Tr_payments(db.Model):
 class Tr_status(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     status = db.Column(db.Text)
+
+
+#our company + many-to-many with suppliers
+
+
+class Companies(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    inn = db.Column(db.Text)
+    name = db.Column(db.Text)
+    bank = db.relationship('Bank', backref='company', lazy='dynamic')
+    
+
+class Bank(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text)
+    company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
+    
+    
+
+
 
 
 
