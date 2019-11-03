@@ -291,6 +291,7 @@
                         <th>дата платежа</th>
                         <th>Наше Юр Лицо</th>
                         <th>Какой банк использовали</th>
+                        
                     </tr>
         </thead>
 
@@ -394,6 +395,7 @@
                 <th>Какой наш банк</th>
 
                 <th>Удалить</th>
+                <th># Транзит</th>
 
             </tr>
         </thead>
@@ -437,15 +439,32 @@
                 <th>
                     {%for invs in supp.invoice_payment%} {%if invs.supp_payment == inv.id%}
 
-                    <p id='id'>
+                    <p id='id' >
 
-                        <button id='remove_payment' style="color:red" class="glyphicon glyphicon-remove-circle">{{invs.id}}</button></p>
+                        <button  id='remove_payment' style="color:red" class="glyphicon glyphicon-remove-circle" {%if invs.tr_payment[0].status=='успешно'%} disabled {%else%} enabled {%endif%}>{{invs.id}}</button></p>
 
 
                     </p>
 
 
+
                     {%endif%} {%endfor%}
+                </th>
+                <th>
+                        {%for invs in supp.invoice_payment%} {%if invs.supp_payment == inv.id%}
+                            {%if invs.tr_payment%}
+                        <p id='id' {%if invs.tr_payment[0].status == 'успешно'%} style="color: rgb(127, 176, 255);" {%else%} style="color: crimson;" {%endif%}>
+    
+                           {{invs.tr_payment[0].id}}
+    
+    
+                        </p>
+                            {%endif%}
+    
+    
+    
+                        {%endif%} {%endfor%}
+
                 </th>
 
 </div>

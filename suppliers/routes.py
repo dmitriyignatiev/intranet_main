@@ -206,9 +206,6 @@ def prefin():
                         unloading_place=unloading_place,
                         cargo_character = request_one.cargo_desciption,
                         supplier_name=supplier_id.llc_name,
-                    
-                        
-
                         status_of_request=status_of_request,
                         s_invoice_number=s_invoice_number,
                         s_inv_amount=s_inv_amount,
@@ -527,7 +524,7 @@ def prefin_change_id_test(id):
     if request.method=='POST':
         print('eto s_inv_number'+ str(fin.s_invoice_number))
         
-        if not fin.s_invoice_number:
+        if not fin.s_invoice_number or fin.s_invoice_number != form.s_invoice_number.data:
             fin.s_invoice_number =form.s_invoice_number.data 
         
         
@@ -841,9 +838,12 @@ def remove_payment(id):
     if request.method=='GET':
         print('eto:' + str(id))
         payment = Invoice_payment_s.query.get(id)
+        tr = Tr_payments.query.filter_by(payment_id=payment.id).first()
+        
         
         if payment:
             db.session.delete(payment)
+            db.session.delete(tr)
             
             db.session.commit()
             return jsonify({'success_remove': 'Запись удалена'})
@@ -978,3 +978,8 @@ def tr_dave_date():
     print(type(tr_payment.transit_date_send))
     db.session.commit()
     return jsonify({'id':id, 'date_send':t_date})
+
+@supp.route('/test')
+def test():
+    r = Tr_payments.query.all()
+    return render_template('test.html', r=r)
