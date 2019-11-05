@@ -1,42 +1,45 @@
 {% extends "base.html" %}
-{%block head%} {{super()}}
+{%block head%}
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-  
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.js">
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" /> {%endblock%}
+    <script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">   
+    
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css"></style>
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.0/css/buttons.dataTables.min.css"></style>
+    
+    
+    <script src="https://code.jquery.com/jquery-3.3.1.js"> </script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"> </script>
+    <script src="https://cdn.datatables.net/buttons/1.6.0/js/dataTables.buttons.min.js"> </script>
+    <script src="https://cdn.datatables.net/buttons/1.6.0/js/buttons.flash.min.js"> </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"> </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"> </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"> </script>
+    <script src="https://cdn.datatables.net/buttons/1.6.0/js/buttons.html5.min.js"> </script>
+    <script src="https://cdn.datatables.net/buttons/1.6.0/js/buttons.print.min.js"> </script>
     
     
    
     
 
 </head>
+{%endblock%}
 <body>
 
 
  {%block content%}
  
- <form action="">
-     <input type="text">
- </form>
- 
+
 
 
   
 
-<button onclick="exportTableToExcel('tblData')">Export Table Data To Excel File</button>
+
 
 {%if current_user.role == 'account'%}
 <a href="{{url_for('supp.need_inv')}}"><button>Выставить счета</button></a>
@@ -52,7 +55,7 @@
 <div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
 <div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
     
-      <table class="table" id="tblData">
+      <table class="table" id="example">
         <thead>
       
             <th >Действие</th>
@@ -260,6 +263,21 @@
 
   
   </script>
+{%endblock%}
+
+{%block scripts%}
+<script>
+$(document).ready(function() {
+    $('#example').DataTable( {
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+
+    
+} );
+</script>
 {%endblock%}
 
 

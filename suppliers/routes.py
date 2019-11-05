@@ -981,5 +981,20 @@ def tr_dave_date():
 
 @supp.route('/test')
 def test():
+    form = formSupplier()
+
     r = Tr_payments.query.all()
-    return render_template('test.html', r=r)
+    return render_template('test.html', r=r, form=form)
+
+@supp.route('/confirm_transit', methods=['POST', 'GET'])
+def confirm_transit():
+   
+    id = request.args.get('node')
+    sum = request.args.get('sum')
+    tr = Tr_payments.query.get(id)
+    tr.sum = sum
+    tr.payment.summ_pay=sum
+    tr.confirm=1
+    db.session.commit()
+
+    return jsonify({'list_id':id, 'sum':sum})

@@ -384,6 +384,7 @@ class Tr_payments(db.Model):
     transit_date_send = db.Column(db.DateTime)
     transit_date_recieved = db.Column(db.DateTime)
     doc_path = db.Column(db.Text)
+    confirm = db.Column(db.Integer)
 
 class Tr_status(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -1,6 +1,21 @@
- {%extends 'base.html'%} {%block head%} {{super()}}
+ {%extends 'base.html'%} {%block head%}
 
-
+ <script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+ <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">   
+ 
+ <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css"></style>
+ <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.0/css/buttons.dataTables.min.css"></style>
+ 
+ 
+ <script src="https://code.jquery.com/jquery-3.3.1.js"> </script>
+ <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"> </script>
+ <script src="https://cdn.datatables.net/buttons/1.6.0/js/dataTables.buttons.min.js"> </script>
+ <script src="https://cdn.datatables.net/buttons/1.6.0/js/buttons.flash.min.js"> </script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"> </script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"> </script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"> </script>
+ <script src="https://cdn.datatables.net/buttons/1.6.0/js/buttons.html5.min.js"> </script>
+ <script src="https://cdn.datatables.net/buttons/1.6.0/js/buttons.print.min.js"> </script>
 
 
 
@@ -44,8 +59,7 @@
         </div>
        <input id="myInput" type="text" placeholder="Search..">
        <br><br>
-    <table table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%"
-    >
+    <table table id="example" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
         <thead>
             <tr>
                 <th>Третья сторона</th>
@@ -57,8 +71,15 @@
                 <th>Платежка</th>
                 <th>Поставщик</th>
                 <th>Счет</th>
-                <th>Работа</th>
-            </tr>
+                <th style="display: none;">Работа</th>
+                <tfoot>
+                        <tr>
+                            <th> SUM selected:</th>
+                            <th class='sum'>  </th>
+                            <th colspan="2" style="text-align:right">Total:</th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
         </thead>
         <tbody id="transit_t">
             {%for payment in all%}
@@ -105,18 +126,23 @@
                 
                 <td onchange=ChangeStatus(event)>
                 
-                    <p>{{payment.status}}</p>                    
+                    {{payment.status}}                   
                     
                 </td>
             
-                <td style="display: block;" name='tr_id'>{{payment.id}}</td>
+                <td  name='tr_id'>{{payment.id}} 
+                        {%if payment.payment.supp_payment_s%}
+                       <a href="{{url_for('supp.prefin_change_id_test', id=payment.payment.supp_payment_s.supp_p.id)}}">
+                       {{payment.payment.supp_payment_s.supp_p.id}}</a>
+                        {%endif%}
+                </td>
                 <td  name='xxx' class='s_div' onclick=functionShow(event)>
                        
                     
                         
                 Прикрепить платежку
                 {%if payment.doc_path%}
-                <p><a href="{{url_for('supp.download_tr_doc_pay', filename=payment.doc_path)}}">{{payment.doc_path}}</a></p>
+                <a href="{{url_for('supp.download_tr_doc_pay', filename=payment.doc_path)}}">{{payment.doc_path}}</a>
                 {%else%}
                     Платежки нет
                 {%endif%}
@@ -125,26 +151,17 @@
                 </td>
 
                 <td style="display: none;">{{payment.transit_date_recieved}}</td>
-                <th>
+                <td>
                     {%if payment.payment.supplier %}
                         {{payment.payment.supp_payment_s.supp_p.supplier_name}}
                     {%endif%}
-                </th>
-                <th>
+                </td>
+                <td>
                     {%if payment.payment.supp_payment_s%}
                     {{payment.payment.supp_payment_s.supp_p.s_invoice_number}}
                     {%endif%}
-                </th>
-                <th>
-                        {%if payment.payment.supp_payment_s%}
-                       <a href="{{url_for('supp.prefin_change_id_test', id=payment.payment.supp_payment_s.supp_p.id)}}">
-                       {{payment.payment.supp_payment_s.supp_p.id}}</a>
-                        {%endif%}
-                </th>
+                </td>
                
-                    
-                
-          
 
             </tr>
             {%endfor%}
@@ -173,7 +190,68 @@
 
 {%block scripts%}  
 
+<script>
+
+
+$(document).ready(function() {
+    var sum = 0;
+    var test;
+    $('#example').dataTable( {
+       
+     
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ],
+
+
+        "footerCallback": function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+ 
+            // Remove the formatting to get integer data for summation
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\₽,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+ 
+            // Total over all pages
+            total = api
+                .column(1)
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                    test = intVal(a) + intVal(b);
+                    
+                } );
+
+            console.log(data)
+
+            
+ 
+            // Total over this page
+            pageTotal = api
+                .column( 1, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+ 
+            // Update footer
+            $( api.column( 1 ).footer() ).html(
+                '₽'+pageTotal +' ( ₽'+ total +' total)'
+            );
+
+         
+        }
+        
+    } );
+
+  
+} );
 </script>
+
 
 <script>
                     function functionShow(event){

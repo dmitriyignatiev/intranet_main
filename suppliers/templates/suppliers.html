@@ -453,7 +453,7 @@
                 <th>
                         {%for invs in supp.invoice_payment%} {%if invs.supp_payment == inv.id%}
                             {%if invs.tr_payment%}
-                        <p id='id' {%if invs.tr_payment[0].status == 'успешно'%} style="color: rgb(127, 176, 255);" {%else%} style="color: crimson;" {%endif%}>
+                        <p id='id' {%if (invs.tr_payment[0].status == 'успешно') or (invs.tr_payment[0].confirm== 1 ) %} style="color: rgb(127, 176, 255);" {%else%} style="color: crimson;" {%endif%}>
     
                            {{invs.tr_payment[0].id}}
     
