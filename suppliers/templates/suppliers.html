@@ -225,45 +225,51 @@
 
                 <tr {% if (inv in supp.bad_debt()) and (inv.still_own() !=0) %} style="background-color:#ff9999;" {%endif%}>
 
-                    <th id='id' style="display:none;">{{inv.supplier_id}}</th>
+                    <td id='id' style="display:none;">{{inv.supplier_id}}</td>
 
                     {%if inv.s_inv_number%}
-                    <th>{{inv.s_inv_number}}</th>
+                    <td>{{inv.s_inv_number}}</td>
                     {%else%}
-                    <th>Номер отсутствует</th>
+                    <td>Номер отсутствует</td>
                     {%endif%} {%if inv.s_invoice_date%}
-                    <th>{{inv.s_invoice_date.strftime('%Y-%m-%d')}}</th>
+                    <td>{{inv.s_invoice_date.strftime('%Y-%m-%d')}}</td>
                     {%else%}
-                    <th>Дата отсутствует</th>
+                    <td>Дата отсутствует</td>
                     {%endif%} {%if inv.day_plan_pay%}
-                    <th>{{inv.day_plan_pay.strftime('%Y-%m-%d')}}</th>
+                    <td>{{inv.day_plan_pay.strftime('%Y-%m-%d')}}</td>
                     {%else%}
-                    <th>Дата отcутствует</th>
+                    <td>Дата отcутствует</td>
                     {%endif%}
-                    <th>{{inv.s_inv_amount}}</th>
-                    <th><a href="{{url_for('supp.prefin_change_id_test', id=inv.fin_id)}}">{{inv.fin_id}}</a></th>
-                    <th>{{inv.tora_red}}</th>
-                    <th>
+                    <td>{{inv.s_inv_amount}}</td>
+                    <td><a href="{{url_for('supp.prefin_change_id_test', id=inv.fin_id)}}">{{inv.fin_id}}</a></td>
+                    <td>{{inv.tora_red}}</td>
+                    <td>
+
                         {%for path in inv.invoice()%}
+                        {%if path%}
                         <p><a href="{{url_for('supp.download_s_inv', filename=path)}}">{{path}}</a></p>
+                        {%endif%}
+                        
+                        {%else%}
+                        none
                         {%endfor%}
 
-                    </th>
+                    </td>
 
-                    <th>{{inv.still_own()}}</th>
-
-
-                    <th>{{inv.last_payment()}}</th>
+                    <td>{{inv.still_own()}}</td>
 
 
-
-                    <th>{{inv.count_payments()}}</th>
+                    <td>{{inv.last_payment()}}</td>
 
 
 
-                    <th>
+                    <td>{{inv.count_payments()}}</td>
+
+
+
+                    <td>
                         {%if inv.day_plan_pay%} {{day - inv.day_plan_pay}} {%else%} даты оплаты не запланирована {%endif%}
-                    </th>
+                    </td>
 
 
 
@@ -441,7 +447,7 @@
 
                     <p id='id' >
 
-                        <button  id='remove_payment' style="color:red" class="glyphicon glyphicon-remove-circle" {%if invs.tr_payment[0].status=='успешно'%} disabled {%else%} enabled {%endif%}>{{invs.id}}</button></p>
+                        <button  id='remove_payment' style="color:red" class="glyphicon glyphicon-remove-circle" {%if (invs.tr_payment[0].status=='успешно') or (invs.tr_payment[0].confirm==1) %} disabled {%else%} enabled {%endif%}>{{invs.id}}</button></p>
 
 
                     </p>

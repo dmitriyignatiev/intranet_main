@@ -219,7 +219,16 @@ def prefin():
                         cost_with_vat = cost_with_vat,
                         profit = c_inv_amount-cost_with_vat
                         
+                        
                         )
+            db.session.add(newFin)
+            db.session.commit()
+            newFin.supplier.append(supplier_id)
+            supp_inv_draft = Supp_payment(s_inv_amount=s_inv_amount, supplier_id=supplier_id.id, fin_id=newFin.id)
+            db.session.add(supp_inv_draft)
+            
+
+           
             request_one.complete_fin=1
             if request_one.zayvka.first():
                 newFin.zayvka.append(request_one.zayvka.first())
@@ -233,10 +242,10 @@ def prefin():
                 db.session.commit()
                 newFin.supplier.append(supplier_id)
                 return jsonify({'success':'данные успешно внесены в базу но без заявки', 'req_id':  newFin.id})
-                
+              
            
         else:
-            print('customer:' + customer)
+            print('customer VGGFGF:' + customer)
             newFin=Prefin.query.filter_by(req_id=req_id).first()
             newFin.tora_red = tora_red,
             newFin.req_id=req_id,
@@ -247,8 +256,9 @@ def prefin():
             newFin.buyer = buyer,
             newFin.customer_name=customer,
             newFin.cargo_character = request_one.cargo_desciption,
-
+            
             newFin.supplier_name=supplier_id.llc_name,
+            newFin.supplier_id = supplier_id.id,
             newFinloading_place=loading_place,
             newFin.unloading_place=unloading_place,
             newFin.status_of_request=status_of_request,
@@ -256,7 +266,7 @@ def prefin():
             newFin.s_inv_amount=s_inv_amount,
             newFin.s_inv_vat = s_inv_vat,
             newFin.c_inv_amount=int(c_inv_amount),
-            newFin.supplier_id = supplier_id.id,
+            
             newFin.loading_date = pick_up_date,
             newFin.unloading_date = unloading_date,
             newFin.s_inv_date = s_inv_date,
@@ -266,7 +276,12 @@ def prefin():
             if request_one.zayvka.first():
                 newFin.zayvka.append(request_one.zayvka.first())
                 newFin.supplier = []
-
+                newFin.supplier.append(supplier_id)
+                # newFin.supplier.first().supp_payment.append
+                db.session.add(newFin)
+                db.session.commit()
+            else:
+                newFin.supplier = []
                 newFin.supplier.append(supplier_id)
                 db.session.add(newFin)
                 db.session.commit()
@@ -481,14 +496,20 @@ def upload_с_invoice():
 def prefin_change_id_test(id):
     form = formSupplier()
     form_n = UploadForm()
-    # 
-    
+    form.name.choices =[(g.id, g.llc_name) for g in Supplier.query.all()]
+    print(form.name.choices)
+   
     print(form)
     fin = Prefin.query.get(id)
     print(fin.c_inv_number)
     session['fin_id'] = fin.id
     print(session['fin_id'])
-    invoices = Invoicesup.query.filter(Invoicesup.fin_id==fin.id).all()
+
+    fin_model = Prefin.query.get(session.get('fin_id'))
+    fin_test = Prefin.query.get(105)
+    
+    #put all supplier name to list
+    
     invoicec = Invoicecust.query.all()
 
     req = Request.query.filter_by(id=fin.req_id).first()
@@ -508,98 +529,9 @@ def prefin_change_id_test(id):
     c_plan_day = req.customer.payment_day + 4
     
     
-    print('forma: ' + str(form.s_invoice_number.data))
-   
-   
-    ####Доделать
-
-
-   
+    print('forma: ' + str(form.s_invoice_number.data))  
     
-
-    
-       
-    
-    
-    if request.method=='POST':
-        print('eto s_inv_number'+ str(fin.s_invoice_number))
-        
-        if not fin.s_invoice_number or fin.s_invoice_number != form.s_invoice_number.data:
-            fin.s_invoice_number =form.s_invoice_number.data 
-        
-        
-        fin.s_inv_date = form.s_inv_date.data
-        fin.s_inv_date_to_pay = form.s_inv_das_inv_date_to_pay.data
-        fin.c_inv_number=form.c_inv_number.data
-        fin.c_invoice_date=form.c_invoice_date.data
-        
-        
-        
-        if fin.c_invoice_date:
-            fin.c_inv_plan_pay = fin.c_invoice_date + datetime.timedelta(days=c_plan_day)
-        else:
-            fin.c_inv_plan_pay=form.c_inv_plan_pay.data
-
-        
-
-        print(fin.s_invoice_number)
-        db.session.commit()
-
-        exist_invoice = Invoicecust.query.filter_by(prefin_id=fin.id).first()
-        if not exist_invoice:
-            invoice = Invoicecust(invoice_number = fin.c_inv_number,\
-                                  invoice_amount = fin.c_inv_amount,\
-                                   invoice_date = fin.c_invoice_date,\
-                                   invoice_deadline_payment = fin.c_inv_plan_pay,\
-                                       )
-            db.session.add(invoice)
-            db.session.commit()
-            fin.invc.append(invoice)
-            cust.invoices.append(invoice)
-            db.session.commit()
-        else:
-            exist_invoice.invoice_number = fin.c_inv_number
-            exist_invoice.invoice_amount = fin.c_inv_amount
-            exist_invoice.invoice_date = fin.c_invoice_date
-            exist_invoice.invoice_deadline_payment= fin.c_inv_plan_pay
-
-            
-            db.session.commit()
-
-
-   
-
-    supp_p = Supp_payment.query.filter(and_(Supp_payment.supplier_id==fin.supplier_id, 
-                                            Supp_payment.fin_id==fin.id)).first()
-
-    if supp_p:
-        supp_p.s_inv_number=fin.s_invoice_number,
-        supp_p.s_invoice_date=fin.s_inv_date,
-        supp_p.s_inv_amount=fin.s_inv_amount,
-        supp_p.day_plan_pay = fin.s_inv_date_to_pay,
-        supp_p.fin_id = fin.id,
-        supp_p.tora_red = fin.tora_red,
-        db.session.commit()
-    else:
-        supp_p = Supp_payment(
-                                    s_invoice_date=fin.s_inv_date,
-                                    s_inv_amount=fin.s_inv_amount,
-                                    day_plan_pay = form.s_inv_das_inv_date_to_pay.data,
-                                    fin_id = fin.id,
-        
-       
-
-
-                                    s_inv_pay_day=form.s_inv_das_inv_date_to_pay.data,
-                                    supplier_id=fin.supplier_id,
-                                    
-                                    )
-   
-        db.session.add(supp_p)                            
-        db.session.commit()
-
-    
-    return render_template('finance_change_test.html', supp_p=supp_p, fin=fin, form=form, invoices=invoices, req=req, invoicec=invoicec, tn=tn, docs=docs, form_n=form_n, ttn=ttn, zayavka=zayavka, invs=invs )
+    return render_template('finance_change_test.html', supp=supp, fin=fin, form=form, req=req, tn=tn, docs=docs, form_n=form_n, ttn=ttn, zayavka=zayavka, invs=invs )
 
 
 @supp.route('/download_file_s_tn/<path:filename>', methods=['GET'])
@@ -992,9 +924,243 @@ def confirm_transit():
     id = request.args.get('node')
     sum = request.args.get('sum')
     tr = Tr_payments.query.get(id)
-    tr.sum = sum
-    tr.payment.summ_pay=sum
-    tr.confirm=1
-    db.session.commit()
+    if tr.confirm != 1:
+        tr.sum = sum
+        tr.payment.summ_pay=sum
+        tr.confirm=1
+        db.session.commit()
 
     return jsonify({'list_id':id, 'sum':sum})
+
+
+#record ro db supp invoice amount in change_test_id route
+@supp.route('/lets', methods=["POST", "GET"])
+def lets():
+    fin_id = request.args.get('id')
+    print('this is id: ' + str(id))
+    supp_id = request.args.get('supp_id')
+    
+    invoice_number = request.args.get('invoice_number')
+    summ_invoice = request.args.get('summ_invoice')
+    date_inv = request.args.get('date_inv')
+    date_inv_pay = request.args.get('date_inv_pay')
+    inv_currency = request.args.get('inv_currency')
+
+    date_inv = datetime.datetime.strptime(date_inv, "%Y-%m-%d")
+    date_inv_pay = datetime.datetime.strptime(date_inv_pay, "%Y-%m-%d")
+   
+    fin = Prefin.query.get(fin_id)
+    supp = Supplier.query.get(supp_id)
+
+    invoice = Supp_payment(s_inv_number=invoice_number,
+                          s_invoice_date = date_inv,
+                        s_inv_amount = summ_invoice, 
+                        s_inv_currency = inv_currency,
+                        s_inv_pay_day = date_inv_pay,
+                        supplier_id = supp_id,
+                        fin_id = fin.id)
+    db.session.add(invoice)
+    db.session.commit()
+    supp.supp_payment.append(invoice)
+    db.session.commit()
+    
+
+
+    return jsonify({'supp_id':supp_id, 
+                    'fin_id':fin_id, 'invoice_number':invoice_number,
+                     'date_inv':date_inv, 'date_inv_pay':date_inv_pay,
+                     'summ_invoice':summ_invoice })
+
+import json
+
+#change supp in fin
+@supp.route('/change_supp_fin', methods=["POST", "GET"])
+def change_supp_fin():
+
+
+    fin_id = request.args.get('id')
+    print('assads' + str(fin_id))
+
+    #search current supplier
+
+
+
+ 
+    supp_id = request.args.get('supp_id')
+
+    fin = Prefin.query.get(fin_id)
+
+
+    
+    new_supp = Supplier.query.get(supp_id)
+
+    invoice_number = request.args.get('invoice_number')
+    summ_invoice = request.args.get('summ_invoice')
+    date_inv = request.args.get('date_inv')
+    date_inv_pay = request.args.get('date_inv_pay')
+    inv_currency = request.args.get('inv_currency')
+
+    x = request.args.get('x')
+    
+    
+    
+
+    supp = Supplier.query.get(supp_id)
+    
+   
+
+    # if fin.supplier:
+    #     if fin in supp.prefin:
+    #         supp.prefin.remove(fin)
+    return jsonify({'supp_id':supp_id, 'fin':fin_id, 'x':x})
+
+
+@supp.route('/add_supp_to_fin', methods=['POST', 'GET'])
+def add_supp_to_fin():
+    fin_id = request.args.get('fin_id')
+    supp_id = request.args.get('supp_id')
+    s_inv_number = request.args.get("s_inv_number")
+    s_inv_amount = request.args.get("s_inv_amount")
+    s_inv_date=request.args.get("s_inv_date")
+    s_inv_deadline=request.args.get("s_inv_deadline")
+    vat = request.args.get("vat")
+    currency = request.args.get("currency")
+
+    if s_inv_amount == 0:
+        s_inv_amount == None
+
+    
+    try:
+        s_inv_date = datetime.datetime.strptime(s_inv_date, '%Y-%m-%d')
+    except ValueError:    
+        s_inv_date=None
+    try:
+        s_inv_deadline = datetime.datetime.strptime(s_inv_deadline, '%Y-%m-%d')
+    except ValueError:
+        s_inv_deadline=None
+        
+    
+
+    fin = Prefin.query.get(fin_id)
+    supp = Supplier.query.get(supp_id)
+
+    
+    
+    if  supp not in fin.supplier:
+        fin.supplier.append(supp)
+     
+        new_inv = Supp_payment(s_inv_number=s_inv_number, s_inv_amount=s_inv_amount,\
+                    s_invoice_date=s_inv_date, s_inv_currency=currency,\
+                    s_inv_pay_day=s_inv_deadline, vat=vat, supp_payment=supp, fin_id=fin_id)
+     
+       
+        db.session.add(new_inv)
+        
+
+        db.session.commit()
+
+
+        return jsonify({'fin_id':fin_id, 'success':'поставщик был добавлен в работу'})
+    else:
+        return jsonify({ 'error':'неудачно, поставщик уже есть в работе'})
+
+#доделать
+@supp.route('/dell_supp_from_fin', methods=['POST', 'GET'])
+def dell_supp_from_fin():
+    supp_id = request.args.get('supp_id')
+    supp = Supplier.query.get(supp_id)
+
+    fin_id = request.args.get('fin_id')
+    fin = Prefin.query.get(fin_id)
+    return jsonify({'success':'поставщик был успешно удален'})
+
+@supp.route('/add_inv_to_supp', methods=['GET', 'POST'])
+def add_inv_to_supp():
+    supp_id = request.args.get('supp_id')
+    supp = Supplier.query.get(supp_id)
+    fin_id = request.args.get('fin_id')
+    fin = Prefin.query.get(fin_id)
+    invoice_id = request.args.get('invoice_id')
+    s_inv_number = request.args.get('s_inv_number')
+    s_inv_amount = request.args.get('s_inv_amount')
+    s_inv_date = request.args.get('s_inv_date')
+    s_inv_deadline = request.args.get('s_inv_deadline')
+    vat = request.args.get('vat')
+    currency = request.args.get('currency')
+    print(invoice_id)
+
+    current_inv = Supp_payment.query.get(invoice_id)
+    print(current_inv)
+
+    print(s_inv_date)
+
+    if current_inv:
+        current_inv.supplier_id = supp_id
+        current_inv.fin_id=fin_id
+        current_inv.s_inv_number=s_inv_number
+        current_inv.s_inv_amount=s_inv_amount
+        current_inv.s_invoice_date=s_inv_date or None
+        current_inv.s_inv_pay_day=s_inv_deadline or None
+        current_inv.s_inv_currency=currency
+        current_inv.vat=vat
+
+    
+        
+        db.session.commit()
+
+
+
+
+
+    return jsonify({'inv_id':invoice_id, "fin_id": fin_id, 'sup_id': supp_id, 's_inv_number': s_inv_number,
+    "s_inv_amount": s_inv_amount, "s_inv_date": s_inv_date, "s_inv_deadline": s_inv_deadline,
+    "vat": vat, "currency": currency})
+
+
+@supp.route('/del_inv_from_supp', methods=['GET', 'POST'])
+def del_inv_from_supp():
+    supp_id = request.args.get('supp_id')
+    supp = Supplier.query.get(supp_id)
+    fin_id = request.args.get('fin_id')
+    fin = Prefin.query.get(fin_id)
+    invoice_id = request.args.get('invoice_id')
+    s_inv_number = request.args.get('s_inv_number')
+    s_inv_amount = request.args.get('s_inv_amount')
+    s_inv_date = request.args.get('s_inv_date')
+    s_inv_deadline = request.args.get('s_inv_deadline')
+    vat = request.args.get('vat')
+    currency = request.args.get('currency')
+    print(invoice_id)
+
+    current_inv = Supp_payment.query.get(invoice_id)
+    print(current_inv)
+
+    print(s_inv_date)
+    suppInvList=[i for i in fin.supp_payments if i.supplier_id==supp_id]
+    print(suppInvList)
+    print(len(suppInvList))
+
+    if current_inv and len(suppInvList)>0:
+        db.session.delete(current_inv)        
+        db.session.commit()
+    elif current_inv and len(suppInvList)==0:
+        db.session.delete(current_inv) 
+        for f in supp.prefin:
+            print(f)
+            if f.supplier_id==supp.id:
+                supp.prefin.remove(f)
+                db.session.commit()
+
+
+
+
+
+
+    return jsonify({'inv_id':invoice_id, "fin_id": fin_id, 'sup_id': supp_id, 's_inv_number': s_inv_number,
+    "s_inv_amount": s_inv_amount, "s_inv_date": s_inv_date, "s_inv_deadline": s_inv_deadline,
+    "vat": vat, "currency": currency})
+
+
+
+    
+    

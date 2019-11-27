@@ -140,8 +140,10 @@ class Supp_payment(db.Model):
     supplier_id = db.Column(db.Integer, db.ForeignKey('supplier.id')) 
     fin_id = db.Column(db.Integer, db.ForeignKey('prefin.id'))
     day_plan_pay = db.Column(db.DateTime)
+    vat = db.Column(db.String(120))
     invoice_payment = db.relationship('Invoice_payment_s', backref='supp_payment_s', lazy='dynamic')
     invoice_path = db.relationship('Invoicesup', backref='supp_payment', lazy='dynamic')
+
 
 
     #возвращает значение сколько мы остаемся должны
@@ -301,7 +303,7 @@ class Prefin(db.Model):
     tn_doc = db.relationship('Tn', backref='prefin', lazy='dynamic')
     supp_payments = db.relationship('Supp_payment', backref='supp_p', lazy='dynamic')
     request_id = db.Column(db.Integer, db.ForeignKey('request.id'))
-
+   
        
 
     def pochta_cost(self):
@@ -385,6 +387,7 @@ class Tr_payments(db.Model):
     transit_date_recieved = db.Column(db.DateTime)
     doc_path = db.Column(db.Text)
     confirm = db.Column(db.Integer)
+    commision = db.Column(db.Float)
 
 class Tr_status(db.Model):
     id = db.Column(db.Integer, primary_key=True)

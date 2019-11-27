@@ -1,0 +1,173 @@
+
+1.) Setup Dreamhost for basic flask web app
+2.) Simple Secure Application
+    a.) Admin User, create users and password
+    b.) test of site is access restricted
+    c.) Securely store username and password
+    d.) Product Document describing how the security work and why it secure
+    
+3.) Create Database entry for 'Organizations'
+    a.) Import CSV file into the 'Organization' table in SQL Lite Database
+    
+------------ Databases   -------------------------
+-> Multiple Database
+-> Primary Key:  Combination of OrganizationName and State. 
+
+---> Main Database <---
+ [Organizations Table] 
+ [MarketDataset Table]
+ 
+ ---> Database per entry in Organization Table <----
+    [Contacts Table]
+    [EnergyCost Table]
+    [Site Table]
+    etc
+    
+    
+--------------------------------------------------------------
+
+     b.) For each Organizatoin create blank Database with Tables.
+            Store in username/public/../private/SolarData/State/OrgName/data.sqlite
+        
+4.) 'Total' Data Entry for Organzation (data into [EnergyCost Table] per Org
+    a.) Create 'Add/Edit Organization' data Page for login in users
+    b.) Provide a List States (check Org Table in Main DB)
+    c.) Based on State selected display list of Orgs (Org Table in Main DB)
+    d.) Upon Selection of both state and ORG, display all the data in EnergyCost Table.
+      Average and Total are recalculated based on input!
+    Example:
+    
+    Site: {GrandTotal}
+    
+    Year 2017
+    ---------------------------------------------------------------------------------------------------
+    |     | Months |  Jan  | Feb | Mar | Apr | May | Jun | July | Aug | Sep | Oct | Nov | Dec | Total |
+    ---------------------------------------------------------------------------------------------------
+    |Energy in kwh |  0    | 10  | 3   | 0   |  0  |     |   0  |     |     |     |     |     |       |
+    ---------------------------------------------------------------------------------------------------
+    | Cost in $    | 0     | $5  | $1  | 0   |  0  |     |  0   |     |     |     |     |     |       |
+    ---------------------------------------------------------------------------------------------------
+    | Average  Cost/Energy||0.50 |0.33 | 0   |  0  |     |      |     |     |     |     |     |       |
+    ---------------------------------------------------------------------------------------------------
+    
+    Year 2018
+    ---------------------------------------------------------------------------------------------------
+    |     | Months |  Jan  | Feb | Mar | Apr | May | Jun | July | Aug | Sep | Oct | Nov | Dec | Total |
+    ---------------------------------------------------------------------------------------------------
+    |Energy in kwh |  0    | 10  | 3   | 0   |  0  |     |   0  |     |     |     |     |     |       |
+    ---------------------------------------------------------------------------------------------------
+    | Cost in $    | 0     | $5  | $1  | 0   |  0  |     |  0   |     |     |     |     |     |       |
+    ---------------------------------------------------------------------------------------------------
+    | Average  Cost/Energy||0.50 |0.33 | 0   |  0  |     |      |     |     |     |     |     |       |
+    ---------------------------------------------------------------------------------------------------
+    
+    e.) Javascript handles calculation of Average and Total. Watch for Division by 0.
+    f.) Auto- Save data into the correct Table
+    g.) Provide 'Revert' or 'Undo' functionality if possible
+    h.) EXPORT, the data into CVS
+    i.) EXPORT data into Excel, nicely format with colors, bold etc
+    j.) EXPORT to PDF, same format in Excel
+    
+5.) Energy Cost Data Set
+    a.) Create a Table to enter and edit data. Entries:
+        -> Unique Data Key (Text), Must be Unique
+        -> State
+        -> Type (On-Site, Remote)
+        -> Type2 [Optional] (Rooftop Flat, Rooftop Slope, Carport, Ground Mount, mixed)
+        -> LCOE (Levelized Cost of Energy per kWH) : $0.00 format
+        -> Year01 (PPA Price for 1st year per kWH) : $0.00 format
+        -> PPA Escalator or Fixed: [Escaltor, Fixed]
+        -> Notes : Text type (entry lot of other info)
+    b.) Allow auto-save and save button. Show status
+    
+6.) Generate Combined Report per Organizatoin Total Data
+
+    a.) New page / link fo rthis
+    b.) Select state and org
+    c.) For each Month in every year combine. Do not add Null or 0 entries
+        
+    Year COMBINED
+    ---------------------------------------------------------------------------------------------------
+    |     | Months |  Jan  | Feb | Mar | Apr | May | Jun | July | Aug | Sep | Oct | Nov | Dec | Total |
+    ---------------------------------------------------------------------------------------------------
+    |Energy in kwh |  0    | 10  | 3   | 0   |  0  |     |   0  |     |     |     |     |     |  E    |
+    ---------------------------------------------------------------------------------------------------
+    | Cost in $    | 0     | $5  | $1  | 0   |  0  |     |  0   |     |     |     |     |     |  C    |
+    ---------------------------------------------------------------------------------------------------
+    | Average  Cost/Energy||0.50 |0.33 | 0   |  0  |     |      |     |     |     |     |     |  A    |
+    ---------------------------------------------------------------------------------------------------
+    
+    (note, E, C, A will be values used in 'Generate Cost Saving Report'
+    
+    h.) EXPORT, the data into CVS
+    i.) EXPORT data into Excel, nicely format with colors, bold etc
+    j.) EXPORT to PDF, same format in Excel
+    
+7.) 'Generate Cost Saving Report'
+    a.) Calculate values E, C, A (see #6)
+    b.) Addition Inputs:
+        System Size: Float (in percentage)  - Variable S
+        Estimated Utility Cost Increase per Year: Float  - Variable I
+        
+    c.) Select 'Energy Cost Data Set' (see #5). Allow selection by state, name, type, type2
+    d.) LCOE will be used for now
+    e.) Generate Report base on Formula:
+    
+        Year 1: 
+            Energy Kwh = E * S
+            Utility Rate  = A*(1 + I*[Year, which 1])
+            Utilty Cost = (Energy Kwh) * (Utility Rate)
+            Solar Rate = Year01 (from d)
+            Solar Cost = (Solar Rate) * (Energy Kwh)
+            Saving = [Utility Cost] - [Solar Cost]
+    
+        Year 2-25: 
+            Energy Kwh = E * S
+            Utility Rate  = A*(1 + I*[Year, which X])
+            Utilty Cost = (Energy Kwh) * (Utility Rate)
+            Solar Rate = Year01 (from d)
+            Solar Cost = (Solar Rate) * (Energy Kwh)
+            Saving = [Utility Cost] - [Solar Cost]
+            
+    f.) Format example (calculation not fully accurate!!)
+    
+    ----------------------------------------------------------------------------------------
+    |     | Year         |  1   | 2    | 3   | 4   | 5   | .   | .   | .   | 22  | 23  | 24  | 25  | Total |
+    --------------------------------------------------------------------------------------------------------
+    |Energy in kwh       |  0    | 10  | 3   | 0   |  0  |     |     |     |     |     |     |     |       |    
+    --------------------------------------------------------------------------------------------------------
+    | Utility Rate in $  | 0.105 |0.105|0.105|0.105|0.105|0.105|0.105|0.105|0.105|0.105|0.105|0.105|0.105  |
+    --------------------------------------------------------------------------------------------------------
+    | Utility Cost in $ Million|1|2.5  | 2.5 | 2   | 2   |  2  |    2| 2   |    2| 2   |2    | 2   | 24    |
+    --------------------------------------------------------------------------------------------------------
+    | Solar   Rate in $  | 0.5   | 0.5 | 0.5 | 0.5 | 0.5 | 0.5 | 0.5 | 0.5 | 0.5 | 0.5 | 0.5 | 0.5 |   0.5 |
+    --------------------------------------------------------------------------------------------------------
+    | Solar Cost in $ Million|.5 |1.25 | 1.25| 1   | 1   |  1  |    1| 1   |    1| 1   |1    | 1   | 12    |
+    --------------------------------------------------------------------------------------------------------
+    | Saving in $ Million|.5     |1.25 | 1.25| 1   | 1   |  1  |    1| 1   |    1| 1   |1    | 1   | 12    |
+    -------------------------------------------------------------------------------------------------------     
+    
+    g.) Bold the Savings in the Total column
+    h.) EXPORT, the data into CVS
+    i.) EXPORT data into Excel, nicely format with colors, bold etc
+    j.) EXPORT to PDF, same format in Excel
+    
+6.) Add data by site into [Energy Cost Table] per Org
+    a.) Add to above page at (4.c) step, new button that says 'Manage Site'
+    b.) List all Site Entries (Total /GrandTotal) is not a site
+    c.) Add Site button
+    d.) Present a from with following site information:
+        [Required] Site Name:   Text
+        [Required] Site Address:  Text
+        [Optional] Site Image 1: binary file? Link to file on filesystem?
+        [Optional] Site Image 2: binary file? Link to file on filesystem?
+        
+
+
+
+    
+
+    
+    
+
+ 

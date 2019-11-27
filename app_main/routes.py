@@ -58,7 +58,7 @@ def index():
    
     
     form = ch_customer()
-    requests = Request.query.filter(db.and_(Request.user_id==current_user.id, Request.request_status != 'НЕАКТУАЛЬНО')).order_by(desc(Request.created)).all()
+    requests = Request.query.filter(db.and_(Request.user_id==current_user.id)).order_by(desc(Request.created)).all()
     req_cost = Request.query.filter(Request.user_id==current_user.id).filter(Request.cost==None).all()
     now = datetime.now()
     customer = form.cust.data
@@ -127,27 +127,35 @@ def new_request():
         db.session.commit()
         print('da')
         ######выбираем закупщика с наименьшем количеством запросов
-        if new.customer.name == 'Шенкер Екатеринбург':
-            buyer = User.query.get(3)
+        if current_user.role!='buyer':
+            if new.customer.name == 'Шенкер Екатеринбург':
+                buyer = User.query.get(3)
 
-        #### запросы Ромы всегда на Роме
-        elif new.user_id == 4:
-            buyer = User.query.get(4)
-        ################
+            #### запросы Ромы всегда на Роме
+            elif new.user_id == 4:
+                buyer = User.query.get(4)
+            ################
 
 
-        elif new.customer.name == 'ДСВ':
-            buyer = User.query.get(1)
-        elif new.direction == 'INT':
-            buyer = User.query.get(21)
-            #buyer = User.query.filter(db.and_(User.competention=='int', User.id !=4)).order_by(User.request_count.asc()).first()
+            elif new.customer.name == 'ДСВ':
+                buyer = User.query.get(2)
+            elif new.direction == 'INT':
+                buyer = User.query.get(21)
+                #buyer = User.query.filter(db.and_(User.competention=='int', User.id !=4)).order_by(User.request_count.asc()).first()
+            else:
+                buyer = User.query.filter(User.role=='buyer').order_by(User.request_count.asc()).first()
+            new.users.append(buyer)
+            buyer.request_count +=1
+            db.session.add(new)
+            db.session.commit()
+            return redirect(url_for('index'))
+            
         else:
-            buyer = User.query.filter(db.and_(User.role=='buyer', User.id !=4, User.id !=21)).order_by(User.request_count.asc()).first()
-        new.users.append(buyer)
-        buyer.request_count +=1
-        db.session.add(new)
-        db.session.commit()
-        return redirect(url_for('index'))
+            buyer = current_user
+            new.users.append(buyer)
+            db.session.commit()
+            return redirect(url_for('index'))
+
     else:
         print('net')
     return render_template('new_request_form.html', form=form)

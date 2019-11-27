@@ -34,7 +34,7 @@ class formSupplier(FlaskForm):
     s_inv_date = DateField('ДАТА')
     s_inv_das_inv_date_to_pay = DateField('ДАТА')
     s_inv_amount = IntegerField('Сумма счета подрячика')
-    s_inv_vat = SelectField('НДС', choices=[('НДС', 'НДС'), ('БЕЗ НДС', 'БЕЗ НДС'), ('НОЛЬ', 'НОЛЬ')])
+    s_inv_vat = SelectField('НДС', choices=[(20, 20), ('БЕЗ НДС', 'БЕЗ НДС'), (0, 0)])
     s_inv_currency = SelectField('Валюта', choices=[('RUR', 'RUR'), ('EUR', 'EUR'), ('USD', 'USD')])
     s_inv_pay_day = DateField('ДАТА')
     s_payment_summ = IntegerField('Сумма  оплаты')

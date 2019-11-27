@@ -31,6 +31,7 @@
    
    <thead>
        <tr>
+          
         <th>Транзит ID</th>
         <th>Транзитер</th>
        <th>Платежка</th>
@@ -40,6 +41,7 @@
        <th>Перевозчик</th>
        <th>Дата</th>
        <th>Номер счета от поставщика</th>
+       <th>test1</th>
        
        <tfoot>
             <tr>
@@ -57,8 +59,10 @@
        {%for i in r%}
        
        <tr>
+
+           
            <td>{{i.id}}</td>
-           <td>{{i.transit.name}}</td>
+           <td>{{i.transit.name}}&nbsp{{i.confirm}}</td>
            {%if i.doc_path%}
            <td><a href="{{url_for('supp.download_tr_doc_pay', filename=i.doc_path )}}">{{i.doc_path}}</a></td>
            {%else%}
@@ -68,12 +72,20 @@
            <td>₽{{i.sum}}</td>
            <td class="choice" id='x' onchange="myfunc()"><input type="number" value={{i.sum}}> </td>
            {%if i.payment.supplier%}
-           <td>{{i.payment.supplier.llc_name}}</td>
+           
+           <td>{{i.payment.supplier.llc_name}} {%if i.payment.supp_payment_s%}
+            <a href="{{url_for('supp.prefin_change_id_test', id=i.payment.supp_payment_s.supp_p.id)}}">
+            {{i.payment.supp_payment_s.supp_p.id}}</a>
+             {%endif%}
+
+
+           </td>
            {%else%}
            <td></td>
            {%endif%}
            <td>{{i.transit_date_send}}</td>
            <td>{{i.payment.s_inv_number}}</td>
+           <td class='commision' id='commision' onchange="funccommision()"><input type="number"> </td> 
            
         </tr>
 
@@ -85,7 +97,7 @@
   </table>
 
 
- Предложение<p id='total'>10</p>
+ Предложение<p id='total'></p>
  <button id="confirm" onclick="confirm()">подтвердить в тразит</button>
 
 
@@ -212,7 +224,7 @@ $(document).ready(function() {
                 }, 0 );
  
             // Update footer
-            $( api.column( 4 ).footer() ).html(
+            $( api.column(4).footer() ).html(
                 '₽'+pageTotal +' ( ₽'+ total +' total)'
             );
 

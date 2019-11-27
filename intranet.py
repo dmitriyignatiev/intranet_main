@@ -18,7 +18,33 @@ from suppliers.models import Supplier, newSup, Prefin, Documents, \
 from customers.models import   Invoicecust, Invoice_payment_c
 from agreements_word.models import *
 
+def make_db():
+    dima=User(name='Dima', role='sale', email='dmitriy.ignatiev83@gmail.com')
+    olga=User(name='Olga_p', role='buyer', request_count=0, email='dmitriy@rosexport.su')
+    
+    db.session.add(dima)
+    db.session.add(olga)
+    
+    dima.set_password('Dima')
+    olga.set_password('Olga_p')
+    
+    db.session.commit()
+    if not Customer.query.filter(Customer.name=='ДСВ').first():
+        customer=Customer(name='ДСВ', user_id=olga.id)
+        db.session.add(customer)
+    
 
+    q1 = Quantity(quantity=1)
+    q2 = Quantity(quantity=2)
+    d1 = Direction(name='DOM')
+    d2 = Direction(name='INT')
+
+
+    db.session.add(q1)
+    db.session.add(q2)
+    db.session.add(d1)
+    db.session.add(d2)
+    db.session.commit()
 
 
 
@@ -50,9 +76,10 @@ def make_shell_context():
             'Companies':Companies,
             'Bank': Bank,
             'Tr_payments':Tr_payments,
+            'make_db':make_db(),
                         }
 
 
 if __name__=='__main__':
-    db.create_all()
+    
     app.run(debug=True, host='10.10.1.39', port='5000')

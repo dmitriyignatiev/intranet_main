@@ -219,8 +219,6 @@ class Message(db.Model):
 # база данных клиентов
 class Customer(db.Model):
 
-    
-
     id = db.Column (db.Integer, primary_key=True)
     name = db.Column (db.String (240), unique=True)
     phone = db.Column (db.String (240))
@@ -334,27 +332,7 @@ class Customer(db.Model):
     def __repr__(self):
         return "Customer <{}>".format(self.name, self.user.name)
 
-#база контакный лиц
 
-#база данных поставщиков, полностью дублирует заявку
-# class Supplier(db.Model):
-#     id = db.Column (db.Integer, primary_key=True)
-#     llc = db.Column (db.String (240))
-#     llc_name = db.Column (db.String (240))
-#     legal_add = db.Column(db.String(240))
-#     fact_address = db.Column(db.String(240))
-#     inn = db.Column(db.String(240))
-#     kpp = db.Column(db.String(240))
-#     ogrn = db.Column(db.String(240))
-#     bank = db.Column(db.String(240))
-#     bik = db.Column(db.String(240))
-#     rc = db.Column(db.String(240))
-#     kc = db.Column(db.String(240))
-#     driver_director = db.Column(db.String(240))
-#     user_id = db.Column(db.Integer, db.ForeignKey ('user.id'))
-#     date = db.Column(db.DateTime, default=datetime.utcnow)
-#     finance = db.Column(db.Integer, db.ForeignKey('finance.id'))
-#     pay = db.Column(db.Integer, db.ForeignKey('paid.id'))
 
 
 
