@@ -4,14 +4,18 @@ import os
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
   
+<<<<<<< HEAD
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI') or 'mysql+pymysql://root:root@localhost:5883/rosexp?charset=utf8mb4'
+=======
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI') or 'mysql+pymysql://root:*******@localhost:8889/v33'
+>>>>>>> 3fa833d5583d6653ac3ab32d4268b17eb52ea053
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
 
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 465
-    MAIL_USERNAME = 'Dmitriy.Ignatiev83@gmail.com'
-    MAIL_PASSWORD = 'rosexport'
+    MAIL_USERNAME = 'Dmitriy.******@gmail.com'
+    MAIL_PASSWORD = '********'
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
     UPLOADED_PATH = 'intranet_main\app_main\templates\agreements'
