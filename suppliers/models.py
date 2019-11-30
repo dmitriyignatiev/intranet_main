@@ -43,6 +43,7 @@ class Supplier(db.Model):
                                
                                 backref=db.backref('supplier', lazy='dynamic')
     )
+    docs = db.relationship('Supplierdocs', backref='supplier', lazy='dynamic')
     
 
     def total_cost(self):
@@ -98,15 +99,6 @@ class Supplier(db.Model):
         list = [x for x in self.supp_payment if x.s_inv_number if not x.day_plan_pay ]
         return list
 
-    
-   
-
-
-
-        
-
-
-    
     # показывает сколько мы должны
     def total_credit(self):
         credit=0
@@ -122,7 +114,17 @@ class Supplier(db.Model):
             return payments_all.date_payment.strftime("%Y-%m-%d")
         except AttributeError:
             return "Платежей пока не было"
-        
+
+
+#класс где мы будем хранить документы
+class Supplierdocs(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    invoice = db.Column(db.Text())
+    confirmdoc = db.Column(db.Text())
+    orderdoc = db.Column(db.Text())
+    supp_id = db.Column(db.Integer, db.ForeignKey('supplier.id'))
+
+
             
 
 #класс где мы будем разносить оплаты перевозчикам

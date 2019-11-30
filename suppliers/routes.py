@@ -496,6 +496,7 @@ def upload_с_invoice():
 def prefin_change_id_test(id):
     form = formSupplier()
     form_n = UploadForm()
+    formInvoice=FormInvoices()
     form.name.choices =[(g.id, g.llc_name) for g in Supplier.query.all()]
     print(form.name.choices)
    
@@ -531,7 +532,7 @@ def prefin_change_id_test(id):
     
     print('forma: ' + str(form.s_invoice_number.data))  
     
-    return render_template('finance_change_test.html', supp=supp, fin=fin, form=form, req=req, tn=tn, docs=docs, form_n=form_n, ttn=ttn, zayavka=zayavka, invs=invs )
+    return render_template('finance_change_test.html', formInvoice=formInvoice, supp=supp, fin=fin, form=form, req=req, tn=tn, docs=docs, form_n=form_n, ttn=ttn, zayavka=zayavka, invs=invs )
 
 
 @supp.route('/download_file_s_tn/<path:filename>', methods=['GET'])
@@ -1072,7 +1073,18 @@ def dell_supp_from_fin():
 
     fin_id = request.args.get('fin_id')
     fin = Prefin.query.get(fin_id)
-    return jsonify({'success':'поставщик был успешно удален'})
+
+    invList=[i for i in supp.supp_payment if i.fin_id==fin.id]
+
+    if len(invList)<1:
+
+        fin.supplier.remove(supp)
+        db.session.commit()
+        return jsonify({'success':'поставщик удален'})
+    else:
+        return jsonify({'error':'у поставщика еще остались счета, удалите сначало их'})
+
+    return jsonify({'supp': supp.llc_name})
 
 @supp.route('/add_inv_to_supp', methods=['GET', 'POST'])
 def add_inv_to_supp():
@@ -1140,16 +1152,12 @@ def del_inv_from_supp():
     print(suppInvList)
     print(len(suppInvList))
 
-    if current_inv and len(suppInvList)>0:
+    if current_inv:
         db.session.delete(current_inv)        
         db.session.commit()
-    elif current_inv and len(suppInvList)==0:
-        db.session.delete(current_inv) 
-        for f in supp.prefin:
-            print(f)
-            if f.supplier_id==supp.id:
-                supp.prefin.remove(f)
-                db.session.commit()
+        return jsonify({'success': 'счет успешно был удален'})
+   
+                
 
 
 
@@ -1159,6 +1167,46 @@ def del_inv_from_supp():
     return jsonify({'inv_id':invoice_id, "fin_id": fin_id, 'sup_id': supp_id, 's_inv_number': s_inv_number,
     "s_inv_amount": s_inv_amount, "s_inv_date": s_inv_date, "s_inv_deadline": s_inv_deadline,
     "vat": vat, "currency": currency})
+
+
+@supp.route('/add_inv_from_form', methods=['GET', 'POST'])
+def add_inv_from_form():
+    supp_id = request.args.get('supp_id')
+    supp = Supplier.query.get(supp_id)
+    fin_id = request.args.get('fin_id')
+    fin = Prefin.query.get(fin_id)
+   
+    s_inv_number = request.args.get('s_inv_number')
+    s_inv_amount = request.args.get('s_inv_amount')
+    s_inv_date = request.args.get('s_inv_date')
+    s_inv_deadline = request.args.get('s_inv_deadline')
+    vat = request.args.get('vat')
+    currency = request.args.get('currency')
+    
+
+    newInv=Supp_payment(
+            supplier_id = supp_id,\
+            fin_id=fin_id,\
+            s_inv_number=s_inv_number,\
+            s_inv_amount=s_inv_amount,\
+            s_invoice_date=s_inv_date or None,\
+            s_inv_pay_day=s_inv_deadline or None,\
+            s_inv_currency=currency,\
+            vat=vat
+                )
+    
+    db.session.add(newInv)
+    db.session.commit()
+
+
+
+
+
+    return jsonify({"fin_id": fin_id, 'sup_id': supp_id, 's_inv_number': s_inv_number,
+    "s_inv_amount": s_inv_amount, "s_inv_date": s_inv_date, "s_inv_deadline": s_inv_deadline,
+    "vat": vat, "currency": currency})
+
+
 
 
 

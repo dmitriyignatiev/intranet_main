@@ -111,3 +111,16 @@ class FormTransit(FlaskForm):
     date_recieved = DateField('Дата получения транзита')
     submit = SubmitField('Записать в базу')
 
+#форма выставления счетов
+class FormInvoices(FlaskForm):
+    company = SelectField('ТОРА или РЭД', choices=[('Тора', 'Тора'), ('РЭД', 'РЭД'), ('Гунвор', 'Гунвор')], validators=[DataRequired()])
+    c_invoice_date = DateField('ДАТА')
+    c_inv_description = TextAreaField('Наименование')
+    c_inv_amount = IntegerField('Сумма счета на клиента с НДС')
+    c_inv_currency = SelectField('Валюта', choices=[('RUR', 'RUR'), ('EUR', 'EUR'), ('USD', 'USD')])
+    vat = SelectField('НДС', choices=[(20, 20), ('БЕЗ НДС', 'БЕЗ НДС'), (0, 0)])
+    c_inv_plan_pay = DateField('ДАТА')
+    submit = SubmitField('Записать в базу')
+
+
+

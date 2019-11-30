@@ -19,444 +19,530 @@
 </title>
 {%endblock%} {%block content%}
 
-
-<div>
-    <p id="d_elem">{{list}}</p>
+<body>
 
 
-    <div class="container" style="margin: 20px;">
+    <div>
+        <p id="d_elem">{{list}}</p>
 
 
-        <table class="table table-sm">
-            <thead>
-                <tr>
+        <div class="container" style="margin: 20px;">
 
-                    <th>ТН/ТТН</th>
-                    <th>Счет от поставщика</th>
-                    <th>Файлы от поставщика(договор заявка и другие)</th>
-                    <th>Файлы от Бухгалтерии</th>
-                    <th>Файлы от Клиента</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th scope="row">
-                        {{dropzone.load_js()}}
-                        {{ dropzone.load_css() }}
-                        {{ dropzone.style('border: 2px dashed #0087F7; margin: 10px 0 10px; min-height: 10px; min-width: 10px;') }}
-                        {{ dropzone.create('supp.upload_tn') }}
-                        {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id), default_message='Drop here!') }}
-                        <form action="">
-                            {%for i in ttn%} {%if i.prefin_id == fin.id%}
-                            <p><a href="{{url_for('supp.download_file_s_tn', filename=i.path)}}">{{i.path}}</a>
+
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+
+                        <th>ТН/ТТН</th>
+                        <th>Счет от поставщика</th>
+                        <th>Файлы от поставщика(договор заявка и другие)</th>
+                        <th>Файлы от Бухгалтерии</th>
+                        <th>Файлы от Клиента</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">
+                            {{dropzone.load_js()}}
+                            {{ dropzone.load_css() }}
+                            {{ dropzone.style('border: 2px dashed #0087F7; margin: 10px 0 10px; min-height: 10px; min-width: 10px;') }}
+                            {{ dropzone.create('supp.upload_tn') }}
+                            {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id), default_message='Документы сюда') }}
+                            <form action="">
+                                {%for i in ttn%} {%if i.prefin_id == fin.id%}
+                                <p><a href="{{url_for('supp.download_file_s_tn', filename=i.path)}}">{{i.path}}</a>
+                                </p>
+                                {%endif%} {%endfor%}
+                            </form>
+
+
+
+                        </th>
+
+                        <th scope="row">
+
+                            {{ dropzone.create('supp.upload_s_inv') }}
+                            {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id)) }}
+                            {%for i in invs %} {%if i.prefin_id == fin.id%}
+
+                            <p><a href="{{url_for('supp.download_s_inv', filename=i.path)}}">{{i.path}}</a>
                             </p>
                             {%endif%} {%endfor%}
-                        </form>
 
 
 
-                    </th>
+                        </th>
 
-                    <th scope="row">
+                        <th scope="row">
+                            {{ dropzone.create('supp.upload_s_docs') }} {{ dropzone.load_js() }}
+                            {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id)) }}
+                            {%for i in docs%} {%if i.prefin_id == fin.id%}
 
-                        {{ dropzone.create('supp.upload_s_inv') }}
-                        {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id)) }}
-                        {%for i in invs %} {%if i.prefin_id == fin.id%}
+                            <p><a href="{{url_for('supp.download_s_docs', filename=i.path)}}">{{i.path}}</a>
+                            </p>
 
-                        <p><a href="{{url_for('supp.download_s_inv', filename=i.path)}}">{{i.path}}</a>
-                        </p>
-                        {%endif%} {%endfor%}
+                            {%endif%} {%endfor%}
 
 
+                        </th>
 
-                    </th>
+                        <th>
 
-                    <th scope="row">
-                        {{ dropzone.create('supp.upload_s_docs') }} {{ dropzone.load_js() }}
-                        {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id)) }}
-                        {%for i in docs%} {%if i.prefin_id == fin.id%}
+                            {{ dropzone.create('supp.upload_с_invoice') }} {{ dropzone.load_js() }}
+                            {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id)) }}
+                            {%for inv in invoicec%}
+                            {%if inv.prefin_id == fin.id%} {%if inv.path !=None%}
+                            <p><a href="{{url_for('supp.download_c_inv', filename=inv.path)}}">{{inv.path}}</a>
 
-                        <p><a href="{{url_for('supp.download_s_docs', filename=i.path)}}">{{i.path}}</a>
-                        </p>
+                            </p>
+                            {%endif%} {%endif%} {%endfor%}
 
-                        {%endif%} {%endfor%}
+                        </th>
 
+                        <th>
 
-                    </th>
 
-                    <th>
+                            {%for doc in zayavka%}
 
-                        {{ dropzone.create('supp.upload_с_invoice') }} {{ dropzone.load_js() }}
-                        {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id)) }}
-                        {%for inv in invoicec%}
-                        {%if inv.prefin_id == fin.id%} {%if inv.path !=None%}
-                        <p><a href="{{url_for('supp.download_c_inv', filename=inv.path)}}">{{inv.path}}</a>
+                            <p><a href="{{url_for('download_file', filename=doc.path)}}">{{doc.path}}</a></p>
 
-                        </p>
-                        {%endif%} {%endif%} {%endfor%}
+                            {%endfor%}
 
-                    </th>
+                        </th>
 
-                    <th>
-                        {%for doc in zayavka%}
 
-                        <p><a href="{{url_for('download_file', filename=doc.path)}}">{{doc.path}}</a></p>
 
-                        {%endfor%}
 
-                    </th>
 
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
 
 
 
+            <div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
+            <div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
 
-                    </th>
-                </tr>
-            </tbody>
-        </table>
 
-
-
-        <div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
-        <div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
-
-
-        <table class="table" id="tblData">
-            <thead>
-
-                <th>Действие</th>
-                <th>№</th>
-                <th style="display: none;">Перевозчик в fin</th>
-                <th>Юр лицо</th>
-                <th>Направление</th>
-                <th>Продавец</th>
-                <th>Закупшик</th>
-                <th>Название клиента</th>
-                <th>№ заявки</th>
-                <th>Дата заявки с клиентом</th>
-                <th>Место загрузки</th>
-                <th>Характер груза</th>
-                <th>Место выгрузки</th>
-                <th>Дата выгрузки</th>
-
-                <th>Номер счета на клиента</th>
-                <th>Дата счета на клиента</th>
-                <th>Дедлайн по оплате</th>
-
-                <th>Валюта счета</th>
-                <th>Размер предоплаты</th>
-                <th>Кост для нас</th>
-                <th>Профит</th>
-                </tr>
-
-            </thead>
-
-
-
-
-            <tr>
-
-
-
-
-                <td>
-
-
-                    <button type="button" onclick="addSuppForm()" class="btn btn-info btn-sm" id="add"><i
-                            class="glyphicon glyphicon-plus" aria-hidden="true">xsax</i></button>
-                </td>
-
-                <td id='fin_id'>{{fin.id}}</td>
-                <th style="display: none;" id="old_supp">
-
-                    {{supp.llc_name}}
-
-                </th>
-
-                <td>{{fin.tora_red}}</td>
-                <td>{{fin.direction}}</td>
-                <td id="sale">{{fin.sale}}</td>
-                <td>{{fin.buyer}}</td>
-                <td>{{fin.customer_name}}</td>
-                <td>{{fin.req_id}}</td>
-                <td>{{fin.customer_order_date}}</td>
-                <td>{{fin.loading_place}}</td>
-                <td>{{fin.cargo_character}}</td>
-                <td>{{fin.unloading_place}}</td>
-                <td>{{fin.unloading_date}}</td>
-
-                {%if current_user.role == 'account'%}
-                {%if fin.c_inv_number%}
-                <th bgcolor="#ffe6e6">{{form.c_inv_number(value=fin.c_inv_number)}}</th>
-                {%else%}
-                <th bgcolor="#ffe6e6">{{form.c_inv_number}}</th>
-                {%endif%} {%if fin.c_invoice_date%}
-                <th bgcolor="#ffe6e6">{{form.c_invoice_date(value=fin.c_invoice_date.strftime('%Y-%m-%d'))}}</th>
-                {%else%}
-                <th bgcolor="#ffe6e6">{{form.c_invoice_date}}</th>
-                {%endif%} {%if fin.c_inv_plan_pay%}
-
-                <th bgcolor="#ffe6e6">
-
-                    {{form.c_inv_plan_pay(value=fin.c_inv_plan_pay.strftime('%Y-%m-%d'))}}</th>
-
-                {%else%}
-                <th bgcolor="#ffe6e6">{{form.c_inv_plan_pay}}</th>
-                {% endif %}
-
-
-                {%else%}
-
-                <th bgcolor="#ffe6e6">{{fin.c_inv_number}}</th>
-
-
-                <th bgcolor="#ffe6e6">{{fin.c_invoice_date}}</th>
-
-
-
-
-                <th bgcolor="#ffe6e6">
-
-                    {{fin.c_inv_plan_pay}}</th>
-
-
-
-                {%endif%}
-
-
-
-
-
-                <td>{{fin.s_inv_currency}}</td>
-                <td>{{fin.s_prepaid_amount}}</td>
-                <td>{{fin.cost_with_vat}}</td>
-                <td>{{fin.profit}}</td>
-
-
-
-            </tr>
-        </table>
-
-        <div id="successAlertaddSupp" class="alert alert-success" role="alert"
-            style="display:none; margin-left: 150px;"></div>
-        <div id="errorAlertaddSupp" class="alert alert-danger" role="alert" style="display:none; margin-left: 150px;">
-        </div>
-
-        <div id="addSupp" style="display:none">
-
-
-            <table class="table">
+            <table class="table" id="tblData">
                 <thead>
-                    <td>Поставщик</td>
-                    <td>Номер счета от поставщика</td>
-                    <td>Сумма счета от Постащика</td>
-                    <td>Дата счета от Постащика</td>
-                    <td>Дата когда нужно заплатить поставщику</td>
-                    <td style="width: 15ch;">Размер НДС</td>
-                    <td style="width: 15ch;">Валюта</td>
-                    <td>Действия <button type="button" class="close" aria-label="Close" onclick="closeAddSuppForm()">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
 
-                    </td>
+                    <th>Действие</th>
+                    <th>№</th>
+                    <th style="display: none;">Перевозчик в fin</th>
+                    <th>Юр лицо</th>
+                    <th>Направление</th>
+                    <th>Продавец</th>
+                    <th>Закупшик</th>
+                    <th>Название клиента</th>
+                    <th>№ заявки</th>
+                    <th>Дата заявки с клиентом</th>
+                    <th>Место загрузки</th>
+                    <th>Характер груза</th>
+                    <th>Место выгрузки</th>
+                    <th>Дата выгрузки</th>
+
+                    <th>Номер счета на клиента</th>
+                    <th>Дата счета на клиента</th>
+                    <th>Дедлайн по оплате</th>
+
+                    <th>Валюта счета</th>
+                    <th>Размер предоплаты</th>
+                    <th>Кост для нас</th>
+                    <th>Профит</th>
+                    </tr>
+
                 </thead>
 
-                <tbody>
-                    <form action="">
-                        <td id="formname">
-                            {{form.name(class="form-control", id='addsuppname')}}
-                        </td>
-                        <td>
-                            {{form.s_invoice_number(class="form-control", id="formaddinvoice")}}
-                        </td>
-                        <td>
-                            {{form.s_inv_amount(class="form-control", id='formaddsinvamount' )}}
-                        </td>
-                        <td>
-                            {{form.s_inv_date(class="form-control", id="formaddsinvdate")}}
-                        </td>
-                        <td>
-                            {{form.s_inv_das_inv_date_to_pay(class="form-control", id="formaddsuppinvdeadline")}}
-
-                        </td>
-                        <td>
-                            {{form.s_inv_vat(class="form-control", id="formaddsuppvat")}}
-                        </td>
-
-                        <td>
-                            {{form.s_inv_currency(class="form-control", id="formaddsuppcurrency")}}
-                        </td>
-                        <td>
-                            <button type="button" class="glyphicon glyphicon-pencil" aria-hidden="true" id='add_inv'
-                                onclick="addSupp(event)">Записать изменения</button>
-                        </td>
-
-
-                    </form>
-                </tbody>
-
-
-            </table>
-            <br><br>
-
-        </div>
-        <br><br>
-
-{%if supp%}
-        {%for supp in fin.supplier.all()%}
-
-        <table class="table" style="box-shadow: 12px 12px 2px 1px rgba(0, 0, 255, .2);">
-            <thead>
-
-                <tr>
-
-                    <td>Действие</td>
-                    <td style="display: none;">Перевозчик в fin</td>
-                    <td>ID перевозчика</td>
-
-                    <td>Перевозчик </td>
-
-
-                    <td style="display: none; width: 15ch;" id="new_supp_th" class="new_supp_th">Новый перевозчик</td>
-                    <td>Сумма счета от Постащика</td>
-                    <td>Номер счета от поставщика</td>
-                    <td>Дата счета от Постащика</td>
-                    <td>Дата когда нужно заплатить поставщику</td>
-                    <td>Размер НДС</td>
-                    <td>Валюта</td>
-
-                    <td> Операции</td>
-                </tr>
-
-            </thead>
-            <tbody>
 
 
 
                 <tr>
+
+
+
+
                     <td>
-                        <button type="button" class="btn btn-info btn-sm" id='showChange'
-                            onclick="ShowNewSupp(event)">сменить поставщика</button><br>
-                        <button type="button" class="btn btn-info btn-sm"
-                            onclick="HideNewSupp(event)">Отменить</button><br>
-                        <button type="button" class="btn btn-info btn-sm" onclick="doneSupp(event)">Записать
-                            изменения</button>
-                        <button type="button" class="btn btn-info btn-sm" onclick="deleteSupp(event)"
-                            style="color: crimson;">Удалить
-                            поставщика</button>
 
+
+                        <button type="button" onclick="addSuppForm()" class="btn btn-info btn-sm" id="add"><i
+                                class="glyphicon glyphicon-plus" aria-hidden="true">xsax</i></button>
                     </td>
 
-                    <div>
-                        <td style="display: none;" id="old_supp"></td>
-                        <td id="delsuppid" style="display: block;">{{supp.id}}</td>
-                        <td onchange="changeSupplier(event)">{{supp.llc_name}}</td>
-                        <td onchange="changeSupplier(event)" style="display: none;" id="new_supp">
-                            {{form.name()}}
-                        </td>
+                    <td id='fin_id'>{{fin.id}}</td>
+                    <th style="display: none;" id="old_supp">
 
-                        <td bgcolor="#cceeff">
-                            {{form.s_inv_amount(value=fin.s_inv_amount, class="form-control", id='invoiceForm', style="display:none")}}
-                            <br><br>
-                            {%for i in supp.supp_payment%}
-                            {%if i.fin_id == fin.id%}
-                            <p id={{i.id}} class={{i.id}}>
-                                {{form.s_inv_amount(value=i.s_inv_amount, class="form-control")}}</p><br><br>
-                            {%endif%}
-                            {%endfor%}
+                        {{supp.llc_name}}
 
-                        </td>
-                        <td bgcolor="#cceeff">
-                            {{form.s_invoice_number(class="form-control", id='invoiceForm', style="display:none")}}
-                            <br><br>
-                            {%for i in supp.supp_payment%}
-                            {%if i.fin_id == fin.id%}
-                            <p id={{i.id}} class={{i.id}}>
-                                {{form.s_invoice_number(value=i.s_inv_number, class="form-control")}}</p><br><br>
-                            {%endif%}
-                            {%endfor%}
+                    </th>
 
-                        </td>
+                    <td>{{fin.tora_red}}</td>
+                    <td>{{fin.direction}}</td>
+                    <td id="sale">{{fin.sale}}</td>
+                    <td>{{fin.buyer}}</td>
+                    <td>{{fin.customer_name}}</td>
+                    <td>{{fin.req_id}}</td>
+                    <td>{{fin.customer_order_date}}</td>
+                    <td>{{fin.loading_place}}</td>
+                    <td>{{fin.cargo_character}}</td>
+                    <td>{{fin.unloading_place}}</td>
+                    <td>{{fin.unloading_date}}</td>
 
-                        <td bgcolor="#cceeff">
-                            {{form.s_inv_date(class="form-control", id='invoiceForm' , style="display:none")}}
-                            <br><br>
-                            {%for i in supp.supp_payment%}
-                            {%if i.fin_id == fin.id%}
-                            <p id={{i.id}} class={{i.id}}>
-                                {%if i.s_invoice_date%}
-                                {{form.s_inv_date(class="form-control",  value=i.s_invoice_date.strftime('%Y-%m-%d'))}}
-                                {%else%}
-                                {{form.s_inv_date(class="form-control")}}
-                                {%endif%}
-                            </p><br><br>
-                            {%endif%}
-                            {%endfor%}
+                    {%if current_user.role == 'account'%}
+                    {%if fin.c_inv_number%}
+                    <th bgcolor="#ffe6e6">{{form.c_inv_number(value=fin.c_inv_number)}}</th>
+                    {%else%}
+                    <th bgcolor="#ffe6e6">{{form.c_inv_number}}</th>
+                    {%endif%} {%if fin.c_invoice_date%}
+                    <th bgcolor="#ffe6e6">{{form.c_invoice_date(value=fin.c_invoice_date.strftime('%Y-%m-%d'))}}</th>
+                    {%else%}
+                    <th bgcolor="#ffe6e6">{{form.c_invoice_date}}</th>
+                    {%endif%} {%if fin.c_inv_plan_pay%}
 
-                        </td>
-                        <td bgcolor="#cceeff">
-                            {{form.s_inv_das_inv_date_to_pay(class="form-control", id='invoiceForm' , style="display:none" )}}<br><br>
-                            {%for i in supp.supp_payment%}
-                            {%if i.fin_id == fin.id%}
-                            <p id={{i.id}} class={{i.id}}>
-                            {%if i.s_inv_pay_day%}
-                                {{form.s_inv_date(class="form-control", value=i.s_inv_pay_day.strftime('%Y-%m-%d'))}}
-                                {%else%}
-                            {{form.s_inv_date(class="form-control")}}
-                            {%endif%}
-                            </p><br><br>
-                            {%endif%}
-                            {%endfor%}
+                    <th bgcolor="#ffe6e6">
 
-                        </td>
-                        <td bgcolor="#cceeff">
-                            {{form.s_inv_vat(class="form-control", id='invoiceForm',  style="display:none"  )}}
-                            <br><br>
-                            {%for i in supp.supp_payment%}
-                            {%if i.fin_id == fin.id%}
-                            <p id={{i.id}} class={{i.id}}>{{form.s_inv_vat(class="form-control", style="width:10ch" )}}
-                            </p><br><br>
-                            {%endif%}
-                            {%endfor%}
+                        {{form.c_inv_plan_pay(value=fin.c_inv_plan_pay.strftime('%Y-%m-%d'))}}</th>
+
+                    {%else%}
+                    <th bgcolor="#ffe6e6">{{form.c_inv_plan_pay}}</th>
+                    {% endif %}
 
 
-                        </td>
-                        <td bgcolor="#cceeff" style="width: 200px;">
-                            {{form.s_inv_currency(class="form-control", id='invoiceForm',  style="display:none" )}}
-                            <br><br>
-                            {%for i in supp.supp_payment%}
-                            {%if i.fin_id == fin.id%}
-                            <p id={{i.id}} class={{i.id}} data-name={{i.id}}>
-                                {{form.s_inv_currency(class="form-control", style="width:10ch")}}</p><br><br>
-                            {%endif%}
-                            {%endfor%}
+                    {%else%}
+
+                    <th bgcolor="#ffe6e6">{{fin.c_inv_number}}</th>
 
 
-                        </td>
+                    <th bgcolor="#ffe6e6">{{fin.c_invoice_date}}</th>
+
+
+
+
+                    <th bgcolor="#ffe6e6">
+
+                        {{fin.c_inv_plan_pay}}</th>
+
+
+
+                    {%endif%}
 
 
 
 
 
-                        <td bgcolor="#cceeff">
-                            {{form.s_inv_currency(class="form-control", id='invoiceForm',  style="display:none"  )}}
-                            <br><br>
-                            {%for i in supp.supp_payment%}
-                            {%if i.fin_id == fin.id%}
-                            <p id={{i.id}} class={{i.id}}><button type="button" class="glyphicon glyphicon-pencil"
-                                    aria-hidden="true" id='add_inv' onclick="addInvtoSup(event)">Записать
-                                    изменения</button>
-                            <button id id={{i.id}} class={{i.id}} onclick="delInvfromSup(event)">DEL</button>
-                                    {{i.id}}
-                            </p><br>
-                            {%endif%}
-                            {%endfor%}
+                    <td>{{fin.s_inv_currency}}</td>
+                    <td>{{fin.s_prepaid_amount}}</td>
+                    <td>{{fin.cost_with_vat}}</td>
+                    <td>{{fin.profit}}</td>
 
+
+
+                </tr>
+            </table>
+
+            <div id="successAlertaddSupp" class="alert alert-success" role="alert"
+                style="display:none; margin-left: 150px;"></div>
+            <div id="errorAlertaddSupp" class="alert alert-danger" role="alert"
+                style="display:none; margin-left: 150px;">
+            </div>
+
+            <div id="addSupp" style="display:none">
+
+
+                <table class="table">
+                    <thead>
+                        <td>Поставщик</td>
+                        <td>Номер счета от поставщика</td>
+                        <td>Сумма счета от Постащика</td>
+                        <td>Дата счета от Постащика</td>
+                        <td>Дата когда нужно заплатить поставщику</td>
+                        <td style="width: 15ch;">Размер НДС</td>
+                        <td style="width: 15ch;">Валюта</td>
+                        <td>Действия <button type="button" class="close" aria-label="Close"
+                                onclick="closeAddSuppForm()">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
 
                         </td>
+                    </thead>
+
+                    <tbody>
+                        <form action="">
+                            <td id="formname">
+                                {{form.name(class="form-control", id='addsuppname')}}
+                            </td>
+                            <td>
+                                {{form.s_invoice_number(class="form-control", id="formaddinvoice")}}
+                            </td>
+                            <td>
+                                {{form.s_inv_amount(class="form-control", id='formaddsinvamount' )}}
+                            </td>
+                            <td>
+                                {{form.s_inv_date(class="form-control", id="formaddsinvdate")}}
+                            </td>
+                            <td>
+                                {{form.s_inv_das_inv_date_to_pay(class="form-control", id="formaddsuppinvdeadline")}}
+
+                            </td>
+                            <td>
+                                {{form.s_inv_vat(class="form-control", id="formaddsuppvat")}}
+                            </td>
+
+                            <td>
+                                {{form.s_inv_currency(class="form-control", id="formaddsuppcurrency")}}
+                            </td>
+                            <td>
+                                <button type="button" class="glyphicon glyphicon-pencil" aria-hidden="true" id='add_inv'
+                                    onclick="addSupp(event)">Записать изменения</button>
+                            </td>
 
 
-                    </div>
+                        </form>
+                    </tbody>
+
+
+                </table>
+                <br><br>
+
+            </div>
+            <br><br>
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+
+                <li class="nav-item">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                        aria-controls="profile" aria-selected="false">Поставщик</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
+                        aria-controls="contact" aria-selected="false">Клиент</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+
+                <div class="tab-pane fade in active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    {%if supp%}
+                    {%for supp in fin.supplier.all()%}
+
+                    <table class="table" style="box-shadow: 12px 12px 2px 1px rgba(0, 0, 255, .2);">
+                        <thead>
+
+                            <tr>
+
+                                <td>Действия</td>
+                                <td style="display: none;">Перевозчик в fin</td>
+                                <td>ID перевозчика</td>
+
+                                <td>Перевозчик </td>
+
+
+                                <td style="display: none; width: 15ch;" id="new_supp_th" class="new_supp_th">Новый
+                                    перевозчик</td>
+                                <td>Сумма счета от Постащика</td>
+                                <td>Номер счета от поставщика</td>
+                                <td>Дата счета от Постащика</td>
+                                <td>Дата когда нужно заплатить поставщику</td>
+                                <td>Размер НДС</td>
+                                <td>Валюта</td>
+
+                                <td> Операции</td>
+                                <td> Cч-ф, акт/УПД </td>
+                                <td> Транспортный документ</td>
+                                <td> Заявка от поставщика </td>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+
+
+
+                            <tr>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-block"
+                                        onclick="addOneInvToSupp(event)">Добавить счет
+                                        поставщика</button>
+                                    <button type="button" class="btn btn-primary btn-block" id='showChange'
+                                        onclick="ShowNewSupp(event)">сменить поставщика</button>
+                                    <button type="button" class="btn btn-primary btn-block"
+                                        onclick="HideNewSupp(event)">Отменить</button>
+                                    <button type="button" class="btn btn-primary btn-block"
+                                        onclick="doneSupp(event)">Записать
+                                        изменения</button>
+                                    <button type="button" class="btn btn-danger btn-block" onclick="deleteSupp(event)" ">Удалить
+                                                    поставщика</button>
+                        
+                                            </td>
+                        
+                                            <div>
+                                                <td style=" display: none;" id="old_supp"></td>
+                                <td id="delsuppid" style="display: block;">{{supp.id}}</td>
+                                <td onchange="changeSupplier(event)">{{supp.llc_name}}
+
+
+
+                                </td>
+                                <td onchange="changeSupplier(event)" style="display: none;" id="new_supp">
+                                    {{form.name()}}
+                                </td>
+
+                                <td bgcolor="#cceeff">
+                                    <div class={{supp.id}} style="display:none">
+                                        {{form.s_inv_amount(value=fin.s_inv_amount, class="form-control invoiceForm", id='invoiceForm')}}
+                                    </div>
+
+                                    <br><br>
+                                    {%for i in supp.supp_payment%}
+                                    {%if i.fin_id == fin.id%}
+                                    <p id={{i.id}} class={{i.id}}>
+                                        {{form.s_inv_amount(value=i.s_inv_amount, class="form-control")}}</p><br><br>
+                                    {%endif%}
+                                    {%endfor%}
+
+                                </td>
+                                <td bgcolor="#cceeff">
+                                    <div class={{supp.id}} style="display:none">
+                                        {{form.s_invoice_number(class="form-control invoiceForm", id='invoiceForm')}}
+                                    </div>
+                                    <br><br>
+                                    {%for i in supp.supp_payment%}
+                                    {%if i.fin_id == fin.id%}
+                                    <p id={{i.id}} class={{i.id}}>
+                                        {{form.s_invoice_number(value=i.s_inv_number, class="form-control")}}</p>
+                                    <br><br>
+                                    {%endif%}
+                                    {%endfor%}
+
+                                </td>
+
+                                <td bgcolor="#cceeff">
+                                    <div class={{supp.id}} style="display:none">
+                                        {{form.s_inv_date(class="form-control invoiceForm", id='invoiceForm' )}}
+                                    </div>
+                                    <br><br>
+                                    {%for i in supp.supp_payment%}
+                                    {%if i.fin_id == fin.id%}
+                                    <p id={{i.id}} class={{i.id}}>
+                                        {%if i.s_invoice_date%}
+                                        {{form.s_inv_date(class="form-control",  value=i.s_invoice_date.strftime('%Y-%m-%d'))}}
+                                        {%else%}
+                                        {{form.s_inv_date(class="form-control")}}
+                                        {%endif%}
+                                    </p><br><br>
+                                    {%endif%}
+                                    {%endfor%}
+
+                                </td>
+                                <td bgcolor="#cceeff">
+                                    <div class={{supp.id}} style="display:none">
+                                        {{form.s_inv_das_inv_date_to_pay(class="form-control invoiceForm", id='invoiceForm'  )}}
+                                    </div><br><br>
+                                    {%for i in supp.supp_payment%}
+                                    {%if i.fin_id == fin.id%}
+                                    <p id={{i.id}} class={{i.id}}>
+                                        {%if i.s_inv_pay_day%}
+                                        {{form.s_inv_date(class="form-control", value=i.s_inv_pay_day.strftime('%Y-%m-%d'))}}
+                                        {%else%}
+                                        {{form.s_inv_date(class="form-control")}}
+                                        {%endif%}
+                                    </p><br><br>
+                                    {%endif%}
+                                    {%endfor%}
+
+                                </td>
+                                <td bgcolor="#cceeff">
+                                    <div class={{supp.id}} style="display:none">
+                                        {{form.s_inv_vat(class="form-control invoiceForm", id='invoiceForm')}}
+                                    </div>
+                                    <br><br>
+                                    {%for i in supp.supp_payment%}
+                                    {%if i.fin_id == fin.id%}
+                                    <p id={{i.id}} class={{i.id}}>
+                                        {{form.s_inv_vat(class="form-control", style="width:10ch" )}}
+                                    </p><br><br>
+                                    {%endif%}
+                                    {%endfor%}
+
+
+                                </td>
+                                <td bgcolor="#cceeff" style="width: 200px;">
+                                    <div class={{supp.id}} style="display:none">
+                                        {{form.s_inv_currency(class="form-control invoiceForm", id='invoiceForm')}}
+                                    </div>
+                                    <br><br>
+                                    {%for i in supp.supp_payment%}
+                                    {%if i.fin_id == fin.id%}
+                                    <p id={{i.id}} class={{i.id}} data-name={{i.id}}>
+                                        {{form.s_inv_currency(class="form-control", style="width:10ch")}}</p><br><br>
+                                    {%endif%}
+                                    {%endfor%}
+
+
+                                </td>
+
+
+
+
+
+                                <td bgcolor="#cceeff">
+                                    <div class={{supp.id}} style="display:none">
+
+                                        <button type="button" class="glyphicon glyphicon-pencil" aria-hidden="true"
+                                            id='add_inv' onclick="addInvtoSupForm(event)">Записать
+                                            изменения</button>
+
+
+
+
+
+
+                                    </div>
+                                    <br>
+
+                                    {%for i in supp.supp_payment%}
+                                    {%if i.fin_id == fin.id%}
+                                    <p id={{i.id}} class={{i.id}}><button type="button" id='add_inv'
+                                            onclick="addInvtoSup(event)" class="btn btn-primary btn-block">Записать
+                                            изменения</button>
+                                        <button id id={{i.id}} class={{i.id}}
+                                            onclick="delInvfromSup(event)">DEL</button>
+
+                                    </p><br>
+                                    {%endif%}
+                                    {%endfor%}
+
+
+                                </td>
+                                <td bgcolor="#cceeff">
+                                    <br>
+                                    {{dropzone.load_js()}}
+                                    {{ dropzone.load_css() }}
+                                    {{ dropzone.style('border: 2px dashed #0087F7; margin: 10px 0 10px; min-height: 10px; min-width: 10px;') }}
+                                    {{ dropzone.create('supp.upload_tn') }}
+                                    {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id), default_message='Drop here!') }}
+                                </td>
+                                <td bgcolor="#cceeff">
+                                    <br>
+
+                                    {{dropzone.load_js()}}
+                                    {{ dropzone.load_css() }}
+                                    {{ dropzone.style('border: 2px dashed #0087F7; margin: 10px 0 10px; min-height: 10px; min-width: 10px;') }}
+                                    {{ dropzone.create('supp.upload_tn') }}
+                                    {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id), default_message='Drop here!') }}
+                                </td>
+
+                                <td bgcolor="#cceeff">
+                                    <br>
+                                    {{dropzone.load_js()}}
+                                    {{ dropzone.load_css() }}
+                                    {{ dropzone.style('border: 2px dashed #0087F7; margin: 10px 0 10px; min-height: 10px; min-width: 10px;') }}
+                                    {{ dropzone.create('supp.upload_tn') }}
+                                    {{ dropzone.config(redirect_url=url_for('supp.prefin_change_id_test', id=fin.id), default_message='Drop here!') }}
+
+
+                                </td>
+
+
+                </div>
 
 
 
@@ -467,40 +553,93 @@
                 </tr>
 
 
-            </tbody>
-        </table>
+                </tbody>
 
+                </table>
+                {%endfor%}
+                {%endif%}
 
-
-        {%endfor%}
-
-
-       {%endif%}
+            </div>
 
 
 
 
 
 
-    </div>
+            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab" style="width: 1500px;">
+                    <button type="button" onclick="addInvFormtoCust()" class="btn btn-primary btn-sm btn-block">Приступить к выставлению счета</button>
+
+                <form>
+                    <table class="table" id='formInvcust' style="display:none">
+                        <thead>
+                            <tr>
+                                <th>Действия</th>
+                                <th>Номер</th>
+                                <th>От кого</th>
+                                <th>Дата счета</th>
+                                <th>Описание</th>
+                                <th>Сумма счета без НДС</th>
+                                <th>Размер НДС</th>
+                                <th>Валюта</th>
+                                <th>Дата до котороой оплатить</th>
+                                <th>Операции</th>
+
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                        <button type="button" class="btn btn-primary btn-block"
+                                        onclick="addaserviceexistInvoice(event)">Добавить строку в счет
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-block"
+                                        onclick="addInvoice(event)">Выписать доп счет
+                                       </button>
+                                        <button type="button" class="btn btn-danger btn-block"
+                                        onclick="delInvoice(event)">Удалить счет
+                                        </button>
+                                </td>
+                                <td>#</td>
+                                <td style="width: 200px">{{formInvoice.company(class='form-control')}}</td>
+                                <td style="width: 300px">{{formInvoice.c_invoice_date(class='form-control')}}</td>
+                                <td style="width: 360px">{{formInvoice.c_inv_description(class='form-control')}}</td>
+                                <td style="width: 200px">{{formInvoice.c_inv_amount(class='form-control')}}</td>
+                                <td style="width: 300px">{{formInvoice.vat(class='form-control')}}</td>
+                                <td style="width: 300px">{{formInvoice.c_inv_currency(class='form-control')}}</td>
+                                <td style="width: 300px">{{formInvoice.c_inv_plan_pay(class='form-control')}}</td>
+                                <td style="width: 300px"><button type="button" class="btn btn-primary btn-block"
+                                    onclick="SaveInvtodb(event)">Сохранить счет
+                                   </button>
+                                
+                                        <button type="button" class="btn btn-primary btn-block"
+                                        onclick="FinalizeInv(event)">Финализировать счет
+                                       </button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </form>
 
 
 
 
 
-    </body>
-    <p></p>
+            </div>
 
 
 
-</div>
-<button id='but'>TEST</button>
 
-<div class="clsbox-1" runat="server">
-    <div class="dropzone clsbox" id="mydropzone">
+</body>
 
-    </div>
-</div>
+
+
+
+
+
 
 
 
@@ -613,8 +752,8 @@
 
 
 <script src="{{url_for('supp.static', filename='fin_ch_id.js')}}"></script>
-<script src="{{url_for('supp.static', filename='dropzone.js')}}"></script>
 
+<script src="{{url_for('supp.static', filename='invtocust.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
 

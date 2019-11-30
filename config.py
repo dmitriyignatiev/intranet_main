@@ -4,11 +4,9 @@ import os
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
   
-<<<<<<< HEAD
+
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI') or 'mysql+pymysql://root:root@localhost:5883/rosexp?charset=utf8mb4'
-=======
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI') or 'mysql+pymysql://root:*******@localhost:8889/v33'
->>>>>>> 3fa833d5583d6653ac3ab32d4268b17eb52ea053
+    
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
 
