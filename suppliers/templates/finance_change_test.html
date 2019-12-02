@@ -590,12 +590,13 @@
                         <tbody>
                             <tr>
                                 <td>
-                                        <button type="button" class="btn btn-primary btn-block"
-                                        onclick="addaserviceexistInvoice(event)">Добавить строку в счет
+                                        <button type="button" id="addserviceb" class="btn btn-primary btn-block"
+                                        >Добавить строку в счет
                                         </button>
-                                        <button type="button" class="btn btn-primary btn-block"
-                                        onclick="addInvoice(event)">Выписать доп счет
-                                       </button>
+                                        <button type="button" class="btn btn-danger btn-block"
+                                        onclick="removeservicefromnvoice(event)">Удалить строку в счете
+                                        </button>
+                                       
                                         <button type="button" class="btn btn-danger btn-block"
                                         onclick="delInvoice(event)">Удалить счет
                                         </button>
@@ -603,10 +604,21 @@
                                 <td>#</td>
                                 <td style="width: 200px">{{formInvoice.company(class='form-control')}}</td>
                                 <td style="width: 300px">{{formInvoice.c_invoice_date(class='form-control')}}</td>
-                                <td style="width: 360px">{{formInvoice.c_inv_description(class='form-control')}}</td>
-                                <td style="width: 200px">{{formInvoice.c_inv_amount(class='form-control')}}</td>
-                                <td style="width: 300px">{{formInvoice.vat(class='form-control')}}</td>
-                                <td style="width: 300px">{{formInvoice.c_inv_currency(class='form-control')}}</td>
+                                <td style="width: 360px"  id='addservicef'>{{formInvoice.c_inv_description(class='form-control')}} <br>
+
+                                {{formInvoice.c_inv_description(class='form-control addservice', value='1', style="display:none")}}
+                                </td>
+                                
+                                <td style="width: 200px">{{formInvoice.c_inv_amount(class='form-control')}} <br><br>
+                                    {{formInvoice.c_inv_amount(class='form-control addservice', id='addservice', style="display:none")}}
+                                
+                                </td>
+                                <td style="width: 300px">{{formInvoice.vat(class='form-control')}} <br><br>
+                                    {{formInvoice.vat(class='form-control addservice', id='addservice', style="display:none")}}
+                                </td>
+
+                                <td style="width: 300px">{{formInvoice.c_inv_currency(class='form-control')}}
+                                </td>
                                 <td style="width: 300px">{{formInvoice.c_inv_plan_pay(class='form-control')}}</td>
                                 <td style="width: 300px"><button type="button" class="btn btn-primary btn-block"
                                     onclick="SaveInvtodb(event)">Сохранить счет
@@ -615,6 +627,10 @@
                                         <button type="button" class="btn btn-primary btn-block"
                                         onclick="FinalizeInv(event)">Финализировать счет
                                        </button>
+
+                                       <button type="button" class="btn btn-primary btn-block"
+                                       onclick="addInvoice(event)">Выписать доп счет
+                                      </button>
                                 </td>
                             </tr>
 
