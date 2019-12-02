@@ -8,7 +8,7 @@
 
 <head>
 
-
+ 
 
 
 
@@ -631,6 +631,7 @@
                                        <button type="button" class="btn btn-primary btn-block"
                                        onclick="addInvoice(event)">Выписать доп счет
                                       </button>
+                                      test
                                 </td>
                             </tr>
 
@@ -650,6 +651,22 @@
 
 
 </body>
+
+<div id="helloVue">
+    <p>[[message]]</p>
+
+
+{{u}}
+<p id='vuedata'>{{f}}</p>
+<button onclick='testforvue()'></button>
+
+<ul>
+    <li v-for="(item, index) in prefin[0]">[[index]]-[[item]]</li>
+</ul>
+<p>[[vuedata]]</p>
+
+</div>
+
 
 
 
@@ -767,10 +784,11 @@
 
 
 
+
 <script src="{{url_for('supp.static', filename='fin_ch_id.js')}}"></script>
 
 <script src="{{url_for('supp.static', filename='invtocust.js')}}"></script>
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
 
 
 {{super()}}

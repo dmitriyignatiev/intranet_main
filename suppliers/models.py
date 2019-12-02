@@ -1,6 +1,9 @@
-from app_main import db
+from app_main import db, ma
+
 from datetime import datetime
 from sqlalchemy.ext.hybrid import hybrid_property
+
+
 
 
 finsupp_table = db.Table('finsup',
@@ -308,6 +311,9 @@ class Prefin(db.Model):
    
        
 
+    def __iter__(self):
+        return self.to_dict().iteritems()
+
     def pochta_cost(self):
         summ = 0
         for p in self.pochta.all():
@@ -315,6 +321,10 @@ class Prefin(db.Model):
             self.pochta_full_cost = summ 
             db.session.commit()
         return summ
+
+
+
+
 
         
     
@@ -410,6 +420,11 @@ class Bank(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text)
     company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
+
+
+class FinanceShema(ma.TableSchema):
+    class Meta:
+        table = Prefin.__table__
     
     
 

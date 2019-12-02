@@ -530,9 +530,19 @@ def prefin_change_id_test(id):
     c_plan_day = req.customer.payment_day + 4
     
     
-    print('forma: ' + str(form.s_invoice_number.data))  
+    print('forma: ' + str(form.s_invoice_number.data))
+
     
-    return render_template('finance_change_test.html', formInvoice=formInvoice, supp=supp, fin=fin, form=form, req=req, tn=tn, docs=docs, form_n=form_n, ttn=ttn, zayavka=zayavka, invs=invs )
+    user_me = User.query.filter(User.id==current_user.id).first()
+    user_schema = UserSchema()
+    print(user_schema.dump(user_me))
+    p_chema = FinanceShema()
+    x = Prefin.query.all()
+    print (type(p_chema.dump(x[0])))
+   
+
+    return render_template('finance_change_test.html', u=user_schema.dump(user_me), f=p_chema.dump(x[1]),\
+        formInvoice=formInvoice, supp=supp, fin=fin, form=form, req=req, tn=tn, docs=docs, form_n=form_n, ttn=ttn, zayavka=zayavka, invs=invs )
 
 
 @supp.route('/download_file_s_tn/<path:filename>', methods=['GET'])

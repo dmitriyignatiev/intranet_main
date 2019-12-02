@@ -1,4 +1,4 @@
-from app_main import db, login
+from app_main import db, login, ma
 
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import UserMixin
@@ -77,6 +77,8 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash (self.password_hash, password)
+
+
 
 
 class Incoice(db.Model):
@@ -440,3 +442,6 @@ class Zayvka(db.Model):
     
 
 
+class UserSchema(ma.ModelSchema):
+    class Meta:
+        fields = ('id','name')

@@ -14,8 +14,21 @@ from flask_mail import Mail
 
 from elasticsearch import Elasticsearch
 
+from flask.json import JSONEncoder
+from sqlalchemy.ext.declarative import DeclarativeMeta
+
+from flask_marshmallow import Marshmallow
+
 
 app = Flask(__name__)
+
+class CustomJSONEncoder(JSONEncoder):
+    
+    def default(self, obj):
+        if isinstance(obj.__class__, DeclarativeMeta):
+            return obj.to_dict()
+        return super(CustomJSONEncoder, self).default(obj)
+app.json_encoder = CustomJSONEncoder
 app.config.from_object(Config)
 
 import os
@@ -40,6 +53,7 @@ app.config.update(
 
 
 db = SQLAlchemy(app)
+ma=Marshmallow(app)
 migrate = Migrate(app, db)
 login = LoginManager(app)
 login.init_app(app)
