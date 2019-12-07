@@ -652,18 +652,27 @@
 
 </body>
 
-<div id="helloVue">
-    <p>[[message]]</p>
+<button onclick='testforvue()'>TESTJSON</button>
+<script>
+
+  var invoices = JSON.parse('{{ inv_dump | tojson }}')
+ 
+</script>
+
+<div id='helloVue'>
+    
+
+    <p id='invoicesCust'>{{inv_dump}}</p>
+
+ 
+    <p >[[message]]</p>
+    
+<invoiceforms v-bind="message" placeholder='Add new'>xxxx</invoiceforms>   
+ 
 
 
-{{u}}
-<p id='vuedata'>{{f}}</p>
-<button onclick='testforvue()'></button>
 
-<ul>
-    <li v-for="(item, index) in prefin[0]">[[index]]-[[item]]</li>
-</ul>
-<p>[[vuedata]]</p>
+
 
 </div>
 
@@ -788,10 +797,37 @@
 <script src="{{url_for('supp.static', filename='fin_ch_id.js')}}"></script>
 
 <script src="{{url_for('supp.static', filename='invtocust.js')}}"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.map"></script>
 
 
 {{super()}}
 
 
 {%endblock%}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>№</th>
+            <th>Товары(работы, услуги)</th>
+            <th>Количество</th>
+            <th>Ед.</th>
+            <th>Цена</th>
+            <th>Сумма</th>
+            <th>Действи</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+        <td><input type="text" v-model='count'>[[count]]</td>
+        <td><input type="text" v-model='description'>[[description]]</td>
+        <td><input type="text" v-model='quantity'>[[quantity]]</td>
+        <td><input type="text" v-model='unit'>[[unit]]</td>
+        <td><input type="text" v-mode='amount'>[[amount]]</td>
+        <td><input type="text" v-model='cost'>[[cost]]</td>
+        <td><input type="text" v-model='total'>[[total]]</td>
+        <td><input type="text" v-model='vat'>[[vat]]</td>
+        <td><button @click='TestAlert'>Записать</button>
+    </tr>
+    </tbody>
+</table>

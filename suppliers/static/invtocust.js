@@ -20,36 +20,152 @@ $("#addserviceb").bind("click", function () {
 })
 
 
-// function testforvue(){
-//    var my_json=document.getElementById('vuedata').innerHTML
-//    // my_json=JSON.stringify(my_json)
-//    my_json = my_json.replace(/None/g, '""')
-//    my_json = my_json.replace(/'/g, '"')
-   
-//    my_json=JSON.parse(my_json)
-//    console.log(my_json)
-//    console.log(typeof(my_json))
-// }
 
-var my_json=document.getElementById('vuedata').innerHTML;
-var my_json = my_json.replace(/None/g, '""');
-var my_json = my_json.replace(/'/g, '"');
+
+
+
+
+
+
+Vue.component('invoiceforms', {
+   delimiters: ['[[', ']]'],
+
+
+   template: `
+  
+      <div class="form-group mb-2">
+           
+      <table class="table">
+    <thead>
+        <tr>
+            <th>№</th>
+            <th>Товары(работы, услуги)</th>
+            <th>Количество</th>
+            <th>Ед.</th>
+            <th>Цена</th>
+            <th>Сумма, без НДС</th>
+            <th>Размер НДС</th>
+            <th>Итого с НДС</th>
    
-var my_json=JSON.parse(my_json);
+            <th>Действия</th>
+           
+        </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><input type="text" v-model='count' name="#count" class="form-control" />[[count]]</td>
+        <td><textarea v-model='description' class="form-control" />[[description]]</td>
+        <td><input type="text" v-model='quantity' name='quan-ty' class="form-control" />[[quantity]]</td>
+        <td><input type="text" v-model='unit' class="form-control" />[[unit]]</td>
+        <td><input type="text" v-model='price' name='price' class="form-control" />[[price]]</td>
+        
+        
+        <td><input type="text" v-model='tt' name='summTotal_w_VAT' class="form-control" />[[countSumm]]</td>
+        <td><input type="text" v-model='vat' class="form-control" />[[vat]]</td>
+     
+        <td><input type="text" class="form-control" v-model='total_t_vat'/>[[countVat]]</td>
+       
+        <td><button @click='TestAlert'>Записать</button></td>
+  
+        
+        </tr>
+    </tbody>
+</table>
+  
+       </div>
+ 
+   `,
+
+   data() {
+      return {
+         count: "",
+         description: "",
+         quantity: "",
+         unit: "",
+         amount:"",
+         price: "",
+         total:'',
+         total_t_vat:this.countVat,
+         tt:this.countSumm,
+         vat: '',
+         selected:'',
+
+      }
+   },
+
+   
+
+   computed:{
+
+      countSumm(){
+       
+            this.tt = parseInt(this.price) * parseInt(this.quantity);
+            this.total = this.tt
+            return this.tt, this.total
+      },
+
+      
+      countVat(){
+         var c_vat =''
+         if (this.price !='' & this.vat !=''){
+            c_vat = (100-parseInt(this.vat))/100
+            return this.total_t_vat= parseInt(this.total)/c_vat
+         }else{
+            this.price=this.price }
+         
+      }
+   },
+
+   methods: {
+      TestAlert: function () {
+         $.getJSON('/suppliers/testVue', {
+            count: this.count,
+            description: this.description,
+            quantity: this.quantity,
+            unit: this.unit,
+            amount: this.amount,
+            price: this.price,
+            total: this.total,
+            vat: this.vat,
+            type: 'POST',
+         }, function (data) {
+            console.log(data)
+         });
+      }
+   }
+
+})
+
+
+
 
 const helloWorld = new Vue({
    delimiters: ['[[', ']]'],
-   el:'#helloVue',
-   
-   data: {
-      prefin:[my_json],
-      message: 'This is the message',
-  
-   },
-      
- 
+   el: '#helloVue',
 
-})
+   data: {
+     
+      invs:invoices,
+    
+      inv:[
+         {'path': '', 'invoice_number': '11' },
+         {'path': '', 'invoice_number': '12' }
+      ],
+      message: 'This is the message',
+      name: ""
+   },
+
+   methods: {
+   },
+
+
+});
+
+
+
+
+
+
 
 
 

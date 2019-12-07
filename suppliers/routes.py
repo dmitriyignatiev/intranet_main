@@ -528,6 +528,8 @@ def prefin_change_id_test(id):
     print('session: ' + str(session['fin_id']))
 
     c_plan_day = req.customer.payment_day + 4
+
+
     
     
     print('forma: ' + str(form.s_invoice_number.data))
@@ -539,9 +541,17 @@ def prefin_change_id_test(id):
     p_chema = FinanceShema()
     x = Prefin.query.all()
     print (type(p_chema.dump(x[0])))
+    invoiceCust = Invoicecust.query.filter(Invoicecust.prefin_id==session['fin_id']).all()
+    print(invoiceCust)
+    
+    invCust_chema = InvoicecustShema(many=True)
+    inv_dump = invCust_chema.dump(invoiceCust)
+    print(inv_dump)
+    
    
 
-    return render_template('finance_change_test.html', u=user_schema.dump(user_me), f=p_chema.dump(x[1]),\
+    return render_template('finance_change_test.html',
+    inv_dump=inv_dump, u=user_schema.dump(user_me), f=p_chema.dump(x[1]),\
         formInvoice=formInvoice, supp=supp, fin=fin, form=form, req=req, tn=tn, docs=docs, form_n=form_n, ttn=ttn, zayavka=zayavka, invs=invs )
 
 
@@ -1216,6 +1226,24 @@ def add_inv_from_form():
     "s_inv_amount": s_inv_amount, "s_inv_date": s_inv_date, "s_inv_deadline": s_inv_deadline,
     "vat": vat, "currency": currency})
 
+
+@supp.route('/testVue', methods=['POST', 'GET'])
+def testVue():
+    count = request.args.get('count')
+    description = request.args.get('description')
+    quantity = request.args.get('quantity')
+    unit=request.args.get('unit')
+    amount = request.args.get('amount')
+    price = request.args.get('price')
+    total = request.args.get('total')
+    total_w_vat = request.args.get('tt')
+    vat = request.args.get('vat') 
+
+
+
+
+    print(count, description, quantity, unit, amount, price, tt,  total, vat)
+    return jsonify({'descripton':description})
 
 
 

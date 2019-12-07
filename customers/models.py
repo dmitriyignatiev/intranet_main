@@ -1,4 +1,4 @@
-from app_main import db, login
+from app_main import db, login, ma
 
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import UserMixin
@@ -49,6 +49,12 @@ class Invoicecust(db.Model):
         list = [self.invoice_number for self in c.invoices if self.debt_inv()]
         
         return list()
+
+
+
+class InvoicecustShema(ma.TableSchema):
+    class Meta:
+        table = Invoicecust.__table__
 
 
 
