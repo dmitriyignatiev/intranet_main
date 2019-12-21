@@ -15,36 +15,30 @@ from app_main.models import db, User, Request, Posts, Costs, Status, \
 from suppliers.models import Supplier, newSup, Prefin, Documents, \
     Pochta, Invoicesup, Tn, Supp_payment, Invoice_payment_s, Transit, Tr_status, Companies, Bank, Tr_payments
 
-from customers.models import   Invoicecust, Invoice_payment_c
+from customers.models import   Invoicecust, Invoice_payment_c, AddInvoiceCust
 from agreements_word.models import *
 
 def make_db():
-    dima=User(name='Dima', role='sale', email='dmitriy.ignatiev83@gmail.com')
-    olga=User(name='Olga_p', role='buyer', request_count=0, email='dmitriy@rosexport.su')
-    
-    db.session.add(dima)
-    db.session.add(olga)
-    
-    dima.set_password('Dima')
-    olga.set_password('Olga_p')
-    
-    db.session.commit()
-    if not Customer.query.filter(Customer.name=='ДСВ').first():
-        customer=Customer(name='ДСВ', user_id=olga.id)
+    db.create_all()
+    if not User.query.filter(User.name=='Dima').first():
+        dima=User(name='Dima', role='sale', email='dmitriy.ignatiev83@gmail.com')
+        olga=User(name='Olga_p', role='buyer', request_count=0, email='dmitriy@rosexport.su')
+        
+        
+        db.session.add(dima)
+        db.session.add(olga)
+        
+        dima.set_password('Dima')
+        olga.set_password('Olga_p')
+        db.session.commit()
+
+        customer = Customer(name='ДСВ', user_id=olga.id)
         db.session.add(customer)
-    
-
-    q1 = Quantity(quantity=1)
-    q2 = Quantity(quantity=2)
-    d1 = Direction(name='DOM')
-    d2 = Direction(name='INT')
-
-
-    db.session.add(q1)
-    db.session.add(q2)
-    db.session.add(d1)
-    db.session.add(d2)
-    db.session.commit()
+        q1 = Quantity(quantity=1)
+        q2 = Quantity(quantity=2)
+        d1 = Direction(name='DOM')
+        d2 = Direction(name='INT')
+        db.session.commit()
 
 
 
@@ -76,6 +70,7 @@ def make_shell_context():
             'Companies':Companies,
             'Bank': Bank,
             'Tr_payments':Tr_payments,
+            'AddInvoiceCust':AddInvoiceCust,
             'make_db':make_db(),
                         }
 

@@ -3,13 +3,13 @@
 
 {%block head%} {{super()}}
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.js"></script>
 
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.2.4.js">
+
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" /> {%endblock%}
@@ -28,6 +28,7 @@
  
 
 {% block navbar %}
+
 
 <div class="container-full" >
    
@@ -81,6 +82,7 @@
 <body>
 
   {%block content%}
+ 
 
   <div class="container-full" style="margin: 20px;">
 
@@ -108,8 +110,13 @@
         <!--    <a href="{{url_for('request_with_cost')}}"><button type="button" class="btn btn-info btn-sm" > Прокотированные запросы</button></a>-->
 
     {% endif%}
+    
 
     {%if current_user.role=='buyer'%}
+
+    
+    <a href="#">Количество новых запросов<span class="badge">[[xxx]]</span></a><br>
+     
           <!--  <a href="{{url_for('request_with_cost')}}"><button type="button" class="btn btn-info btn-sm" > Прокотированные запросы</button></a>-->
           <!-- <a href="{{url_for('index')}}"><button type="button" class="btn btn-info btn-sm" > Мои запросы</button></a></p>-->
 
@@ -307,11 +314,54 @@
   </table>
 </table>
 </div>
+</body>
+
+<button onclick='testforvu()'>TESTJSON</button>
+
+<script>
+function testforvu(){
+  var query = "query {users{ id: 1 }}";
+  var entry = 'VXNlck9iamVjdDoyNQ=='
+  var superQuery = `{
+          allUsers(first: 2){
+             edges{
+              node  {
+               id
+                name
+                    }
+                }
+              }
+          }`
+
+  
+  
+ 
+  fetch('{{url_for("graphql")}}', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  },
+  body: JSON.stringify({query: "{hello}"})
+})
+  .then(r => r.json())
+  .then(data => console.log('data returned:', data));
+
+  
+}
+</script>
+ <div id='app'>
+
+
+    [[message]] 
+    <p>test-[[xxx]]
+</div>
 
 
 {%endblock%}
 
 {%block scripts%}
+
 
 <script>
     $(document).ready(function(){
@@ -323,6 +373,88 @@
       });
     });
     </script>
+
+
+
+<script>
+ $(function(){
+      setInterval(function(){
+        $.ajax('{{url_for("test_noti")}}').done(
+          function(data){
+            console.log(data, '123')
+            
+            
+
+          }
+          
+        )
+      },10000);
+
+    }) ;
+
+var h = "{hello}"
+
+var superQuery = `{
+          allUsers(first: 2){
+             edges{
+              node  {
+               id
+                name
+                    }
+                }
+              }
+          }`
+
+
+var app = new Vue({
+  delimiters: ['[[', ']]'],
+  el: '#app',
+  data: {
+    message: 'Привет, Vue!',
+    xxx: '',
+    
+  },
+  created () {
+        this.getData();
+        this.timer = setInterval(this.getData, 10000)
+     
+    },
+
+  methods: {
+        getData: function () {
+          $.ajax('{{url_for("test_noti")}}').done(
+          function(data){
+            console.log(data.req_count, '245')
+            this.xxx = data.req_count
+          }.bind(this));
+          fetch('{{url_for("graphql")}}', {
+                 method: 'POST',
+                 headers: {
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json',
+                },
+                body: JSON.stringify({query: superQuery})
+                })
+                  .then(r => r.json())
+                  .then(data => {this.message = data.data})
+                  ;
+        },
+        cancelAutoUpdate () { clearInterval(this.timer) }
+
+  },
+  beforeDestroy () {
+      clearInterval(this.timer)
+    }
+ 
+       
+  
+});
+  
+
+    
+
+  
+  </script>
 
     {{super()}}
     {{moment.include_moment()}}

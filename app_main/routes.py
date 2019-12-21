@@ -1,5 +1,6 @@
 import os
 from datetime import timedelta
+from flask import json
 
 
 # from mailmerge import MailMerge
@@ -62,6 +63,9 @@ def index():
     req_cost = Request.query.filter(Request.user_id==current_user.id).filter(Request.cost==None).all()
     now = datetime.now()
     customer = form.cust.data
+    req_count=current_user.request_count
+    x={'reque_count':req_count}
+    xx = json.dumps(x)
    
     if form:
         if customer is not None:
@@ -70,7 +74,13 @@ def index():
     return render_template('base.html', title = 'Home',
                            requests=requests,
                            req_cost=len(req_cost),
-                           now=now, form=form)
+                           now=now, form=form, xv=xx)
+
+@app.route('/test_noti')
+def test_noti():
+     req_count=current_user.request_count
+     return jsonify({'req_count':req_count})
+
 
 @app.route('/index_c/<string:name>', methods=['GET', 'POST'])
 def index_c(name):
@@ -137,7 +147,7 @@ def new_request():
             ################
 
 
-            elif new.customer.name == 'ДСВ':
+            elif new.customer.name == 'customer_1':
                 buyer = User.query.get(2)
             elif new.direction == 'INT':
                 buyer = User.query.get(21)

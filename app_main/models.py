@@ -22,8 +22,9 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(120))
     requests = db.relationship('Request', secondary=subs,
                                backref=db.backref('users', lazy='dynamic'))
-    post = db.relationship('Posts', backref = 'user', lazy = 'dynamic')
     request = db.relationship('Request', backref='user', lazy = 'dynamic')
+    post = db.relationship('Posts', backref = 'user', lazy = 'dynamic')
+    
     request_count = db.Column(db.Integer)
 
     agreement = db.relationship ('Agreement', backref='user', lazy='dynamic')
@@ -54,7 +55,9 @@ class User(UserMixin, db.Model):
     external = db.Column(db.String(120))
     start_work = db.Column(db.DateTime)
 
-    agreements = db.relationship('Agreements', backref='user_agr', lazy='dynamic')
+    books = db.relationship('Book', backref='user', lazy='dynamic')
+    
+ 
     
 
 
@@ -445,3 +448,20 @@ class Zayvka(db.Model):
 class UserSchema(ma.ModelSchema):
     class Meta:
         fields = ('id','name')
+
+bdtable=db.Table('bdtable', 
+    db.Column('book_id', db.Integer, db.ForeignKey('book.id'), primary_key=True),
+    db.Column('author_id', db.Integer, db.ForeignKey('author.id'), primary_key=True)
+)    
+
+class Author(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120))
+    books = db.relationship('Book', secondary=bdtable, lazy='subquery',
+                             backref=db.backref('authors', lazy='dynamic'))
+
+class Book(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(120))
+    author_id = db.Column(db.Integer, db.ForeignKey('author.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))

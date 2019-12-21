@@ -17,6 +17,19 @@ import json
 
 from flask_login import current_user, login_required, login_user, logout_user
 
+from .schema import UserObject, RequestObject, schema
+
+from flask_graphql import GraphQLView
+
+
+app.add_url_rule(
+    '/graphql',
+    view_func=GraphQLView.as_view(
+        'graphql',
+        schema=schema,
+        graphiql=True
+    )
+)
 
 
 
@@ -39,6 +52,7 @@ def add_supplier(id):
     docs = Documents.query.filter(Documents.req_id==session['id'])
     id = req.id
     pick_up_date = req.pick_up_date
+    
 
 
     
@@ -54,7 +68,7 @@ def add_supplier(id):
     
     date = req.pick_up_date
     form=formSupplier()
-    form.name.choices = [(g.llc_name, g.llc_name) for g in Supplier.query.order_by('llc_name')]
+    form.name.choices = [(g.llc_name, g.llc_name) for g in Supplier.query.all()]
     
     
     if fin:
@@ -180,7 +194,7 @@ def prefin():
         
     request_one=Request.query.get(req_id)
     direction = request_one.direction
-    sale = request_one.user.name
+    sale = request_one.user.name or current_user.name
     customer = request_one.customer.name
     buyer = request_one.users[0].name
     loading_place = request_one.org
@@ -502,7 +516,7 @@ def prefin_change_id_test(id):
    
     print(form)
     fin = Prefin.query.get(id)
-    print(fin.c_inv_number)
+  
     session['fin_id'] = fin.id
     print(session['fin_id'])
 
@@ -514,7 +528,7 @@ def prefin_change_id_test(id):
     invoicec = Invoicecust.query.all()
 
     req = Request.query.filter_by(id=fin.req_id).first()
-    cust = Customer.query.join(Request).filter(Request.id==req.id).first()
+    
     
     
     docs = Documents.query.filter(Documents.req_id==req.id).all()
@@ -535,23 +549,7 @@ def prefin_change_id_test(id):
     print('forma: ' + str(form.s_invoice_number.data))
 
     
-    user_me = User.query.filter(User.id==current_user.id).first()
-    user_schema = UserSchema()
-    print(user_schema.dump(user_me))
-    p_chema = FinanceShema()
-    x = Prefin.query.all()
-    print (type(p_chema.dump(x[0])))
-    invoiceCust = Invoicecust.query.filter(Invoicecust.prefin_id==session['fin_id']).all()
-    print(invoiceCust)
-    
-    invCust_chema = InvoicecustShema(many=True)
-    inv_dump = invCust_chema.dump(invoiceCust)
-    print(inv_dump)
-    
-   
-
-    return render_template('finance_change_test.html',
-    inv_dump=inv_dump, u=user_schema.dump(user_me), f=p_chema.dump(x[1]),\
+    return render_template('finance_change_test.html',\
         formInvoice=formInvoice, supp=supp, fin=fin, form=form, req=req, tn=tn, docs=docs, form_n=form_n, ttn=ttn, zayavka=zayavka, invs=invs )
 
 
@@ -1242,7 +1240,7 @@ def testVue():
 
 
 
-    print(count, description, quantity, unit, amount, price, tt,  total, vat)
+    print(count, description, quantity, unit, amount, price,  total, vat)
     return jsonify({'descripton':description})
 
 
