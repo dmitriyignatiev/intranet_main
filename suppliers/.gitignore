@@ -1,6 +1,6 @@
 # /src/.gitignore
-documents/
-payments_docs/
-payments_docs_tr/
-s_docs/
+documents
+payments_docs
+payments_docs_tr
+s_docs
 

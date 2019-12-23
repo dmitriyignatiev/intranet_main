@@ -1,4 +1,5 @@
 from app_main import db, login, ma
+from sqlalchemy.ext.hybrid import hybrid_property
 
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import UserMixin
@@ -14,9 +15,10 @@ subs = db.Table('subs',
                 db.Column('request_id', db.Integer, db.ForeignKey('request.id'))
                 )
 
-class User(UserMixin, db.Model):
+class User(db.Model, UserMixin):
 
     id = db.Column(db.Integer, primary_key=True)
+    
     name = db.Column(db.String(120))
     role = db.Column(db.String(120))
     password_hash = db.Column(db.String(120))
@@ -56,12 +58,12 @@ class User(UserMixin, db.Model):
     start_work = db.Column(db.DateTime)
 
     books = db.relationship('Book', backref='user', lazy='dynamic')
-    
- 
-    
+    uid = db.Column(db.Integer)
 
 
-
+    def uuid(self):
+        self.uid=self.id
+        db.session.commit()
 
 
     def new_messages(self):
