@@ -1,13 +1,16 @@
-*config
-venv
-v1
-v3
-v2
 
-my_datavolume
+*config
+venv/
+v1/
+v3/
+v2/
 *.pyc
-documents
-payments_docs
-payments_docs_tr
-s_docs
+suppliers/documents/
+suppliers/payments_docs
+suppliers/payments_docs_tr
+suppliers/s_docs
+suppliers/s_invoice
+suppliers/c_inv
+suppliers/TN
+
 my_datavolume/

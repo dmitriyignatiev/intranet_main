@@ -678,6 +678,36 @@
     <h1>[[name]]</h1>
 </div>
 
+<div id="app">
+
+</div>
+
+<div id="invoicecust" :key="renderKey">
+    <div>
+        <input v-model="user.firstName">
+    </div>
+    <input v-model="id" type="text"  placeholder="id" >
+            <input v-model="number" type="text" placeholder="номер" >
+                <button @click="add_test_1()">Add</button>
+  
+        <template v-for="(item, index) in invoiceDetails"  >
+            <li>[[item.id]]:[[item.number]]:[[invoiceDetails[0].test_attr]]:[[item.test]]
+                <button type="button" @click="invoiceDetails.splice(index, 1)" class="remove">del</button>
+               <button @click='addPlus(index)'>Plus</button>
+                    
+                    <template v-for="(val, key) in item.invoices">
+                        <p ><input v-model="val.description"> <input v-model="val.summ"> <input v-model="val.vat"><input v-model='val.total' >
+                            [[key]] / [[val]] <button @click="item.invoices.splice(key, 1)">delete</button>
+                        </p>  
+
+                    </template>
+                
+            </li>
+        </template>
+        <pre>[[$data]]</pre>
+
+</div>
+
 
 
 

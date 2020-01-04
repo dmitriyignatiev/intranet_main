@@ -40,7 +40,7 @@ app.add_url_rule(
 
 @supp.route('/index')
 def index():
-    return render_template('app_main.base.html')
+    return jsonify({'test':'test'})
 
 
 @supp.route('/add_supplier/<int:id>', methods=['GET', 'POST'])

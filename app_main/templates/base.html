@@ -354,8 +354,11 @@ function testforvu(){
 
 
     [[message]] 
-    <p>test-[[xxx]]
+    <p>test-[[xxx]]</p>
+    [[msq]]
 </div>
+
+
 
 
 {%endblock%}
@@ -410,7 +413,7 @@ var app = new Vue({
   delimiters: ['[[', ']]'],
   el: '#app',
   data: {
-    message: 'Привет, Vue!',
+    message:'' ,
     xxx: '',
     
   },
@@ -455,6 +458,8 @@ var app = new Vue({
 
   
   </script>
+
+
 
     {{super()}}
     {{moment.include_moment()}}
