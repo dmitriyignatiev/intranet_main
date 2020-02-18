@@ -148,8 +148,8 @@
     <div class="container">
         <a href="{{url_for('feedback', id=req.id)}}"><button type="button" class="btn btn-warning btn-sm">Обновить</button></a>
         <form action="" method="post">
-            {{form.hidden_tag()}} {% if current_user.id == 5 or current_user.role == 'buyer' %} {{form.ask_buyer}} закупщик {{form.ask_sale}} продавец {{form.deadline}} дедлайн {{form.quest}} Отметить как вопрос? {{form.noquest}} Вопросов нет {{form.deadline_answer}}
-            срок ответа {% endif %}
+            {{form.hidden_tag()}} {% if current_user.id == 5 or current_user.role == 'buyer' %} {{form.ask_buyer}} закупщик {{form.ask_sale}} продавец {{form.deadline}} дедлайн {{form.quest}} Отметить как вопрос? {{form.noquest}} Вопросов нет
+             {% endif %}
 
 
 

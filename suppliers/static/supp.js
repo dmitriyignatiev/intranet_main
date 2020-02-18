@@ -20,6 +20,8 @@ $(function() {
         $('select#our_company').select2({width:'100'});
         $('select#our_bank').select2({width:'100'});
         $('select#date_payment').select2({width:'100'});
+        $('#selectpicker').select2({width:'100%'});
+       
 
     });
 

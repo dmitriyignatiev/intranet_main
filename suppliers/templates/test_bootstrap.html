@@ -1,0 +1,102 @@
+<!-- 
+<div id="app">
+    <div id="app">
+        <div v-for="(_, i) in selected">
+          <form action="">
+            <select v-model="selected[i]" id="mySelect">
+              <v-select v-for="option in options" :value="option.supp_name">
+                [[ option.supp_name ]]
+              </v-select>
+            </select>
+            <span>Chosen: [[ selected[i] ]]</span>
+          </form>
+        </div>
+        <pre>selected = [[ selected ]]</pre>
+</div> -->
+
+{%extends 'base.html'%}
+{%block head%}
+<script src="https://unpkg.com/vue@latest"></script>
+<script src="https://unpkg.com/vue-select@latest"></script>
+<link rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css">
+{{super()}}
+{%endblock%}
+
+
+{%block content%}
+{%if current_user.name == 'Olga_p'%}
+<div id="vs">
+  <h1>Vue Select</h1>
+  <v-select 
+    :options="options"
+    :get-option-label = 'option => option.node.llcName'
+    :reduce="option => option.node.llcName"
+    v-model='selected'></v-select>
+  <pre>[[$data]]</pre>
+</div>
+{%endif%}
+
+<script>
+
+
+Vue.component('v-select', VueSelect.VueSelect)
+
+new Vue({
+  el: '#vs',
+  delimiters: ["[[", "]]"],
+  data: {
+    options: [
+    {
+      "node": {
+        "id": "U3VwcGxpZXJPYmplY3Q6MzA1",
+        "llcName": "new",
+        "suppPayment": {
+          "edges": [0]
+        }
+      }
+    },
+    {
+      "node": {
+        "id": "U3VwcGxpZXJPYmplY3Q6MzA2",
+        "llcName": "new2",
+        "suppPayment": {
+          "edges": [1]
+        }
+        
+      }
+    },
+    {
+      "node": {
+        "id": "U3VwcGxpZXJPYmplY3Q6MzA3",
+        "llcName": "rteer",
+        "suppPayment": {
+          "edges": [2]
+        }
+      }
+    }
+  ],
+    selected:"",
+  }
+})
+</script>
+{%endblock%}
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+<script src="{{url_for('supp.static', filename='b.js')}}"></script>
+
+
+
+

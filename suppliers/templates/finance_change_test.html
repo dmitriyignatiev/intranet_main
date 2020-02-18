@@ -1,23 +1,43 @@
 {% extends "base.html" %} {%block head%}
 
-
-
-
-
+<script src="https://unpkg.com/vue@latest"></script>
+<script src="https://unpkg.com/vue-select@latest"></script>
+<link rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css">
 {{super()}}
+{%endblock%} 
+{%block content%}
 
-<head>
+<div id="select-test">
+    <h1>Vue Select</h1>
+    <v-select :options="options" v-model="selected" @input="test()" ></v-select>
+    <pre>[[$data]]</pre>
+    <pre>[[$data.filterSuppliers]]</pre>
+</div>
 
- 
+<script>
+    
+Vue.component('v-select', VueSelect.VueSelect)
 
+new Vue({
+  el: '#select-test',
+  delimiters: ["[[", "]]"],
+  data: {
+    options: [
+      'foo',
+      'bar',
+      'baz'
+    ],
 
+    seleted: "",
+  },
 
-</head>
-<title>
-
-
-</title>
-{%endblock%} {%block content%}
+  methods: {
+      test: function(){
+          alert(this.seleted)
+      }
+  }
+})
+</script>
 
 <body>
 
@@ -306,6 +326,8 @@
                 <br><br>
 
             </div>
+           
+
             <br><br>
             <ul class="nav nav-tabs" id="myTab" role="tablist">
 
@@ -317,9 +339,24 @@
                     <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
                         aria-controls="contact" aria-selected="false">Клиент</a>
                 </li>
-            </ul>
-            <div class="tab-content" id="myTabContent">
 
+                <li class="nav-item">
+                    <a class="nav-link" id="test-tab" data-toggle="tab" href="#test" role="tab"
+                        aria-controls="test" aria-selected="false">Test</a>
+                </li>
+
+            </ul>
+
+            
+                
+                    
+                
+            
+            
+
+            <div class="tab-content" id="myTabContent">
+                
+               
                 <div class="tab-pane fade in active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                     {%if supp%}
                     {%for supp in fin.supplier.all()%}
@@ -567,157 +604,97 @@
 
 
             <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab" style="width: 1500px;">
-                    <button type="button" onclick="addInvFormtoCust()" class="btn btn-primary btn-sm btn-block">Приступить к выставлению счета</button>
+                
+                <div id="invoicecust">
+                    <br>
+                    <div class="form-row">
 
-                <form>
-                    <table class="table" id='formInvcust' style="display:none">
-                        <thead>
-                            <tr>
-                                <th>Действия</th>
-                                <th>Номер</th>
-                                <th>От кого</th>
-                                <th>Дата счета</th>
-                                <th>Описание</th>
-                                <th>Сумма счета без НДС</th>
-                                <th>Размер НДС</th>
-                                <th>Валюта</th>
-                                <th>Дата до котороой оплатить</th>
-                                <th>Операции</th>
+                        <div class="form-group col-md-4">
+                            <input v-model="id" type="text"  placeholder="id" class="form-control" >
+                        </div>
 
-                            </tr>
-
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                        <button type="button" id="addserviceb" class="btn btn-primary btn-block"
-                                        >Добавить строку в счет
-                                        </button>
-                                        <button type="button" class="btn btn-danger btn-block"
-                                        onclick="removeservicefromnvoice(event)">Удалить строку в счете
-                                        </button>
-                                       
-                                        <button type="button" class="btn btn-danger btn-block"
-                                        onclick="delInvoice(event)">Удалить счет
-                                        </button>
-                                </td>
-                                <td>#</td>
-                                <td style="width: 200px">{{formInvoice.company(class='form-control')}}</td>
-                                <td style="width: 300px">{{formInvoice.c_invoice_date(class='form-control')}}</td>
-                                <td style="width: 360px"  id='addservicef'>{{formInvoice.c_inv_description(class='form-control')}} <br>
-
-                                {{formInvoice.c_inv_description(class='form-control addservice', value='1', style="display:none")}}
-                                </td>
+                    
+                        <div class="form-group col-md-4">
+                            <input v-model="number" type="text" placeholder="номер" class="form-control">
+                        </div>
+                            
+                        <div class="form-group col-md-2">
+                             <button @click="add_test_1()" class="form-control">Add</button>
+                        </div>        
+                       
+                  </div>
+               
+                
+                        <template v-for="(item, index) in invoiceDetails"  >
+                            <li>[[item.id]]:[[item.number]]:[[invoiceDetails[0].test_attr]]:[[item.test]]
+                                <button type="button" @click="invoiceDetails.splice(index, 1)" class="remove">del</button>
+                               <button @click='addPlus(index)'>Plus</button>
+                                    
+                                    <template v-for="(val, key) in item.invoices">
+                                        <p ><input v-model="val.description"> <input v-model="val.summ"> <input v-model="val.vat"><input v-model='val.total' >
+                                            [[key]] / [[val]] <button @click="item.invoices.splice(key, 1)">delete</button>
+                                        </p>  
+                
+                                    </template>
                                 
-                                <td style="width: 200px">{{formInvoice.c_inv_amount(class='form-control')}} <br><br>
-                                    {{formInvoice.c_inv_amount(class='form-control addservice', id='addservice', style="display:none")}}
-                                
-                                </td>
-                                <td style="width: 300px">{{formInvoice.vat(class='form-control')}} <br><br>
-                                    {{formInvoice.vat(class='form-control addservice', id='addservice', style="display:none")}}
-                                </td>
+                            </li>
+                        </template>
+                        <pre>[[$data]]</pre>
+                
+                </div>
+                </div>
+                
 
-                                <td style="width: 300px">{{formInvoice.c_inv_currency(class='form-control')}}
-                                </td>
-                                <td style="width: 300px">{{formInvoice.c_inv_plan_pay(class='form-control')}}</td>
-                                <td style="width: 300px"><button type="button" class="btn btn-primary btn-block"
-                                    onclick="SaveInvtodb(event)">Сохранить счет
-                                   </button>
-                                
-                                        <button type="button" class="btn btn-primary btn-block"
-                                        onclick="FinalizeInv(event)">Финализировать счет
-                                       </button>
+            <div class="tab-pane fade" id="test" role="tabpanel" aria-labelledby="test-tab" style="width: 1500px;">
+                <div id="supp-app">
 
-                                       <button type="button" class="btn btn-primary btn-block"
-                                       onclick="addInvoice(event)">Выписать доп счет
-                                      </button>
-                                      test
-                                </td>
-                            </tr>
+                    <input type="text" v-model="new_supplier.name" class='form-control col-md-2'>
+                    <input type="text" v-model="new_supplier.inn" class='form-control col-md-2'>
+                    <button @click="addSupplier()">Записать поставщика в базу</button>
+                    
+                        <br><br>
+                        <v-select
+                        :options="suppliers"
+                        :get-option-label = 'suppliers => suppliers.node.llcName'
+                        :reduce="suppliers => suppliers.node.llcName"
+                        v-model='selected' @input='supplier_f(), getFilterSuppliersPrefin()'></v-select>
+                        <button @click='addSuppPrefin()'>Добавить поставщика в работу</button>
+        
+                    <br>
+                    <pre>[[$data.selected]]</pre>
+                    <pre>[[$data]]</pre>
+                   
 
-                        </tbody>
-
-                    </table>
-
-                </form>
-
-
-
-
+            
+                </div>
+            </div>
+            
+                
 
             </div>
+</div>
 
 
 
 
 </body>
 
-<button onclick='testforvue()'>TESTJSON</button>
 
 
 
 
 
-<div id='helloVue'>
-    
-<div>
-    <ul>
-        <li v-for='item in invs'>
-               <invoiceforms @count_str='count_str'  :id=item.id v-bind="message" placeholder='Add new'>   </invoiceforms>  
-        </li>           
-       
-    </ul>
 
-</div> 
 
 
         
 </div>
 
-<div id="vue-app">
-    <h1>[[name]]</h1>
-</div>
+
 
 <div id="app">
 
 </div>
-
-<div id="invoicecust" :key="renderKey">
-    <div>
-        <input v-model="user.firstName">
-    </div>
-    <input v-model="id" type="text"  placeholder="id" >
-            <input v-model="number" type="text" placeholder="номер" >
-                <button @click="add_test_1()">Add</button>
-  
-        <template v-for="(item, index) in invoiceDetails"  >
-            <li>[[item.id]]:[[item.number]]:[[invoiceDetails[0].test_attr]]:[[item.test]]
-                <button type="button" @click="invoiceDetails.splice(index, 1)" class="remove">del</button>
-               <button @click='addPlus(index)'>Plus</button>
-                    
-                    <template v-for="(val, key) in item.invoices">
-                        <p ><input v-model="val.description"> <input v-model="val.summ"> <input v-model="val.vat"><input v-model='val.total' >
-                            [[key]] / [[val]] <button @click="item.invoices.splice(key, 1)">delete</button>
-                        </p>  
-
-                    </template>
-                
-            </li>
-        </template>
-        <pre>[[$data]]</pre>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
 
 
 </html>
@@ -726,6 +703,13 @@
 
 {%block scripts%}
 
+<script src="{{url_for('supp.static', filename='fin_ch_id.js')}}"></script>
+
+<script src="{{url_for('supp.static', filename='invtocust.js')}}"></script>
+<script src="{{url_for('supp.static', filename='comp.js')}}"></script>
+<script src="{{url_for('supp.static', filename='supp_vue.js')}}"></script>
+
+<script src="{{url_for('supp.static', filename='b.js')}}"></script>
 
 
 
@@ -826,15 +810,7 @@
 
 
 
-<script src="{{url_for('supp.static', filename='fin_ch_id.js')}}"></script>
 
-<script src="{{url_for('supp.static', filename='invtocust.js')}}"></script>
-<script src="{{url_for('supp.static', filename='comp.js')}}"></script>
-
-
-
-
-{{super()}}
 
 
 {%endblock%}

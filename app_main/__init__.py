@@ -20,8 +20,12 @@ from sqlalchemy.ext.declarative import DeclarativeMeta
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
 
+
+import redis
+
 app = Flask(__name__)
 CORS(app)
+redis = redis.Redis(host='redis', port=6379)
 
 class CustomJSONEncoder(JSONEncoder):
     
@@ -65,6 +69,8 @@ es = Elasticsearch()
 
 moment = Moment(app)
 
+
+
 bootstrap = Bootstrap(app)
 dropzone = Dropzone(app)
 app.extensions['bootstrap']['cdns']['jquery'] = WebCDN(
@@ -85,3 +91,6 @@ app.register_blueprint(cust, url_prefix='/customers')
 
 from agreements_word.routes import agr
 app.register_blueprint(agr, url_prefix='/agreements')
+
+from api.routes import api
+app.register_blueprint(api, url_prefix='/api')

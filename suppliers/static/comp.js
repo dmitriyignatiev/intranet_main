@@ -1,11 +1,6 @@
-new Vue({
-    delimiters: ['[[', ']]'],
-    el: "#vue-app",
-    data: {
-        name:"Dima"
-    }
-
-})
+$(document).ready(function() {
+    $('.js-example-basic-single').select2();
+});
 
 const invoices = [
     {

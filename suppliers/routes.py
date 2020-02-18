@@ -32,12 +32,6 @@ app.add_url_rule(
 )
 
 
-
-
-
-
-
-
 @supp.route('/index')
 def index():
     return jsonify({'test':'test'})
@@ -102,13 +96,6 @@ def add_supplier_to_db():
         db.session.commit()
         return jsonify({'success': 'Поставщик упешно внесен в базу данных'})
     
-
-
-
-
-
-
-
 
 
 import os
@@ -1243,8 +1230,39 @@ def testVue():
     print(count, description, quantity, unit, amount, price,  total, vat)
     return jsonify({'descripton':description})
 
-
-
-
+@supp.route('/addts', methods=['POST', 'GET'])
+def addts():
+    name = request.args.get('name')
+    inn = request.args.get('inn')
+   
+    if Supplier.query.filter_by(llc_name=name).first():
+        return jsonify({'error': 'error'})
     
-    
+    else:
+        newSupplier=Supplier(llc_name=name, inn=inn)
+        db.session.add(newSupplier)
+        db.session.commit()
+
+        return jsonify({'response': name})
+
+@supp.route('test_bootstrap')
+def test_bootsrap():
+    return render_template('test_bootstrap.html')
+
+@supp.route('/choose_supplier/<string:name>', methods=['POST', 'GET'])
+def choose_supplier(name):
+    supplier=Supplier.query.filter_by(llc_name=name).first()
+    test_name=supplier.llc_name
+    return jsonify({'test_name': test_name})
+
+@supp.route('/add_supplier_to_prefin', methods=['GET', 'POST'])
+def add_supplier_to_prefin():
+    supp_name = request.args.get('name')
+    supplier=Supplier.query.filter_by(llc_name=supp_name).first()
+    fin_id = session.get('fin_id')
+    prefin = Prefin.query.get(int(fin_id))
+    supplier.prefin.append(prefin)
+    db.session.commit()
+    return jsonify({'supp_name':supp_name, 'fin':fin_id})
+
+# eJy9kMtOw0AMRX9lNOsIzfvRP2DHHlWVx2M3EWmCMiksqv47AyxBYsfKsnyPfa9v8sQztJGaPDzfpNh7kRdqDc4kB_k0EzQS83oW0yL2VQBiH4p9nJp47ZoHebwPP7nH5Q3mqYpro22BC4l16_LW3tet_k7836U_iOPQX7JRG-Vh367Uu6nKgyzOWqMd2qRMzKZ4XbMxZLWiqCOjcZF89KQIlMsqeZe0CbZGS9krdhVCrpCZkiu2UuhbWFvrcwhQiyfj0RP4qnKiGDhaQPaRUCOW2jd149g2Pu3rCy3dD5uI7IyjaBGUdSkzEgebCkdAr8CnQpG4czwtXxnsID8zf-cx8v4BMjmgDQ.Xhv47A.zv1zjl4kC4rL1ZPSKcy8myYKZPA

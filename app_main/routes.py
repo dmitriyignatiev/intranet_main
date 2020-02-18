@@ -21,7 +21,40 @@ from flask_mail import Message
 
 from flask import request, jsonify
 
+
+
+
 from suppliers.models import *
+from app_main.celery_task import *
+
+#тестируем работосмопсобность Celery
+@app.route('/celery/<string>')
+def celery(string):
+    reverse.delay(string)
+    return 'string'
+
+
+@app.route('/celery_email')
+def send_c_email():
+    sendmail.delay()
+    return 'done'
+
+@app.route('/new_user', methods=['GET', 'POST'])
+def new_user_setup():
+    form = newUser()
+    if form.validate_on_submit():
+        name= form.username.data
+        password = form.password.data
+        email = form.email.data
+        role = form.role.data
+        user = User(name=name, email=email, role=role)
+        db.session.add(user)
+        if user.role=='buyer':
+            user.request_count=0
+        user.set_password(password)
+        db.session.commit()
+        return redirect(url_for('index'))
+    return render_template('new_user.html', form=form)
 
 
 @app.before_request
@@ -137,7 +170,7 @@ def new_request():
         db.session.commit()
         print('da')
         ######выбираем закупщика с наименьшем количеством запросов
-        if current_user.role!='buyer':
+        if current_user.role=='sale':
             if new.customer.name == 'Шенкер Екатеринбург':
                 buyer = User.query.get(3)
 
@@ -149,18 +182,23 @@ def new_request():
 
             elif new.customer.name == 'customer_1':
                 buyer = User.query.get(2)
-            elif new.direction == 'INT':
-                buyer = User.query.get(21)
+            # elif new.direction == 'INT':
+            #     buyer = User.query.get(21)
                 #buyer = User.query.filter(db.and_(User.competention=='int', User.id !=4)).order_by(User.request_count.asc()).first()
             else:
                 buyer = User.query.filter(User.role=='buyer').order_by(User.request_count.asc()).first()
-            new.users.append(buyer)
-            buyer.request_count +=1
-            db.session.add(new)
-            db.session.commit()
+                if buyer:
+                    print(buyer.name)
+                else:
+                    print('lalal')
+                new.users.append(buyer)
+                buyer.request_count +=1
+          
+                db.session.commit()
             return redirect(url_for('index'))
             
         else:
+            
             buyer = current_user
             new.users.append(buyer)
             db.session.commit()
@@ -177,7 +215,8 @@ def cost(id):
     form = ConfirmRate()
     req_sale = update_request.user.id
     sale = User.query.get(req_sale)
-    sale_email = sale.user_email
+    sale_email = sale.user_email or sale.email
+    truck_option = form.truck_available.data
 
     if form.validate_on_submit():
         if request.form.get('vat'):
@@ -189,49 +228,51 @@ def cost(id):
             update_request.cost_created = datetime.utcnow()
             db.session.commit()
             print(update_request.cost)
-            if form.truck_available.data:
-                update_request.truck_available_opt=1
-                db.session.commit()
-                msg = Message ('ЕСТЬ АВТО!!!!Получена ставка по запросу {}'.format(str(update_request.id)), sender='redmessageinfo@gmail.com',
-                               recipients=[sale_email])
-                msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(cost, str(update_request.id))
-                mail.send(msg)
-            elif not form.truck_available.data:
-                update_request.truck_available_opt=0
-                db.session.commit()
-                msg = Message('АВТО НЕТ!!!!Получена ставка по запросу {}'.format(str(update_request.id)),
+            truck_option=form.truck_available.data
+            confirm_rate.delay(id, truck_option, cost, sale_email)
 
-                          sender='redmessageinfo@gmail.com',
-                          recipients=[sale_email])
-                msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(cost, str(update_request.id))
-                mail.send(msg)
+            # if form.truck_available.data:
+            #     update_request.truck_available_opt=1
+            #     db.session.commit()
+            #     msg = Message ('ЕСТЬ АВТО!!!!Получена ставка по запросу {}'.format(str(update_request.id)), sender='redmessageinfo@gmail.com',
+            #                    recipients=[sale_email])
+            #     msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(cost, str(update_request.id))
+            #     mail.send(msg)
+            # elif not form.truck_available.data:
+            #     update_request.truck_available_opt=0
+            #     db.session.commit()
+            #     msg = Message('АВТО НЕТ!!!!Получена ставка по запросу {}'.format(str(update_request.id)),
+
+            #               sender='redmessageinfo@gmail.com',
+            #               recipients=[sale_email])
+            #     msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(cost, str(update_request.id))
+            #     mail.send(msg)
             return redirect(url_for('index'))
         else:
-            print('No')
             cost = form.cost.data/0.93
             update_request.cost = cost
             update_request.min_sale = cost*0.12+cost + 1000
-
             db.session.add(update_request)
-            db.session.commit()
             update_request.cost_created = datetime.utcnow()
-            db.session.commit()
             print(update_request.cost)
-            if form.truck_available.data:
-                update_request.truck_available_opt=1
-                db.session.commit()
-                msg = Message ('ЕСТЬ АВТО!!!!Получена ставка по запросу {}'.format(str(update_request.id)), sender='redmessageinfo@gmail.com',
-                               recipients=[sale_email])
-                msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(cost, str(update_request.id))
-                mail.send(msg)
-            else:
-                update_request.truck_available_opt=0
-                db.session.commit()
-                msg = Message('АВТО НЕТ!!!!Получена ставка по запросу {}'.format(str(update_request.id)),
-                          sender='redmessageinfo@gmail.com',
-                          recipients=[sale_email])
-                msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(cost, str(update_request.id))
-                mail.send(msg)
+            confirm_rate.delay(id, truck_option, cost, sale_email)
+
+
+            # if form.truck_available.data:
+            #     update_request.truck_available_opt=1
+            #     db.session.commit()
+            #     msg = Message ('ЕСТЬ АВТО!!!!Получена ставка по запросу {}'.format(str(update_request.id)), sender='redmessageinfo@gmail.com',
+            #                    recipients=[sale_email])
+            #     msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(cost, str(update_request.id))
+            #     mail.send(msg)
+            # else:
+            #     update_request.truck_available_opt=0
+            #     db.session.commit()
+            #     msg = Message('АВТО НЕТ!!!!Получена ставка по запросу {}'.format(str(update_request.id)),
+            #               sender='redmessageinfo@gmail.com',
+            #               recipients=[sale_email])
+            #     msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(cost, str(update_request.id))
+            #     mail.send(msg)
 
             return redirect(url_for('index'))
     return render_template('confirm_rate.html', form=form, id=id, update_request=update_request)
@@ -374,7 +415,7 @@ def feedback(id):
         req = Request.query.get(id)
         req_sale = req.user.id
         sale = user.query.get(req_sale)
-        sale_email = sale.user_email
+        sale_email = sale.user_email or sale.email
 
         buyer = req.users.first()
         buyer_email = buyer.user_email
@@ -398,55 +439,68 @@ def feedback(id):
         elif request.form.get('noquest'):
             req.quest = ''
             db.session.commit()
+        
+        #simplify arguments to celery broker
+        id = req.id
+        comment = form.comments.data
+        if current_user.role=='buyer':
+            email=req.user.email
+        else:
+            email=req.users.first().email or req.users.first().user_email
+            
+        sendmail.delay(id, email, comment)
 
-        if current_user.id == 5:
-            if request.form.get('ask_buyer'):
-                    msg = Message('Запрос на проработку {} '.format(str(req.id)), sender='redmessageinfo@gmail.com',
-                                  recipients=[buyer_email])
-                    msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
-                    mail.send(msg)
-                    print(deadline_answer)
-                    req.questions=msg.body
-                    req.deadline_buyer=datetime.strftime(deadline_answer, '%Y-%m-%d')
-                    db.session.commit()
 
-            elif request.form.get('ask_sale'):
-                    msg = Message('Запрос на проработку {}'.format(str(req.id)), sender='redmessageinfo@gmail.com',
-                                  recipients=[sale_email])
-                    msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
-                    mail.send(msg)
-                    req.questions = msg.body
-                    req.deadline_sale = datetime.strftime(deadline_answer, '%Y-%m-%d')
-                    db.session.commit()
+
+        # if current_user.id == 5:
+        #     if request.form.get('ask_buyer'):
+        #             msg = Message('Запрос на проработку {} '.format(str(req.id)),
+        #                           recipients=[buyer_email])
+        #             msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
+        #             mail.send(msg)
+        #             print(deadline_answer)
+        #             req.questions=msg.body
+        #             req.deadline_buyer=datetime.strftime(deadline_answer, '%Y-%m-%d')
+        #             db.session.commit()
+
+        #     elif request.form.get('ask_sale'):
+        #             msg = Message('Запрос на проработку {}'.format(str(req.id)), sender='redmessageinfo@gmail.com',
+        #                           recipients=[sale_email])
+        #             msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
+        #             mail.send(msg)
+        #             req.questions = msg.body
+        #             req.deadline_sale = datetime.strftime(deadline_answer, '%Y-%m-%d')
+        #             db.session.commit()
 
         # функция отправки письма
-        elif current_user.role == 'buyer':
-            if req.questions !='':
-                msg = Message('New comment in request{}'.format(str(req.id)), sender='redmessageinfo@gmail.com',
-                               recipients=[sale_email])
-                msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
-                mail.send(msg)
-            else:
-                msg = Message('New comment in request{}'.format(str(req.id)), sender='redmessageinfo@gmail.com',
-                              recipients=[sale_email])
-                msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
-                mail.send(msg)
+        # elif current_user.role == 'buyer':
+        #     if req.questions !='':
+        #         msg = Message('New comment in request{}'.format(str(req.id)),
+        #                        recipients=[sale_email])
+        #         msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
+        #         mail.send(msg)
+        #     else:
+        #         msg = Message('New comment in request{}'.format(str(req.id)),
+        #                       recipients=[sale_email])
+              
+        #         msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
+        #         mail.send(msg)
 
-        # if current_user.role == 'buyer' and request.form_for_buyer.get('question')
+        # # if current_user.role == 'buyer' and request.form_for_buyer.get('question')
 
-        elif current_user.role == 'sale' and current_user.id!=5:
-            if req.questions !='':
-                msg = Message('New comment in request{}'.format(str(req.id)), sender='redmessageinfo@gmail.com',
-                              recipients=[buyer_email])
-                print(buyer_email)
-                msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
-                mail.send(msg)
-            else:
-                msg = Message('New comment in request{}'.format(str(req.id)), sender='redmessageinfo@gmail.com',
-                              recipients=[sale_email])
-                print(buyer_email)
-                msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
-                mail.send(msg)
+        # elif current_user.role == 'sale':
+        #     if req.questions !='':
+        #         msg = Message('New comment in request{}'.format(str(req.id)),
+        #                       recipients=[buyer_email])
+        #         print(buyer_email)
+        #         msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
+        #         mail.send(msg)
+        #     else:
+        #         msg = Message('New comment in request{}'.format(str(req.id)),
+        #                       recipients=[sale_email])
+        #         print(buyer_email)
+        #         msg.body = "{}, \n \n http://192.168.1.117:5000/feedback/{}".format(form.comments.data, str(req.id))
+        #         mail.send(msg)
 
 
      

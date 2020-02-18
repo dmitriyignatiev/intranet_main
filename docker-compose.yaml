@@ -7,9 +7,9 @@ services:
     ports:
       - "5883:3306"
     environment:
-      MYSQL_ROOT_USER: root
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: rosexp
+      MYSQL_ROOT_USER: 'your password'
+      MYSQL_ROOT_PASSWORD: 'your password'
+      MYSQL_DATABASE: 'your db name'
     volumes: 
       - ./my_datavolume:/var/lib/mysql
      
@@ -20,4 +20,15 @@ services:
       - db
     ports:
       - "8584:80"
+
+      
+  redis:
+    image: 'bitnami/redis:latest'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "6379:6379"
+
+  
+
       

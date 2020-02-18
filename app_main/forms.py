@@ -1,11 +1,21 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField, TextAreaField, SelectField
-from wtforms.validators import DataRequired
+from wtforms import StringField, PasswordField, BooleanField,  SubmitField, IntegerField, TextAreaField, SelectField
+from wtforms.validators import DataRequired, Email
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from app_main.models import User, Direction, Who_number, Truck, Quantity, Truck_opt, Ttn, Customer_base, Customer
 
 from flask_login import current_user
 from wtforms.fields.html5 import DateField
+
+class newUser(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    role = SelectField('Выберите свою роль', choices=[('sale', 'sale'), 
+                                                        ('buyer', 'buyer')],
+                                                        validators=[DataRequired()])
+        
+    submit = SubmitField('Sign In')                                           
 
 
 

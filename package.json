@@ -1,0 +1,25 @@
+{
+  "name": "intranet_main",
+  "version": "1.0.0",
+  "description": "Intranet for small logistics company in order to make clear cooperation between sales and operation departments within one company. Control, follow up and maintain all the requests sales dept.",
+  "main": "index.js",
+  "dependencies": {
+    "lodash": "^4.17.15",
+    "vue-select": "^3.4.0",
+    "vue2-dropzone": "^3.6.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dmitriyignatiev/intranet_main.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dmitriyignatiev/intranet_main/issues"
+  },
+  "homepage": "https://github.com/dmitriyignatiev/intranet_main#readme"
+}
